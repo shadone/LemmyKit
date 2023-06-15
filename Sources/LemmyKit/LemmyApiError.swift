@@ -6,7 +6,7 @@
 
 import Foundation
 
-struct LemmyServerError: Error {
+public struct LemmyServerError: Error {
     let message: String
 }
 
@@ -14,6 +14,6 @@ enum LemmyApiError: Error {
     case failedToSerializeRequest
     case responseContainsNoData
 
-    case serverError(message: String)
+    case serverError(LemmyServerError)
     case unknownServerError
 }
