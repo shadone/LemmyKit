@@ -7,14 +7,18 @@
 import Foundation
 
 public final class LemmyApi {
-    let baseUrl = URL(string: "https://discuss.tchncs.de/api/v3/")!
+    let baseUrl: URL
     let extraHeaders: HTTPHeaders = .init([])
 
     let session: URLSession = .shared
 
     let jsonDecoder: JSONDecoder
 
-    public init() {
+    /// Creates a new api instance for the given Lemmy instance.
+    /// - Parameter instanceUrl: base url for the instance e.g. "https://lemmy.world"
+    public init(instanceUrl: URL) {
+        baseUrl = URL(string: "/api/v3/", relativeTo: instanceUrl)!
+
         jsonDecoder = JSONDecoder()
         jsonDecoder.dateDecodingStrategy = .custom({ decoder in
             let container = try decoder.singleValueContainer()
@@ -96,7 +100,7 @@ public final class LemmyApi {
 
             do {
                 let error = try jsonDecoder.decode(ErrorResponse.self, from: responseData)
-                throw LemmyApiError.serverError(message: error.error)
+                throw LemmyApiError.serverError(.init(message: error.error))
             } catch {
                 throw LemmyApiError.unknownServerError
             }
