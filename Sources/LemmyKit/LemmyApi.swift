@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 //
 
+import Combine
 import Foundation
 
 public final class LemmyApi {
@@ -146,5 +147,36 @@ public final class LemmyApi {
         )
 
         return try await self.request(GetPosts.self, request)
+    }
+
+    public func getPosts(
+        type: ListingType? = nil,
+        sort: SortType? = nil,
+        page: Int? = nil,
+        limit: Int? = nil,
+        communityId: CommunityId? = nil,
+        communityName: String? = nil,
+        savedOnly: Bool? = nil
+    ) -> AnyPublisher<GetPosts.Response, LemmyApiError> {
+        Future { promise in
+            Task {
+                do {
+                    let value = try await self.getPosts(
+                        type: type,
+                        sort: sort,
+                        page: page,
+                        limit: limit,
+                        communityId: communityId,
+                        communityName: communityName,
+                        savedOnly: savedOnly
+                    )
+                    promise(.success(value))
+                } catch let error as LemmyApiError {
+                    promise(.failure(error))
+                } catch {
+                    fatalError("unexpected error type \(error)")
+                }
+            }
+        }.eraseToAnyPublisher()
     }
 }
