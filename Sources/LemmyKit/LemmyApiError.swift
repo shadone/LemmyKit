@@ -6,14 +6,23 @@
 
 import Foundation
 
-public struct LemmyServerError: Error {
-    let message: String
-}
+public enum LemmyApiError: Error {
+    /// Failed to create a network request due to an internal error.
+    case failedToSerializeRequest(underlyingError: Error?)
 
-enum LemmyApiError: Error {
-    case failedToSerializeRequest
+    /// A network error has occurred.
+    case network(Error)
+
+    /// Received a response without data payload.
     case responseContainsNoData
 
+    /// Faile to parse network response.
+    case failedToDeserializeResponse(underlyingError: Error)
+
+    /// Lemmy server returned a specified error.
     case serverError(LemmyServerError)
+
+    /// Request to Lemmy server failed with an unexpected error.
+    /// This is a catch-all case that should never happen, if it does we need to catch and handle errors better.
     case unknownServerError
 }

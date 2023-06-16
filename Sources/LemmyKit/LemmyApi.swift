@@ -44,18 +44,22 @@ public final class LemmyApi {
         _ request: Endpoint.Request
     ) async throws -> Endpoint.Response {
         guard let url = URL(string: Endpoint.href, relativeTo: baseUrl) else {
-            throw LemmyApiError.failedToSerializeRequest
+            throw LemmyApiError.failedToSerializeRequest(underlyingError: nil)
         }
 
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
 
         if Endpoint.method == .get {
-            let queryItems = try URLQueryItemsEncoder().encode(request)
-            urlComponents?.queryItems = queryItems
+            do {
+                let queryItems = try URLQueryItemsEncoder().encode(request)
+                urlComponents?.queryItems = queryItems
+            } catch {
+                throw LemmyApiError.failedToSerializeRequest(underlyingError: error)
+            }
         }
 
         guard let url = urlComponents?.url else {
-            throw LemmyApiError.failedToSerializeRequest
+            throw LemmyApiError.failedToSerializeRequest(underlyingError: nil)
         }
 
         var urlRequest = URLRequest(url: url)
@@ -65,22 +69,33 @@ public final class LemmyApi {
         }
 
         if Endpoint.method != .get {
-            let requestData = try JSONEncoder().encode(request)
-            urlRequest.httpBody = requestData
+            do {
+                let requestData = try JSONEncoder().encode(request)
+                urlRequest.httpBody = requestData
+            } catch {
+                throw LemmyApiError.failedToSerializeRequest(underlyingError: error)
+            }
 
             urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         }
 
-        let (responseData, urlResponse) = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(Data?, URLResponse?), Error>) in
-            session.dataTask(with: urlRequest) { responseData, urlResponse, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: (responseData, urlResponse))
-                }
-            }.resume()
+        let responseData: Data?
+        let urlResponse: URLResponse?
+
+        do {
+            (responseData, urlResponse) = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(Data?, URLResponse?), Error>) in
+                session.dataTask(with: urlRequest) { responseData, urlResponse, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume(returning: (responseData, urlResponse))
+                    }
+                }.resume()
+            }
+            //let (responseData, urlResponse) = try await session.data(for: urlRequest)
+        } catch {
+            throw LemmyApiError.network(error)
         }
-//        let (responseData, urlResponse) = try await session.data(for: urlRequest)
 
         guard let httpUrlResponse = urlResponse as? HTTPURLResponse else {
             fatalError("Not HTTP?")
@@ -91,7 +106,11 @@ public final class LemmyApi {
             guard let responseData = responseData else {
                 throw LemmyApiError.responseContainsNoData
             }
-            return try jsonDecoder.decode(Endpoint.Response.self, from: responseData)
+            do {
+                return try jsonDecoder.decode(Endpoint.Response.self, from: responseData)
+            } catch {
+                throw LemmyApiError.failedToDeserializeResponse(underlyingError: error)
+            }
 
         default:
             guard let responseData = responseData else {
