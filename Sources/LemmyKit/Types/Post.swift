@@ -12,7 +12,7 @@ public struct Post: Decodable {
     /// Post identifier. The identifier is local to this instance.
     public let id: PostId
 
-    /// The title of the post.
+    /// The title of the post, in markdown.
     public let name: String
 
     /// An optional link / url for the post.
@@ -55,6 +55,7 @@ public struct Post: Decodable {
     public let thumbnail_url: String?
 
     /// The federated activity id / ap_id.
+    /// e.g. `https://sh.itjust.works/post/109799`
     public let ap_id: URL
 
     /// Whether the post is local.

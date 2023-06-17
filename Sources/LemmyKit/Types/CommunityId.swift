@@ -8,4 +8,5 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/newtypes.rs
 
+/// Community identifier. The identifier is local to this instance.
 public typealias CommunityId = Int

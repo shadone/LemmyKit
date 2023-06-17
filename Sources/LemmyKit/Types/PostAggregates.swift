@@ -11,16 +11,22 @@ import Foundation
 public struct PostAggregates: Decodable {
     public let id: Int32
 
+    /// Post identifier. The identifier is local to this instance.
     public let post_id: PostId
 
+    /// Number of comments in the post.
     public let comments: Int64
 
+    /// Overall score of the post.
     public let score: Int64
 
+    /// Number of upvotes.
     public let upvotes: Int64
 
+    /// Number of downvotes.
     public let downvotes: Int64
 
+    /// The timestamp when the post was published.
     public let published: Date
 
     /// A newest comment time, limited to 2 days, to prevent necrobumping

@@ -8,4 +8,5 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/newtypes.rs
 
+/// Person identifier. The identifier is local to this instance.
 public typealias PersonId = Int32

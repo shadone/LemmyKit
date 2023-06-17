@@ -11,9 +11,10 @@ import Foundation
 public struct Person: Decodable {
     public let id: PersonId
 
+    /// Username (aka nickname aka short users' name). e.g. "helloworld"
     public let name: String
 
-    /// A shorter display name.
+    /// A display name for the user. e.g. "Hello World!"
     public let display_name: String?
 
     /// A URL for an avatar.
@@ -22,11 +23,13 @@ public struct Person: Decodable {
     /// Whether the person is banned.
     public let banned: Bool
 
+    /// The account creation date.
     public let published: Date
 
     public let updated: Date?
 
     /// The federated actor_id.
+    /// e.g. `https://discuss.tchncs.de/u/milan`
     public let actor_id: String
 
     /// An optional bio, in markdown.
@@ -53,5 +56,6 @@ public struct Person: Decodable {
     /// When their ban, if it exists, expires, if at all.
     public let ban_expires: Date?
 
+    /// Which instance the person belongs to.
     public let instance_id: InstanceId
 }
