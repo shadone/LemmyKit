@@ -43,6 +43,34 @@ public struct GetComments: LemmyApiEndpoint {
 
         /// Authentication token.
         public let auth: String?
+
+        // MARK: Functions
+
+        public init(
+            type_: ListingType? = nil,
+            sort: CommentSortType? = nil,
+            max_depth: Int32? = nil,
+            page: Int64? = nil,
+            limit: Int64? = nil,
+            community_id: CommunityId? = nil,
+            community_name: String? = nil,
+            post_id: PostId? = nil,
+            parent_id: CommentId? = nil,
+            saved_only: Bool? = nil,
+            auth: String? = nil
+        ) {
+            self.type_ = type_
+            self.sort = sort
+            self.max_depth = max_depth
+            self.page = page
+            self.limit = limit
+            self.community_id = community_id
+            self.community_name = community_name
+            self.post_id = post_id
+            self.parent_id = parent_id
+            self.saved_only = saved_only
+            self.auth = auth
+        }
     }
 
     public struct Response: Decodable {

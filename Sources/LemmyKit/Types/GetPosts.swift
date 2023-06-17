@@ -35,6 +35,28 @@ public struct GetPosts: LemmyApiEndpoint {
 
         /// Authentication token.
         public let auth: String?
+
+        // MARK: Functions
+
+        public init(
+            type_: ListingType? = nil,
+            sort: SortType? = nil,
+            page: Int? = nil,
+            limit: Int? = nil,
+            community_id: CommunityId? = nil,
+            community_name: String? = nil,
+            saved_only: Bool? = nil,
+            auth: String? = nil
+        ) {
+            self.type_ = type_
+            self.sort = sort
+            self.page = page
+            self.limit = limit
+            self.community_id = community_id
+            self.community_name = community_name
+            self.saved_only = saved_only
+            self.auth = auth
+        }
     }
 
     public struct Response: Decodable {

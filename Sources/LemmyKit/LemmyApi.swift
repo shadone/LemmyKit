@@ -123,54 +123,51 @@ public final class LemmyApi {
             }
         }
     }
+}
 
+// MARK: - Get Posts
+
+extension LemmyApi {
     public func getPosts(
-        type: ListingType? = nil,
-        sort: SortType? = nil,
-        page: Int? = nil,
-        limit: Int? = nil,
-        communityId: CommunityId? = nil,
-        communityName: String? = nil,
-        savedOnly: Bool? = nil,
-        auth: String? = nil
+        _ request: GetPosts.Request
     ) async throws -> GetPosts.Response {
-        let request = GetPosts.Request(
-            type_: type,
-            sort: sort,
-            page: page,
-            limit: limit,
-            community_id: communityId,
-            community_name: communityName,
-            saved_only: savedOnly,
-            auth: auth
-        )
-
         return try await self.request(GetPosts.self, request)
     }
 
     public func getPosts(
-        type: ListingType? = nil,
-        sort: SortType? = nil,
-        page: Int? = nil,
-        limit: Int? = nil,
-        communityId: CommunityId? = nil,
-        communityName: String? = nil,
-        savedOnly: Bool? = nil,
-        auth: String? = nil
+        _ request: GetPosts.Request
     ) -> AnyPublisher<GetPosts.Response, LemmyApiError> {
         Future { promise in
             Task {
                 do {
-                    let value = try await self.getPosts(
-                        type: type,
-                        sort: sort,
-                        page: page,
-                        limit: limit,
-                        communityId: communityId,
-                        communityName: communityName,
-                        savedOnly: savedOnly,
-                        auth: auth
-                    )
+                    let value = try await self.getPosts(request)
+                    promise(.success(value))
+                } catch let error as LemmyApiError {
+                    promise(.failure(error))
+                } catch {
+                    fatalError("unexpected error type \(error)")
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Get Comments
+
+extension LemmyApi {
+    public func getComments(
+        _ request: GetComments.Request
+    ) async throws -> GetComments.Response {
+        return try await self.request(GetComments.self, request)
+    }
+
+    public func getComments(
+        _ request: GetComments.Request
+    ) -> AnyPublisher<GetComments.Response, LemmyApiError> {
+        Future { promise in
+            Task {
+                do {
+                    let value = try await self.getComments(request)
                     promise(.success(value))
                 } catch let error as LemmyApiError {
                     promise(.failure(error))
