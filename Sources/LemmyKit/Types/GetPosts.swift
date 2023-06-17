@@ -32,6 +32,9 @@ public struct GetPosts: LemmyApiEndpoint {
 
         /// Whether to fetch only saved posts.
         public let saved_only: Bool?
+
+        /// Authentication token.
+        public let auth: String?
     }
 
     public struct Response: Decodable {

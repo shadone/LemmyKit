@@ -131,7 +131,8 @@ public final class LemmyApi {
         limit: Int? = nil,
         communityId: CommunityId? = nil,
         communityName: String? = nil,
-        savedOnly: Bool? = nil
+        savedOnly: Bool? = nil,
+        auth: String? = nil
     ) async throws -> GetPosts.Response {
         let request = GetPosts.Request(
             type_: type,
@@ -140,7 +141,8 @@ public final class LemmyApi {
             limit: limit,
             community_id: communityId,
             community_name: communityName,
-            saved_only: savedOnly
+            saved_only: savedOnly,
+            auth: auth
         )
 
         return try await self.request(GetPosts.self, request)
@@ -153,7 +155,8 @@ public final class LemmyApi {
         limit: Int? = nil,
         communityId: CommunityId? = nil,
         communityName: String? = nil,
-        savedOnly: Bool? = nil
+        savedOnly: Bool? = nil,
+        auth: String? = nil
     ) -> AnyPublisher<GetPosts.Response, LemmyApiError> {
         Future { promise in
             Task {
@@ -165,7 +168,8 @@ public final class LemmyApi {
                         limit: limit,
                         communityId: communityId,
                         communityName: communityName,
-                        savedOnly: savedOnly
+                        savedOnly: savedOnly,
+                        auth: auth
                     )
                     promise(.success(value))
                 } catch let error as LemmyApiError {
