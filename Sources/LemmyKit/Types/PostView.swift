@@ -26,7 +26,7 @@ public struct PostView: Decodable {
 
     public let subscribed: SubscribedType
 
-    /// Specifies whether the user saved the post.
+    /// Specifies whether the user marked the post as saved.
     public let saved: Bool
 
     /// Specifies whether the user read the post.
