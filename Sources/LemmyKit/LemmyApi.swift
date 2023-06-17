@@ -25,18 +25,15 @@ public final class LemmyApi {
             let container = try decoder.singleValueContainer()
             let stringValue = try container.decode(String.self)
 
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = [.withFractionalSeconds]
-
-            guard let date = formatter.date(from: stringValue) else {
+            do {
+                return try Date(lemmyFormat: stringValue)
+            } catch {
                 throw DecodingError.dataCorrupted(.init(
                     codingPath: decoder.codingPath,
                     debugDescription: "Expected date string to be ISO8601-formatted with milliseconds e.g '2023-06-13T13:36:53.593094'.",
-                    underlyingError: nil
+                    underlyingError: error
                 ))
             }
-
-            return date
         })
     }
 

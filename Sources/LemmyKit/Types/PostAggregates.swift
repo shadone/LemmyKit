@@ -33,7 +33,7 @@ public struct PostAggregates: Decodable {
     public let newest_comment_time_necro: Date
 
     /// The time of the newest comment in the post.
-    public let newest_comment_time: String
+    public let newest_comment_time: Date
 
     /// If the post is featured on the community.
     public let featured_community: Bool
