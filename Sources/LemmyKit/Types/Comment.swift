@@ -25,17 +25,17 @@ public struct Comment: Decodable {
     public let removed: Bool
 
     /// The date this comment was published.
-    public let published: String
+    public let published: Date
 
     /// The date this comment was last updated.
-    public let updated: String?
+    public let updated: Date?
 
     /// Whether the comment is deleted.
     public let deleted: Bool
 
     /// The federated activity id / ap_id.
-    /// e.g. ``
-    public let ap_id: String
+    /// e.g. `https://lemmy.world/comment/316303`
+    public let ap_id: URL
 
     /// Whether the comment is local.
     public let local: Bool

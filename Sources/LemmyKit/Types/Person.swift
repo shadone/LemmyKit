@@ -30,7 +30,7 @@ public struct Person: Decodable {
 
     /// The federated actor_id.
     /// e.g. `https://discuss.tchncs.de/u/milan`
-    public let actor_id: String
+    public let actor_id: URL
 
     /// An optional bio, in markdown.
     public let bio: String?

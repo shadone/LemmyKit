@@ -11,7 +11,7 @@ import Foundation
 public struct CommentAggregates: Decodable {
     public let id: Int32
 
-    /// Commentidentifier. The identifier is local to this instance.
+    /// Comment identifier. The identifier is local to this instance.
     public let comment_id: CommentId
 
     /// Overall score of the comment.
