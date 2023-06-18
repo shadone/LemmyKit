@@ -41,8 +41,11 @@ public struct Comment: Decodable {
     public let local: Bool
 
     /// Specifies the path to this comment in a tree of comments.
+    ///
     /// Represented as dot separated list of comment identifiers. The path starts with "0" representing the root.
     /// e.g. `0.219355.219732.225923`
+    ///
+    /// See also ``CommentPath``
     public let path: String
 
     public let distinguished: Bool
