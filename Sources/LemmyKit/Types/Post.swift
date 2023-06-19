@@ -52,7 +52,7 @@ public struct Post: Decodable {
     public let embed_description: String?
 
     /// A thumbnail picture url.
-    public let thumbnail_url: String?
+    public let thumbnail_url: URL?
 
     /// The federated activity id / ap_id.
     /// e.g. `https://sh.itjust.works/post/109799`
