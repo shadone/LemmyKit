@@ -20,6 +20,18 @@ public struct CommentPath {
             .joined(separator: ".")
     }
 
+    /// Return a comment that that is the parent of the commit represented by this path.
+    ///
+    /// For example for path `0.1234.5678.9876` the parent commit id is `5678`.
+    public var parent: CommentId? {
+        guard path.count > 2 else {
+            // if only 2 elements that this is the root most comment, no parent
+            // e.g. path: "0.1234"
+            return nil
+        }
+        return path[path.count - 2]
+    }
+
     public static let root: CommentPath = .init(path: [0])
 
     // MARK: Functions
