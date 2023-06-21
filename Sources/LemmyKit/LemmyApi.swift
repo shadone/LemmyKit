@@ -178,3 +178,21 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Create Comment Like
+
+extension LemmyApi {
+    public func createCommentLike(
+        _ request: CreateCommentLike.Request
+    ) async throws -> CreateCommentLike.Response {
+        return try await self.request(CreateCommentLike.self, request)
+    }
+
+    public func createCommentLike(
+        _ request: CreateCommentLike.Request
+    ) -> AnyPublisher<CreateCommentLike.Response, LemmyApiError> {
+        Future {
+            try await self.createCommentLike(request)
+        }.eraseToAnyPublisher()
+    }
+}
