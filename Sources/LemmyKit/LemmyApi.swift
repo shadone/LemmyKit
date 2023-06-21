@@ -178,3 +178,30 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Create Post Like
+
+extension LemmyApi {
+    public func createPostLike(
+        _ request: CreatePostLike.Request
+    ) async throws -> CreatePostLike.Response {
+        return try await self.request(CreatePostLike.self, request)
+    }
+
+    public func createPostLike(
+        _ request: CreatePostLike.Request
+    ) -> AnyPublisher<CreatePostLike.Response, LemmyApiError> {
+        Future { promise in
+            Task {
+                do {
+                    let value = try await self.createPostLike(request)
+                    promise(.success(value))
+                } catch let error as LemmyApiError {
+                    promise(.failure(error))
+                } catch {
+                    fatalError("unexpected error type \(error)")
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+}
