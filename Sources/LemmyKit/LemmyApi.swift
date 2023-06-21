@@ -137,17 +137,8 @@ extension LemmyApi {
     public func getPosts(
         _ request: GetPosts.Request
     ) -> AnyPublisher<GetPosts.Response, LemmyApiError> {
-        Future { promise in
-            Task {
-                do {
-                    let value = try await self.getPosts(request)
-                    promise(.success(value))
-                } catch let error as LemmyApiError {
-                    promise(.failure(error))
-                } catch {
-                    fatalError("unexpected error type \(error)")
-                }
-            }
+        Future {
+            try await self.getPosts(request)
         }.eraseToAnyPublisher()
     }
 }
@@ -164,17 +155,8 @@ extension LemmyApi {
     public func getComments(
         _ request: GetComments.Request
     ) -> AnyPublisher<GetComments.Response, LemmyApiError> {
-        Future { promise in
-            Task {
-                do {
-                    let value = try await self.getComments(request)
-                    promise(.success(value))
-                } catch let error as LemmyApiError {
-                    promise(.failure(error))
-                } catch {
-                    fatalError("unexpected error type \(error)")
-                }
-            }
+        Future {
+            try await self.getComments(request)
         }.eraseToAnyPublisher()
     }
 }
@@ -191,17 +173,8 @@ extension LemmyApi {
     public func createPostLike(
         _ request: CreatePostLike.Request
     ) -> AnyPublisher<CreatePostLike.Response, LemmyApiError> {
-        Future { promise in
-            Task {
-                do {
-                    let value = try await self.createPostLike(request)
-                    promise(.success(value))
-                } catch let error as LemmyApiError {
-                    promise(.failure(error))
-                } catch {
-                    fatalError("unexpected error type \(error)")
-                }
-            }
+        Future {
+            try await self.createPostLike(request)
         }.eraseToAnyPublisher()
     }
 }
