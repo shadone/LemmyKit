@@ -196,3 +196,21 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Get Site
+
+extension LemmyApi {
+    public func getSite(
+        _ request: GetSite.Request
+    ) async throws -> GetSite.Response {
+        return try await self.request(GetSite.self, request)
+    }
+
+    public func getSite(
+        _ request: GetSite.Request
+    ) -> AnyPublisher<GetSite.Response, LemmyApiError> {
+        Future {
+            try await self.getSite(request)
+        }.eraseToAnyPublisher()
+    }
+}

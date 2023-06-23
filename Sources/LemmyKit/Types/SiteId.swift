@@ -8,5 +8,5 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/newtypes.rs
 
-/// Language identifier. The identifier is local to this instance.
-public typealias LanguageId = Int32
+/// Site identifier. The identifier is local to this instance.
+public typealias SiteId = Int32

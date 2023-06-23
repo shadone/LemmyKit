@@ -8,5 +8,5 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/newtypes.rs
 
-/// Language identifier. The identifier is local to this instance.
-public typealias LanguageId = Int32
+/// Emoji identifier. The identifier is local to this instance.
+public typealias CustomEmojiId = Int32

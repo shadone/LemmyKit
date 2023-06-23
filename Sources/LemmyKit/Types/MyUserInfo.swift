@@ -1,0 +1,18 @@
+//
+// Copyright (c) 2023, Denis Dzyubenko <denis@ddenis.info>
+//
+// SPDX-License-Identifier: BSD-2-Clause
+//
+
+import Foundation
+
+// Source: https://github.com/LemmyNet/lemmy/blob/main/crates/api_common/src/site.rs
+
+public struct MyUserInfo: Decodable {
+    public let local_user_view: LocalUserView
+    public let follows: [CommunityFollowerView]
+    public let moderates: [CommunityModeratorView]
+    public let community_blocks: [CommunityBlockView]
+    public let person_blocks: [PersonBlockView]
+    public let discussion_languages: [LanguageId]
+}

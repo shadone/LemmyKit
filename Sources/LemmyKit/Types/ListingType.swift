@@ -8,7 +8,7 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/lib.rs
 
-public enum ListingType: String, Encodable, CustomStringConvertible {
+public enum ListingType: String, Codable, CustomStringConvertible {
     case all = "All"
     case local = "Local"
     case subscribed = "Subscribed"

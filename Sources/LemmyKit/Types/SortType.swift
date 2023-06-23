@@ -8,7 +8,7 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/lib.rs
 
-public enum SortType: String, Encodable {
+public enum SortType: String, Codable {
     case active = "Active"
     case hot = "Hot"
     case new = "New"
