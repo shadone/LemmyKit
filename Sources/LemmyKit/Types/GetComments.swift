@@ -73,7 +73,5 @@ public struct GetComments: LemmyApiEndpoint {
         }
     }
 
-    public struct Response: Decodable {
-        public let comments: [CommentView]
-    }
+    public typealias Response = GetCommentsResponse
 }

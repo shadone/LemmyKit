@@ -59,7 +59,5 @@ public struct GetPosts: LemmyApiEndpoint {
         }
     }
 
-    public struct Response: Decodable {
-        public let posts: [PostView]
-    }
+    public typealias Response = GetPostsResponse
 }
