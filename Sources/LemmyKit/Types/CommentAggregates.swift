@@ -28,4 +28,6 @@ public struct CommentAggregates: Decodable {
 
     /// The total number of children in this comment branch.
     public let child_count: Int32
+
+    public let hot_rank: Int32
 }

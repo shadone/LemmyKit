@@ -13,6 +13,8 @@ public enum SortType: String, Codable {
     case hot = "Hot"
     case new = "New"
     case old = "Old"
+    case topSixHour = "TopSixHour"
+    case topTwelveHour = "TopTwelveHour"
     case topDay = "TopDay"
     case topWeek = "TopWeek"
     case topMonth = "TopMonth"

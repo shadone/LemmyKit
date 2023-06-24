@@ -40,4 +40,8 @@ public struct PostAggregates: Decodable {
 
     /// If the post is featured on the site / to local.
     public let featured_local: Bool
+
+    public let hot_rank: Int32
+
+    public let hot_rank_active: Int32
 }
