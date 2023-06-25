@@ -228,3 +228,39 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Login
+
+extension LemmyApi {
+    public func login(
+        _ request: Login.Request
+    ) async throws -> Login.Response {
+        return try await self.request(Login.self, request)
+    }
+
+    public func login(
+        _ request: Login.Request
+    ) -> AnyPublisher<Login.Response, LemmyApiError> {
+        Future {
+            try await self.login(request)
+        }.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Register
+
+extension LemmyApi {
+    public func register(
+        _ request: Register.Request
+    ) async throws -> Register.Response {
+        return try await self.request(Register.self, request)
+    }
+
+    public func register(
+        _ request: Register.Request
+    ) -> AnyPublisher<Register.Response, LemmyApiError> {
+        Future {
+            try await self.register(request)
+        }.eraseToAnyPublisher()
+    }
+}
