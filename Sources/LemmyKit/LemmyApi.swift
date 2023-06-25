@@ -15,9 +15,23 @@ public final class LemmyApi {
 
     let jsonDecoder: JSONDecoder
 
+    // MARK: Public
+
+    public let instanceHostname: String
+
+    // MARK: Functions
+
     /// Creates a new api instance for the given Lemmy instance.
     /// - Parameter instanceUrl: base url for the instance e.g. "https://lemmy.world"
     public init(instanceUrl: URL) {
+        let instanceHostname: String?
+        if #available(iOS 16.0, *) {
+            instanceHostname = instanceUrl.host(percentEncoded: false)
+        } else {
+            instanceHostname = instanceUrl.host
+        }
+        self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
+
         baseUrl = URL(string: "/api/v3/", relativeTo: instanceUrl)!
 
         jsonDecoder = JSONDecoder()
