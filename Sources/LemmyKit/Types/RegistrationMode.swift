@@ -17,4 +17,25 @@ public enum RegistrationMode: String, Decodable {
 
     /// Open to all.
     case open = "Open"
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let stringValue = try container.decode(String.self)
+        switch stringValue {
+        case "Closed", "closed":
+            self = .closed
+
+        case "RequireApplication", "requireapplication":
+            self = .requireApplication
+
+        case "Open", "open":
+            self = .open
+
+        default:
+            throw DecodingError.dataCorrupted(.init(
+                codingPath: container.codingPath,
+                debugDescription: "Cannot initialize RegistrationMode from invalid String value '\(stringValue)'"
+            ))
+        }
+    }
 }
