@@ -97,7 +97,7 @@ public final class LemmyApi {
         do {
             (responseData, urlResponse) = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(Data?, URLResponse?), Error>) in
                 session.dataTask(with: urlRequest) { responseData, urlResponse, error in
-                    if let error = error {
+                    if let error {
                         continuation.resume(throwing: error)
                     } else {
                         continuation.resume(returning: (responseData, urlResponse))
@@ -129,12 +129,13 @@ public final class LemmyApi {
                 throw LemmyApiError.unknownServerError
             }
 
+            let errorResponse: ErrorResponse
             do {
-                let error = try jsonDecoder.decode(ErrorResponse.self, from: responseData)
-                throw LemmyApiError.serverError(.init(message: error.error))
+                errorResponse = try jsonDecoder.decode(ErrorResponse.self, from: responseData)
             } catch {
                 throw LemmyApiError.unknownServerError
             }
+            throw LemmyApiError.serverError(.init(from: errorResponse.error))
         }
     }
 }
