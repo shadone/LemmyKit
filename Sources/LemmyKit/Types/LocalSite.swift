@@ -58,7 +58,7 @@ public struct LocalSite: Decodable {
     public let federation_enabled: Bool
 
     /// The number of concurrent federation http workers.
-    public let federation_worker_count: Int32
+    public let federation_worker_count: Int32?
 
     /// Whether captcha is enabled.
     public let captcha_enabled: Bool
