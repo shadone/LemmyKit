@@ -11,8 +11,11 @@ public enum LemmyServerError {
         /// The specified username or email was not accepted by the Lemmy server.
         case couldnt_find_that_username_or_email
 
-        // The specified password was not accepted by the Lemmy server.
+        /// The specified password was not accepted by the Lemmy server.
         case password_incorrect
+
+        /// The required pameters were omitted, e.g. no user id to `/user` endpoint.
+        case no_id_given
     }
 
     case value(LemmyServerErrorCodes)
