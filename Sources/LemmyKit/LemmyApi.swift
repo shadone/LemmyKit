@@ -265,3 +265,21 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Get Person Details
+
+extension LemmyApi {
+    public func getPersonDetails(
+        _ request: GetPersonDetails.Request
+    ) async throws -> GetPersonDetails.Response {
+        return try await self.request(GetPersonDetails.self, request)
+    }
+
+    public func getPersonDetails(
+        _ request: GetPersonDetails.Request
+    ) -> AnyPublisher<GetPersonDetails.Response, LemmyApiError> {
+        Future {
+            try await self.getPersonDetails(request)
+        }.eraseToAnyPublisher()
+    }
+}
