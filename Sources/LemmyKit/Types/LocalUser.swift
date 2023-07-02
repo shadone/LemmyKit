@@ -9,27 +9,34 @@ import Foundation
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/source/local_user.rs
 
 public struct LocalUser: Decodable {
+    /// Internal Lemmy user identifier. The same identifier as in JWT sub claim.
     public let id: LocalUserId
 
     /// The person_id for the local user.
     public let person_id: PersonId
 
+    /// User's email address.
     public let email: String?
 
     /// Whether to show NSFW content.
     public let show_nsfw: Bool
 
+    /// User's theme. e.g. "browser".
     public let theme: String
 
+    /// The default sort type for the user.
     public let default_sort_type: SortType
 
+    /// The default listing type.
     public let default_listing_type: ListingType
 
+    /// The language of the Lemmy interface.
     public let interface_language: String
 
     /// Whether to show avatars.
     public let show_avatars: Bool
 
+    /// Whether to send notifications to users email address.
     public let send_notifications_to_email: Bool
 
     /// A validation ID used in logging out sessions.
