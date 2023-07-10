@@ -95,16 +95,7 @@ public final class LemmyApi {
         let urlResponse: URLResponse?
 
         do {
-            (responseData, urlResponse) = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(Data?, URLResponse?), Error>) in
-                session.dataTask(with: urlRequest) { responseData, urlResponse, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume(returning: (responseData, urlResponse))
-                    }
-                }.resume()
-            }
-            //let (responseData, urlResponse) = try await session.data(for: urlRequest)
+            (responseData, urlResponse) = try await session.data(for: urlRequest)
         } catch {
             throw LemmyApiError.network(error)
         }
