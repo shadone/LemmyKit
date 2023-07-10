@@ -106,7 +106,7 @@ public final class LemmyApi {
 
         switch httpUrlResponse.statusCode {
         case 200..<299:
-            guard let responseData = responseData else {
+            guard let responseData else {
                 throw LemmyApiError.responseContainsNoData
             }
             do {
@@ -116,7 +116,7 @@ public final class LemmyApi {
             }
 
         default:
-            guard let responseData = responseData else {
+            guard let responseData else {
                 throw LemmyApiError.unknownServerError
             }
 
