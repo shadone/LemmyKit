@@ -18,14 +18,14 @@ public struct CreatePostLike: LemmyApiEndpoint {
         public let score: ScoreAction
 
         /// Authentication token.
-        public let auth: String?
+        public let auth: String
 
         // MARK: Functions
 
         public init(
             post_id: PostId,
             score: ScoreAction,
-            auth: String? = nil
+            auth: String
         ) {
             self.post_id = post_id
             self.score = score

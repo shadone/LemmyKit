@@ -18,14 +18,14 @@ public struct CreateCommentLike: LemmyApiEndpoint {
         public let score: ScoreAction
 
         /// Authentication token.
-        public let auth: String?
+        public let auth: String
 
         // MARK: Functions
 
         public init(
             comment_id: CommentId,
             score: ScoreAction,
-            auth: String? = nil
+            auth: String
         ) {
             self.comment_id = comment_id
             self.score = score
