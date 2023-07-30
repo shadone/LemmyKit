@@ -9,6 +9,7 @@ import Foundation
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/source/person.rs
 
 public struct Person: Decodable {
+    /// Person identifier. The identifier is local to this instance.
     public let id: PersonId
 
     /// Username (aka nickname aka short users' name). e.g. "helloworld"
