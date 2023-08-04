@@ -149,6 +149,24 @@ extension LemmyApi {
     }
 }
 
+// MARK: - Get Post
+
+extension LemmyApi {
+    public func getPost(
+        _ request: GetPost.Request
+    ) async throws -> GetPost.Response {
+        return try await self.request(GetPost.self, request)
+    }
+
+    public func getPost(
+        _ request: GetPost.Request
+    ) -> AnyPublisher<GetPost.Response, LemmyApiError> {
+        Future {
+            try await self.getPost(request)
+        }.eraseToAnyPublisher()
+    }
+}
+
 // MARK: - Get Comments
 
 extension LemmyApi {
