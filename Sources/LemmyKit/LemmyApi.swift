@@ -104,8 +104,9 @@ public final class LemmyApi {
             fatalError("Not HTTP?")
         }
 
-        switch httpUrlResponse.statusCode {
-        case 200..<299:
+        let statusCode = httpUrlResponse.statusCode
+        switch statusCode {
+        case 200...299:
             guard let responseData else {
                 throw LemmyApiError.responseContainsNoData
             }
@@ -115,16 +116,19 @@ public final class LemmyApi {
                 throw LemmyApiError.failedToDeserializeResponse(underlyingError: error)
             }
 
+        case 500...599:
+            throw LemmyApiError.serverUnavailable(httpStatusCode: statusCode)
+
         default:
             guard let responseData else {
-                throw LemmyApiError.unknownServerError
+                throw LemmyApiError.unknownServerError(httpStatusCode: statusCode)
             }
 
             let errorResponse: ErrorResponse
             do {
                 errorResponse = try jsonDecoder.decode(ErrorResponse.self, from: responseData)
             } catch {
-                throw LemmyApiError.unknownServerError
+                throw LemmyApiError.unknownServerError(httpStatusCode: statusCode)
             }
             throw LemmyApiError.serverError(.init(from: errorResponse.error))
         }
