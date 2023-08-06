@@ -61,5 +61,5 @@ public struct LocalUser: Decodable {
     public let accepted_application: Bool
 
     /// A URL to add their 2-factor auth.
-    public let totp_2fa_url: URL?
+    public let totp_2fa_url: LenientUrl?
 }

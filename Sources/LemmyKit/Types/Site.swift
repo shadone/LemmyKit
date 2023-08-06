@@ -12,8 +12,8 @@ public struct Site: Decodable {
     public let sidebar: String?
     public let published: Date
     public let updated: Date?
-    public let icon: URL?
-    public let banner: URL?
+    public let icon: LenientUrl?
+    public let banner: LenientUrl?
     public let description: String?
     public let actor_id: URL
     public let last_refreshed_at: Date

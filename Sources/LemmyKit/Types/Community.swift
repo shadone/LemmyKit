@@ -49,10 +49,10 @@ public struct Community: Decodable {
     public let local: Bool
 
     /// A URL for an icon.
-    public let icon: URL?
+    public let icon: LenientUrl?
 
     /// A URL for a banner.
-    public let banner: URL?
+    public let banner: LenientUrl?
 
     /// Whether the community is hidden.
     public let hidden: Bool

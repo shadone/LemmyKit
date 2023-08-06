@@ -13,7 +13,7 @@ public struct CustomEmoji: Decodable {
     public let id: CustomEmojiId
     public let local_site_id: LocalSiteId
     public let shortcode: String
-    public let image_url: URL
+    public let image_url: LenientUrl
     public let alt_text: String
     public let category: String
     public let published: Date

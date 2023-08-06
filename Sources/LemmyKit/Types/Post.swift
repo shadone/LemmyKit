@@ -16,7 +16,7 @@ public struct Post: Decodable {
     public let name: String
 
     /// An optional link / url for the post.
-    public let url: URL?
+    public let url: LenientUrl?
 
     /// An optional post body, in markdown.
     public let body: String?
@@ -52,7 +52,7 @@ public struct Post: Decodable {
     public let embed_description: String?
 
     /// A thumbnail picture url.
-    public let thumbnail_url: URL?
+    public let thumbnail_url: LenientUrl?
 
     /// The federated activity id / ap_id.
     /// e.g. `https://sh.itjust.works/post/109799`

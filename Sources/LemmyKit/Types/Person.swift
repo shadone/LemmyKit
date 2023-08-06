@@ -19,7 +19,7 @@ public struct Person: Decodable {
     public let display_name: String?
 
     /// A URL for an avatar.
-    public let avatar: URL?
+    public let avatar: LenientUrl?
 
     /// Whether the person is banned.
     public let banned: Bool
@@ -40,7 +40,7 @@ public struct Person: Decodable {
     public let local: Bool
 
     /// A URL for a banner.
-    public let banner: URL?
+    public let banner: LenientUrl?
 
     /// Whether the person is deleted.
     public let deleted: Bool
