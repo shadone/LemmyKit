@@ -334,3 +334,23 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Search
+
+extension LemmyApi {
+    /// Search Lemmy
+    public func search(
+        _ request: Search.Request
+    ) async throws -> Search.Response {
+        return try await self.request(Search.self, request)
+    }
+
+    /// Search Lemmy
+    public func search(
+        _ request: Search.Request
+    ) -> AnyPublisher<Search.Response, LemmyApiError> {
+        Future {
+            try await self.search(request)
+        }.eraseToAnyPublisher()
+    }
+}
