@@ -354,3 +354,23 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Mark Post as Read
+
+extension LemmyApi {
+    /// Mark a post as read.
+    public func markPostAsRead(
+        _ request: MarkPostAsRead.Request
+    ) async throws -> MarkPostAsRead.Response {
+        return try await self.request(MarkPostAsRead.self, request)
+    }
+
+    /// Mark a post as read.
+    public func markPostAsRead(
+        _ request: MarkPostAsRead.Request
+    ) -> AnyPublisher<MarkPostAsRead.Response, LemmyApiError> {
+        Future {
+            try await self.markPostAsRead(request)
+        }.eraseToAnyPublisher()
+    }
+}
