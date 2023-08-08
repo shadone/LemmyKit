@@ -314,3 +314,23 @@ extension LemmyApi {
         }.eraseToAnyPublisher()
     }
 }
+
+// MARK: - Resolve Object
+
+extension LemmyApi {
+    /// Fetch a non-local / federated object.
+    public func resolveObject(
+        _ request: ResolveObject.Request
+    ) async throws -> ResolveObject.Response {
+        return try await self.request(ResolveObject.self, request)
+    }
+
+    /// Fetch a non-local / federated object.
+    public func resolveObject(
+        _ request: ResolveObject.Request
+    ) -> AnyPublisher<ResolveObject.Response, LemmyApiError> {
+        Future {
+            try await self.resolveObject(request)
+        }.eraseToAnyPublisher()
+    }
+}
