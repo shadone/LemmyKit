@@ -8,7 +8,11 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/lib.rs
 
-public enum SortType: String, Codable {
+public enum SortType:
+    String,
+    Codable, CaseIterable,
+    Identifiable, CustomStringConvertible
+{
     case active = "Active"
     case hot = "Hot"
     case new = "New"
@@ -22,8 +26,7 @@ public enum SortType: String, Codable {
     case topAll = "TopAll"
     case mostComments = "MostComments"
     case newComments = "NewComments"
-}
 
-extension SortType: CustomStringConvertible {
+    public var id: String { rawValue }
     public var description: String { rawValue }
 }
