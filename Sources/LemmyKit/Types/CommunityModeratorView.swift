@@ -12,4 +12,12 @@ import Foundation
 public struct CommunityModeratorView: Decodable {
     public let community: Community
     public let moderator: Person
+
+    public init(
+        community: Community,
+        moderator: Person
+    ) {
+        self.community = community
+        self.moderator = moderator
+    }
 }

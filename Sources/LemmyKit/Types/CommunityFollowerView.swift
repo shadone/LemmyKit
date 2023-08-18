@@ -12,4 +12,12 @@ import Foundation
 public struct CommunityFollowerView: Decodable {
     public let community: Community
     public let follower: Person
+
+    public init(
+        community: Community,
+        follower: Person
+    ) {
+        self.community = community
+        self.follower = follower
+    }
 }

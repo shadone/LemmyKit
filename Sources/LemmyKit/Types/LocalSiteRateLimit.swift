@@ -25,4 +25,40 @@ public struct LocalSiteRateLimit: Decodable {
     public let search_per_second: Int32
     public let published: Date
     public let updated: Date?
+
+    public init(
+        id: Int32,
+        local_site_id: LocalSiteId,
+        message: Int32,
+        message_per_second: Int32,
+        post: Int32,
+        post_per_second: Int32,
+        register: Int32,
+        register_per_second: Int32,
+        image: Int32,
+        image_per_second: Int32,
+        comment: Int32,
+        comment_per_second: Int32,
+        search: Int32,
+        search_per_second: Int32,
+        published: Date,
+        updated: Date? = nil
+    ) {
+        self.id = id
+        self.local_site_id = local_site_id
+        self.message = message
+        self.message_per_second = message_per_second
+        self.post = post
+        self.post_per_second = post_per_second
+        self.register = register
+        self.register_per_second = register_per_second
+        self.image = image
+        self.image_per_second = image_per_second
+        self.comment = comment
+        self.comment_per_second = comment_per_second
+        self.search = search
+        self.search_per_second = search_per_second
+        self.published = published
+        self.updated = updated
+    }
 }

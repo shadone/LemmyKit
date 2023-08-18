@@ -13,4 +13,14 @@ public struct CustomEmojiKeyword: Decodable {
     public let id: Int32
     public let custom_emoji_id: CustomEmojiId
     public let keyword: String
+
+    public init(
+        id: Int32,
+        custom_emoji_id: CustomEmojiId,
+        keyword: String
+    ) {
+        self.id = id
+        self.custom_emoji_id = custom_emoji_id
+        self.keyword = keyword
+    }
 }

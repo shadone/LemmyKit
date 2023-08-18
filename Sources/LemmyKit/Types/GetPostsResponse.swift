@@ -8,4 +8,8 @@ import Foundation
 
 public struct GetPostsResponse: Decodable {
     public let posts: [PostView]
+
+    public init(posts: [PostView]) {
+        self.posts = posts
+    }
 }

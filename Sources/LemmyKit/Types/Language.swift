@@ -21,4 +21,14 @@ public struct Language: Decodable {
 
     /// Language name. E.g.`Svenska`.
     public let name: String
+
+    public init(
+        id: LanguageId,
+        code: String,
+        name: String
+    ) {
+        self.id = id
+        self.code = code
+        self.name = name
+    }
 }

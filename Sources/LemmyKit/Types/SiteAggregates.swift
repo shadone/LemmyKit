@@ -27,4 +27,28 @@ public struct SiteAggregates: Decodable {
 
     /// The number of users with any activity in the last half year.
     public let users_active_half_year: Int64
+
+    public init(
+        id: Int32,
+        site_id: SiteId,
+        users: Int64,
+        posts: Int64,
+        comments: Int64,
+        communities: Int64,
+        users_active_day: Int64,
+        users_active_week: Int64,
+        users_active_month: Int64,
+        users_active_half_year: Int64
+    ) {
+        self.id = id
+        self.site_id = site_id
+        self.users = users
+        self.posts = posts
+        self.comments = comments
+        self.communities = communities
+        self.users_active_day = users_active_day
+        self.users_active_week = users_active_week
+        self.users_active_month = users_active_month
+        self.users_active_half_year = users_active_half_year
+    }
 }

@@ -8,4 +8,8 @@ import Foundation
 
 public struct GetPersonMentionsResponse: Decodable {
     public let mentions: [PersonMentionView]
+
+    public init(mentions: [PersonMentionView]) {
+        self.mentions = mentions
+    }
 }

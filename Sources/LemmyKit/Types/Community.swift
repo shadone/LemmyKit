@@ -61,4 +61,40 @@ public struct Community: Decodable {
     public let posting_restricted_to_mods: Bool
 
     public let instance_id: InstanceId
+
+    public init(
+        id: CommunityId,
+        name: String,
+        title: String,
+        description: String? = nil,
+        removed: Bool,
+        published: Date,
+        updated: Date? = nil,
+        deleted: Bool,
+        nsfw: Bool,
+        actor_id: URL,
+        local: Bool,
+        icon: LenientUrl? = nil,
+        banner: LenientUrl? = nil,
+        hidden: Bool,
+        posting_restricted_to_mods: Bool,
+        instance_id: InstanceId
+    ) {
+        self.id = id
+        self.name = name
+        self.title = title
+        self.description = description
+        self.removed = removed
+        self.published = published
+        self.updated = updated
+        self.deleted = deleted
+        self.nsfw = nsfw
+        self.actor_id = actor_id
+        self.local = local
+        self.icon = icon
+        self.banner = banner
+        self.hidden = hidden
+        self.posting_restricted_to_mods = posting_restricted_to_mods
+        self.instance_id = instance_id
+    }
 }

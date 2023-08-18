@@ -37,4 +37,28 @@ public struct CommentView: Decodable {
 
     /// Users' vote status.
     public let my_vote: Int16?
+
+    public init(
+        comment: Comment,
+        creator: Person,
+        post: Post,
+        community: Community,
+        counts: CommentAggregates,
+        creator_banned_from_community: Bool,
+        subscribed: SubscribedType,
+        saved: Bool,
+        creator_blocked: Bool,
+        my_vote: Int16? = nil
+    ) {
+        self.comment = comment
+        self.creator = creator
+        self.post = post
+        self.community = community
+        self.counts = counts
+        self.creator_banned_from_community = creator_banned_from_community
+        self.subscribed = subscribed
+        self.saved = saved
+        self.creator_blocked = creator_blocked
+        self.my_vote = my_vote
+    }
 }

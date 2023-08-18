@@ -11,4 +11,16 @@ public struct ResolveObjectResponse: Decodable {
     public let post: PostView?
     public let community: CommunityView?
     public let person: PersonView?
+
+    public init(
+        comment: CommentView? = nil,
+        post: PostView? = nil,
+        community: CommunityView? = nil,
+        person: PersonView? = nil
+    ) {
+        self.comment = comment
+        self.post = post
+        self.community = community
+        self.person = person
+    }
 }

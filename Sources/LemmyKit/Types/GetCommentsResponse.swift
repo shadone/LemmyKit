@@ -8,4 +8,8 @@ import Foundation
 
 public struct GetCommentsResponse: Decodable {
     public let comments: [CommentView]
+
+    public init(comments: [CommentView]) {
+        self.comments = comments
+    }
 }

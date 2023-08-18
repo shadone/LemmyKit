@@ -72,4 +72,50 @@ public struct Post: Decodable {
 
     /// Whether the post is featured to its site.
     public let featured_local: Bool
+
+    public init(
+        id: PostId,
+        name: String,
+        url: LenientUrl? = nil,
+        body: String? = nil,
+        creator_id: PersonId,
+        community_id: CommunityId,
+        removed: Bool,
+        locked: Bool,
+        published: Date,
+        updated: Date? = nil,
+        deleted: Bool,
+        nsfw: Bool,
+        embed_title: String? = nil,
+        embed_description: String? = nil,
+        thumbnail_url: LenientUrl? = nil,
+        ap_id: URL,
+        local: Bool,
+        embed_video_url: String? = nil,
+        language_id: LanguageId,
+        featured_community: Bool,
+        featured_local: Bool
+    ) {
+        self.id = id
+        self.name = name
+        self.url = url
+        self.body = body
+        self.creator_id = creator_id
+        self.community_id = community_id
+        self.removed = removed
+        self.locked = locked
+        self.published = published
+        self.updated = updated
+        self.deleted = deleted
+        self.nsfw = nsfw
+        self.embed_title = embed_title
+        self.embed_description = embed_description
+        self.thumbnail_url = thumbnail_url
+        self.ap_id = ap_id
+        self.local = local
+        self.embed_video_url = embed_video_url
+        self.language_id = language_id
+        self.featured_community = featured_community
+        self.featured_local = featured_local
+    }
 }

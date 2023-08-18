@@ -11,4 +11,16 @@ public struct GetPersonDetailsResponse: Decodable {
     public let comments: [CommentView]
     public let posts: [PostView]
     public let moderates: [CommunityModeratorView]
+
+    public init(
+        person_view: PersonView,
+        comments: [CommentView],
+        posts: [PostView],
+        moderates: [CommunityModeratorView]
+    ) {
+        self.person_view = person_view
+        self.comments = comments
+        self.posts = posts
+        self.moderates = moderates
+    }
 }

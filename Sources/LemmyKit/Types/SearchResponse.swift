@@ -12,4 +12,18 @@ public struct SearchResponse: Decodable {
     public let posts: [PostView]
     public let communities: [CommunityView]
     public let users: [PersonView]
+
+    public init(
+        type_: SearchType,
+        comments: [CommentView],
+        posts: [PostView],
+        communities: [CommunityView],
+        users: [PersonView]
+    ) {
+        self.type_ = type_
+        self.comments = comments
+        self.posts = posts
+        self.communities = communities
+        self.users = users
+    }
 }

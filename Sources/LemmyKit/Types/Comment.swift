@@ -52,4 +52,34 @@ public struct Comment: Decodable {
 
     /// The language of the post.
     public let language_id: LanguageId
+
+    public init(
+        id: CommentId,
+        creator_id: PersonId,
+        post_id: PostId,
+        content: String,
+        removed: Bool,
+        published: Date,
+        updated: Date? = nil,
+        deleted: Bool,
+        ap_id: URL,
+        local: Bool,
+        path: String,
+        distinguished: Bool,
+        language_id: LanguageId
+    ) {
+        self.id = id
+        self.creator_id = creator_id
+        self.post_id = post_id
+        self.content = content
+        self.removed = removed
+        self.published = published
+        self.updated = updated
+        self.deleted = deleted
+        self.ap_id = ap_id
+        self.local = local
+        self.path = path
+        self.distinguished = distinguished
+        self.language_id = language_id
+    }
 }

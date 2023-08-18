@@ -40,4 +40,30 @@ public struct PostView: Decodable {
 
     /// The number of unread comments in the post for the user.
     public let unread_comments: Int64
+
+    public init(
+        post: Post,
+        creator: Person,
+        community: Community,
+        creator_banned_from_community: Bool,
+        counts: PostAggregates,
+        subscribed: SubscribedType,
+        saved: Bool,
+        read: Bool,
+        creator_blocked: Bool,
+        my_vote: Int16? = nil,
+        unread_comments: Int64
+    ) {
+        self.post = post
+        self.creator = creator
+        self.community = community
+        self.creator_banned_from_community = creator_banned_from_community
+        self.counts = counts
+        self.subscribed = subscribed
+        self.saved = saved
+        self.read = read
+        self.creator_blocked = creator_blocked
+        self.my_vote = my_vote
+        self.unread_comments = unread_comments
+    }
 }

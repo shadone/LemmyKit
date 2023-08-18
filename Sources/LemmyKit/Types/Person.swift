@@ -59,4 +59,42 @@ public struct Person: Decodable {
 
     /// Which instance the person belongs to.
     public let instance_id: InstanceId
+
+    public init(
+        id: PersonId,
+        name: String,
+        display_name: String? = nil,
+        avatar: LenientUrl? = nil,
+        banned: Bool,
+        published: Date,
+        updated: Date? = nil,
+        actor_id: URL,
+        bio: String? = nil,
+        local: Bool,
+        banner: LenientUrl? = nil,
+        deleted: Bool,
+        matrix_user_id: String? = nil,
+        admin: Bool,
+        bot_account: Bool,
+        ban_expires: Date? = nil,
+        instance_id: InstanceId
+    ) {
+        self.id = id
+        self.name = name
+        self.display_name = display_name
+        self.avatar = avatar
+        self.banned = banned
+        self.published = published
+        self.updated = updated
+        self.actor_id = actor_id
+        self.bio = bio
+        self.local = local
+        self.banner = banner
+        self.deleted = deleted
+        self.matrix_user_id = matrix_user_id
+        self.admin = admin
+        self.bot_account = bot_account
+        self.ban_expires = ban_expires
+        self.instance_id = instance_id
+    }
 }

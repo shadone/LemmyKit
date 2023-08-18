@@ -30,4 +30,24 @@ public struct CommentAggregates: Decodable {
     public let child_count: Int32
 
     public let hot_rank: Int32
+
+    public init(
+        id: Int32,
+        comment_id: CommentId,
+        score: Int64,
+        upvotes: Int64,
+        downvotes: Int64,
+        published: Date,
+        child_count: Int32,
+        hot_rank: Int32
+    ) {
+        self.id = id
+        self.comment_id = comment_id
+        self.score = score
+        self.upvotes = upvotes
+        self.downvotes = downvotes
+        self.published = published
+        self.child_count = child_count
+        self.hot_rank = hot_rank
+    }
 }

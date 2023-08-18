@@ -15,4 +15,18 @@ public struct Tagline: Decodable {
     public let content: String
     public let published: Date
     public let updated: Date?
+
+    public init(
+        id: Int32,
+        local_site_id: LocalSiteId,
+        content: String,
+        published: Date,
+        updated: Date? = nil
+    ) {
+        self.id = id
+        self.local_site_id = local_site_id
+        self.content = content
+        self.published = published
+        self.updated = updated
+    }
 }
