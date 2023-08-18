@@ -13,9 +13,9 @@ public enum ScoreAction: Int16, Encodable, CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case .upvote:   return "upvote"
+        case .upvote: return "upvote"
         case .downvote: return "downvote"
-        case .unvote:   return "unvote"
+        case .unvote: return "unvote"
         }
     }
 }

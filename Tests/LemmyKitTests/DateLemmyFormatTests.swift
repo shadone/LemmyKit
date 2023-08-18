@@ -22,10 +22,10 @@ final class DateLemmyFormatTests: XCTestCase {
         XCTAssertEqual(components.minute, 22)
         XCTAssertEqual(components.second, 1)
         // nanosec is not what I expected, not sure what I did wrong.
-        XCTAssertEqual(components.nanosecond, 167999982)
+        XCTAssertEqual(components.nanosecond, 167_999_982)
         XCTAssertEqual(components.timeZone?.identifier, "GMT")
 
-        XCTAssertEqual(date.timeIntervalSince1970, 1686993721.168)
+        XCTAssertEqual(date.timeIntervalSince1970, 1_686_993_721.168)
     }
 
     func testWithoutNanosec() throws {
@@ -44,6 +44,6 @@ final class DateLemmyFormatTests: XCTestCase {
         XCTAssertEqual(components.nanosecond, 0)
         XCTAssertEqual(components.timeZone?.identifier, "GMT")
 
-        XCTAssertEqual(date.timeIntervalSince1970, 1686993721.0)
+        XCTAssertEqual(date.timeIntervalSince1970, 1_686_993_721.0)
     }
 }

@@ -34,7 +34,7 @@ final class URLQueryItemsEncoderTests: XCTestCase {
         }
 
         let params = Params(
-            intParam: 123456,
+            intParam: 123_456,
             int8Param: 44,
             uintParam: 78900,
             uint8Param: 55
@@ -58,8 +58,8 @@ final class URLQueryItemsEncoderTests: XCTestCase {
         }
 
         let params = Params(
-            floatParam: 12345678,
-            doubleParam: 1234567890
+            floatParam: 12_345_678,
+            doubleParam: 1_234_567_890
         )
         let result = try URLQueryItemsEncoder().encode(params)
         XCTAssertEqual(
@@ -88,7 +88,7 @@ final class URLQueryItemsEncoderTests: XCTestCase {
         XCTAssertEqual(
             result,
             [
-                URLQueryItem(name: "enumParam", value: "two")
+                URLQueryItem(name: "enumParam", value: "two"),
             ]
         )
     }
@@ -97,7 +97,7 @@ final class URLQueryItemsEncoderTests: XCTestCase {
         func assertInvalidValue(
             expectedDebugDescription: String
         ) -> (Error) -> Void {
-            return { error in
+            { error in
                 switch error as! EncodingError {
                 case let .invalidValue(_, context):
                     XCTAssertEqual(context.debugDescription, expectedDebugDescription)

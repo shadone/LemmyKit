@@ -35,7 +35,7 @@ public final class LemmyApi {
         baseUrl = URL(string: "/api/v3/", relativeTo: instanceUrl)!
 
         jsonDecoder = JSONDecoder()
-        jsonDecoder.dateDecodingStrategy = .custom({ decoder in
+        jsonDecoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let stringValue = try container.decode(String.self)
 
@@ -48,7 +48,7 @@ public final class LemmyApi {
                     underlyingError: error
                 ))
             }
-        })
+        }
     }
 
     func request<Endpoint: LemmyApiEndpoint>(
@@ -137,14 +137,14 @@ public final class LemmyApi {
 
 // MARK: - Get Posts
 
-extension LemmyApi {
-    public func getPosts(
+public extension LemmyApi {
+    func getPosts(
         _ request: GetPosts.Request
     ) async throws -> GetPosts.Response {
-        return try await self.request(GetPosts.self, request)
+        try await self.request(GetPosts.self, request)
     }
 
-    public func getPosts(
+    func getPosts(
         _ request: GetPosts.Request
     ) -> AnyPublisher<GetPosts.Response, LemmyApiError> {
         Future {
@@ -155,14 +155,14 @@ extension LemmyApi {
 
 // MARK: - Get Post
 
-extension LemmyApi {
-    public func getPost(
+public extension LemmyApi {
+    func getPost(
         _ request: GetPost.Request
     ) async throws -> GetPost.Response {
-        return try await self.request(GetPost.self, request)
+        try await self.request(GetPost.self, request)
     }
 
-    public func getPost(
+    func getPost(
         _ request: GetPost.Request
     ) -> AnyPublisher<GetPost.Response, LemmyApiError> {
         Future {
@@ -173,14 +173,14 @@ extension LemmyApi {
 
 // MARK: - Get Comments
 
-extension LemmyApi {
-    public func getComments(
+public extension LemmyApi {
+    func getComments(
         _ request: GetComments.Request
     ) async throws -> GetComments.Response {
-        return try await self.request(GetComments.self, request)
+        try await self.request(GetComments.self, request)
     }
 
-    public func getComments(
+    func getComments(
         _ request: GetComments.Request
     ) -> AnyPublisher<GetComments.Response, LemmyApiError> {
         Future {
@@ -191,14 +191,14 @@ extension LemmyApi {
 
 // MARK: - Create Post Like
 
-extension LemmyApi {
-    public func createPostLike(
+public extension LemmyApi {
+    func createPostLike(
         _ request: CreatePostLike.Request
     ) async throws -> CreatePostLike.Response {
-        return try await self.request(CreatePostLike.self, request)
+        try await self.request(CreatePostLike.self, request)
     }
 
-    public func createPostLike(
+    func createPostLike(
         _ request: CreatePostLike.Request
     ) -> AnyPublisher<CreatePostLike.Response, LemmyApiError> {
         Future {
@@ -209,14 +209,14 @@ extension LemmyApi {
 
 // MARK: - Create Comment Like
 
-extension LemmyApi {
-    public func createCommentLike(
+public extension LemmyApi {
+    func createCommentLike(
         _ request: CreateCommentLike.Request
     ) async throws -> CreateCommentLike.Response {
-        return try await self.request(CreateCommentLike.self, request)
+        try await self.request(CreateCommentLike.self, request)
     }
 
-    public func createCommentLike(
+    func createCommentLike(
         _ request: CreateCommentLike.Request
     ) -> AnyPublisher<CreateCommentLike.Response, LemmyApiError> {
         Future {
@@ -227,14 +227,14 @@ extension LemmyApi {
 
 // MARK: - Get Site
 
-extension LemmyApi {
-    public func getSite(
+public extension LemmyApi {
+    func getSite(
         _ request: GetSite.Request
     ) async throws -> GetSite.Response {
-        return try await self.request(GetSite.self, request)
+        try await self.request(GetSite.self, request)
     }
 
-    public func getSite(
+    func getSite(
         _ request: GetSite.Request
     ) -> AnyPublisher<GetSite.Response, LemmyApiError> {
         Future {
@@ -245,14 +245,14 @@ extension LemmyApi {
 
 // MARK: - Login
 
-extension LemmyApi {
-    public func login(
+public extension LemmyApi {
+    func login(
         _ request: Login.Request
     ) async throws -> Login.Response {
-        return try await self.request(Login.self, request)
+        try await self.request(Login.self, request)
     }
 
-    public func login(
+    func login(
         _ request: Login.Request
     ) -> AnyPublisher<Login.Response, LemmyApiError> {
         Future {
@@ -263,14 +263,14 @@ extension LemmyApi {
 
 // MARK: - Register
 
-extension LemmyApi {
-    public func register(
+public extension LemmyApi {
+    func register(
         _ request: Register.Request
     ) async throws -> Register.Response {
-        return try await self.request(Register.self, request)
+        try await self.request(Register.self, request)
     }
 
-    public func register(
+    func register(
         _ request: Register.Request
     ) -> AnyPublisher<Register.Response, LemmyApiError> {
         Future {
@@ -281,14 +281,14 @@ extension LemmyApi {
 
 // MARK: - Get Person Details
 
-extension LemmyApi {
-    public func getPersonDetails(
+public extension LemmyApi {
+    func getPersonDetails(
         _ request: GetPersonDetails.Request
     ) async throws -> GetPersonDetails.Response {
-        return try await self.request(GetPersonDetails.self, request)
+        try await self.request(GetPersonDetails.self, request)
     }
 
-    public func getPersonDetails(
+    func getPersonDetails(
         _ request: GetPersonDetails.Request
     ) -> AnyPublisher<GetPersonDetails.Response, LemmyApiError> {
         Future {
@@ -299,14 +299,14 @@ extension LemmyApi {
 
 // MARK: - Get Person Mentions
 
-extension LemmyApi {
-    public func getPersonMentions(
+public extension LemmyApi {
+    func getPersonMentions(
         _ request: GetPersonMentions.Request
     ) async throws -> GetPersonMentions.Response {
-        return try await self.request(GetPersonMentions.self, request)
+        try await self.request(GetPersonMentions.self, request)
     }
 
-    public func getPersonMentions(
+    func getPersonMentions(
         _ request: GetPersonMentions.Request
     ) -> AnyPublisher<GetPersonMentions.Response, LemmyApiError> {
         Future {
@@ -317,16 +317,16 @@ extension LemmyApi {
 
 // MARK: - Resolve Object
 
-extension LemmyApi {
+public extension LemmyApi {
     /// Fetch a non-local / federated object.
-    public func resolveObject(
+    func resolveObject(
         _ request: ResolveObject.Request
     ) async throws -> ResolveObject.Response {
-        return try await self.request(ResolveObject.self, request)
+        try await self.request(ResolveObject.self, request)
     }
 
     /// Fetch a non-local / federated object.
-    public func resolveObject(
+    func resolveObject(
         _ request: ResolveObject.Request
     ) -> AnyPublisher<ResolveObject.Response, LemmyApiError> {
         Future {
@@ -337,16 +337,16 @@ extension LemmyApi {
 
 // MARK: - Search
 
-extension LemmyApi {
+public extension LemmyApi {
     /// Search Lemmy
-    public func search(
+    func search(
         _ request: Search.Request
     ) async throws -> Search.Response {
-        return try await self.request(Search.self, request)
+        try await self.request(Search.self, request)
     }
 
     /// Search Lemmy
-    public func search(
+    func search(
         _ request: Search.Request
     ) -> AnyPublisher<Search.Response, LemmyApiError> {
         Future {
@@ -357,16 +357,16 @@ extension LemmyApi {
 
 // MARK: - Mark Post as Read
 
-extension LemmyApi {
+public extension LemmyApi {
     /// Mark a post as read.
-    public func markPostAsRead(
+    func markPostAsRead(
         _ request: MarkPostAsRead.Request
     ) async throws -> MarkPostAsRead.Response {
-        return try await self.request(MarkPostAsRead.self, request)
+        try await self.request(MarkPostAsRead.self, request)
     }
 
     /// Mark a post as read.
-    public func markPostAsRead(
+    func markPostAsRead(
         _ request: MarkPostAsRead.Request
     ) -> AnyPublisher<MarkPostAsRead.Response, LemmyApiError> {
         Future {

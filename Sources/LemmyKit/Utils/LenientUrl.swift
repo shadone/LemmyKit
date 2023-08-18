@@ -22,7 +22,7 @@ public struct LenientUrl: Decodable {
     // MARK: Functions
 
     public init(stringValue: String) {
-        self.rawValue = stringValue
+        rawValue = stringValue
         url = URL(lenientString: stringValue)
     }
 

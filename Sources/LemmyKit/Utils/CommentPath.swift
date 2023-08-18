@@ -10,7 +10,7 @@ public struct CommentPath {
     let path: [CommentId]
 
     public var depth: Int {
-        assert(path.count > 0)
+        assert(!path.isEmpty)
         return path.count - 1
     }
 

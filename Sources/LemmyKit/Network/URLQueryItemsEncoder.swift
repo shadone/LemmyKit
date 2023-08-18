@@ -30,10 +30,9 @@ class URLQueryItemsEncodingOutputOwner {
 }
 
 public class URLQueryItemsEncoder {
-    public init() {
-    }
+    public init() { }
 
-    public func encode<T: Encodable>(_ value: T) throws -> [URLQueryItem] {
+    public func encode(_ value: some Encodable) throws -> [URLQueryItem] {
         let encoder = URLQueryItemsEncoderImpl()
         let result = try encoder.encode(value)
         switch result {
@@ -43,7 +42,8 @@ public class URLQueryItemsEncoder {
                 EncodingError.Context(
                     codingPath: [],
                     debugDescription: "invalid top level value type",
-                    underlyingError: nil)
+                    underlyingError: nil
+                )
             )
 
         case let .keyed(output):
@@ -114,7 +114,7 @@ class URLQueryItemsEncoderImpl: Encoder {
         )
     }
 
-    func encode<T: Encodable>(_ value: T) throws -> URLQueryItemsEncoderStorage.Container {
+    func encode(_ value: some Encodable) throws -> URLQueryItemsEncoderStorage.Container {
         try value.encode(to: self)
         return storage.popContainer()
     }
@@ -210,7 +210,7 @@ struct URLQueryItemsSingleValueEncodingContainer: SingleValueEncodingContainer {
         storage.pushSingleValueContainer(encoder.box(value))
     }
 
-    func encode<T>(_ value: T) throws where T: Encodable {
+    func encode(_ value: some Encodable) throws {
         switch try encoder.encode(value) {
         case let .singleValue(value):
             storage.pushSingleValueContainer(value)
@@ -300,7 +300,7 @@ struct URLQueryItemsKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContain
         output.append(encoder.box(value), forKey: key.stringValue)
     }
 
-    mutating func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
+    mutating func encode(_ value: some Encodable, forKey key: Key) throws {
 //        encoder.codingPath.append(key)
         switch try encoder.encode(value) {
         case let .singleValue(value):
@@ -316,7 +316,6 @@ struct URLQueryItemsKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContain
                 )
             )
         }
-
     }
 
     mutating func nestedContainer<NestedKey>(
