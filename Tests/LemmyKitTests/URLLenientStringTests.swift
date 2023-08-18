@@ -6,7 +6,7 @@
 
 import Foundation
 import XCTest
-@testable import SpudUtilKit
+@testable import LemmyKit
 
 class URLLenientStringTests: XCTestCase {
     func testKnownProblematicUrls() throws {
