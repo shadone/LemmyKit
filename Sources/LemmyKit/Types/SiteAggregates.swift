@@ -9,7 +9,6 @@ import Foundation
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/aggregates/structs.rs
 
 public struct SiteAggregates: Decodable {
-    public let id: Int32
     public let site_id: SiteId
     public let users: Int64
     public let posts: Int64
@@ -29,7 +28,6 @@ public struct SiteAggregates: Decodable {
     public let users_active_half_year: Int64
 
     public init(
-        id: Int32,
         site_id: SiteId,
         users: Int64,
         posts: Int64,
@@ -40,7 +38,6 @@ public struct SiteAggregates: Decodable {
         users_active_month: Int64,
         users_active_half_year: Int64
     ) {
-        self.id = id
         self.site_id = site_id
         self.users = users
         self.posts = posts

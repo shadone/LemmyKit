@@ -48,9 +48,6 @@ public struct Person: Decodable {
     /// A matrix id, usually given an @person:matrix.org
     public let matrix_user_id: String?
 
-    /// Whether the person is an admin.
-    public let admin: Bool
-
     /// Whether the person is a bot account.
     public let bot_account: Bool
 
@@ -74,7 +71,6 @@ public struct Person: Decodable {
         banner: LenientUrl? = nil,
         deleted: Bool,
         matrix_user_id: String? = nil,
-        admin: Bool,
         bot_account: Bool,
         ban_expires: Date? = nil,
         instance_id: InstanceId
@@ -92,7 +88,6 @@ public struct Person: Decodable {
         self.banner = banner
         self.deleted = deleted
         self.matrix_user_id = matrix_user_id
-        self.admin = admin
         self.bot_account = bot_account
         self.ban_expires = ban_expires
         self.instance_id = instance_id

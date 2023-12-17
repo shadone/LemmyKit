@@ -9,8 +9,6 @@ import Foundation
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/aggregates/structs.rs
 
 public struct CommentAggregates: Decodable {
-    public let id: Int32
-
     /// Comment identifier. The identifier is local to this instance.
     public let comment_id: CommentId
 
@@ -29,25 +27,19 @@ public struct CommentAggregates: Decodable {
     /// The total number of children in this comment branch.
     public let child_count: Int32
 
-    public let hot_rank: Int32
-
     public init(
-        id: Int32,
         comment_id: CommentId,
         score: Int64,
         upvotes: Int64,
         downvotes: Int64,
         published: Date,
-        child_count: Int32,
-        hot_rank: Int32
+        child_count: Int32
     ) {
-        self.id = id
         self.comment_id = comment_id
         self.score = score
         self.upvotes = upvotes
         self.downvotes = downvotes
         self.published = published
         self.child_count = child_count
-        self.hot_rank = hot_rank
     }
 }

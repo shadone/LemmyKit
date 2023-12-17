@@ -9,7 +9,6 @@ import Foundation
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/source/local_site_rate_limit.rs
 
 public struct LocalSiteRateLimit: Decodable {
-    public let id: Int32
     public let local_site_id: LocalSiteId
     public let message: Int32
     public let message_per_second: Int32
@@ -27,7 +26,6 @@ public struct LocalSiteRateLimit: Decodable {
     public let updated: Date?
 
     public init(
-        id: Int32,
         local_site_id: LocalSiteId,
         message: Int32,
         message_per_second: Int32,
@@ -44,7 +42,6 @@ public struct LocalSiteRateLimit: Decodable {
         published: Date,
         updated: Date? = nil
     ) {
-        self.id = id
         self.local_site_id = local_site_id
         self.message = message
         self.message_per_second = message_per_second
