@@ -21,23 +21,18 @@ public struct GetPersonMentions: LemmyApiEndpoint {
         /// Pagination. Specifies the maximum number of results per page.
         public let limit: Int64?
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
             sort: CommentSortType? = nil,
             unread_only: Bool? = nil,
             page: Int64? = nil,
-            limit: Int64? = nil,
-            auth: String? = nil
+            limit: Int64? = nil
         ) {
             self.sort = sort
             self.unread_only = unread_only
             self.page = page
             self.limit = limit
-            self.auth = auth
         }
     }
 

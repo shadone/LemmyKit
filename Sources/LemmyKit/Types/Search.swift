@@ -39,9 +39,6 @@ public struct Search: LemmyApiEndpoint {
         /// - Note: This is server specific but in regular Lemmy install the default value is 10 and max is 50.
         public let limit: Int64?
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
@@ -53,8 +50,7 @@ public struct Search: LemmyApiEndpoint {
             sort: SortType? = nil,
             listing_type: ListingType? = nil,
             page: Int64? = nil,
-            limit: Int64? = nil,
-            auth: String? = nil
+            limit: Int64? = nil
         ) {
             self.q = q
             self.community_id = community_id
@@ -65,7 +61,6 @@ public struct Search: LemmyApiEndpoint {
             self.listing_type = listing_type
             self.page = page
             self.limit = limit
-            self.auth = auth
         }
     }
 

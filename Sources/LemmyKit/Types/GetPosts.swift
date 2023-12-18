@@ -43,9 +43,6 @@ public struct GetPosts: LemmyApiEndpoint {
 
         public let page_cursor: PaginationCursor?
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
@@ -58,8 +55,7 @@ public struct GetPosts: LemmyApiEndpoint {
             saved_only: Bool? = nil,
             liked_only: Bool? = nil,
             disliked_only: Bool? = nil,
-            page_cursor: PaginationCursor? = nil,
-            auth: String? = nil
+            page_cursor: PaginationCursor? = nil
         ) {
             self.type_ = type_
             self.sort = sort
@@ -71,7 +67,6 @@ public struct GetPosts: LemmyApiEndpoint {
             self.liked_only = liked_only
             self.disliked_only = disliked_only
             self.page_cursor = page_cursor
-            self.auth = auth
         }
     }
 

@@ -14,17 +14,12 @@ public struct ResolveObject: LemmyApiEndpoint {
         /// Search query.
         public let q: String
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
-            q: String,
-            auth: String? = nil
+            q: String
         ) {
             self.q = q
-            self.auth = auth
         }
     }
 

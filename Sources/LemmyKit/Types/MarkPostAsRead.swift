@@ -16,21 +16,16 @@ public struct MarkPostAsRead: LemmyApiEndpoint {
 
         public let read: Bool
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
             post_id: PostId?,
             post_ids: [PostId]?,
-            read: Bool,
-            auth: String? = nil
+            read: Bool
         ) {
             self.post_id = post_id
             self.post_ids = post_ids
             self.read = read
-            self.auth = auth
         }
     }
 

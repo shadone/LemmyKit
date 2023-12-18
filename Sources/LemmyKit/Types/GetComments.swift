@@ -45,9 +45,6 @@ public struct GetComments: LemmyApiEndpoint {
 
         public let disliked_only: Bool?
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
@@ -62,8 +59,7 @@ public struct GetComments: LemmyApiEndpoint {
             parent_id: CommentId? = nil,
             saved_only: Bool? = nil,
             liked_only: Bool? = nil,
-            disliked_only: Bool? = nil,
-            auth: String? = nil
+            disliked_only: Bool? = nil
         ) {
             self.type_ = type_
             self.sort = sort
@@ -77,7 +73,6 @@ public struct GetComments: LemmyApiEndpoint {
             self.saved_only = saved_only
             self.liked_only = liked_only
             self.disliked_only = disliked_only
-            self.auth = auth
         }
     }
 

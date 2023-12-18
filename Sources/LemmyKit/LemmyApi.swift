@@ -15,6 +15,8 @@ public final class LemmyApi {
 
     let jsonDecoder: JSONDecoder
 
+    let credential: LemmyCredential?
+
     // MARK: Public
 
     public let instanceHostname: String
@@ -23,7 +25,8 @@ public final class LemmyApi {
 
     /// Creates a new api instance for the given Lemmy instance.
     /// - Parameter instanceUrl: base url for the instance e.g. "https://lemmy.world"
-    public init(instanceUrl: URL) {
+    /// - Parameter credential: Lemmy JWT auth for making authenticated requests on behalf of a user account.
+    public init(instanceUrl: URL, credential: LemmyCredential?) {
         let instanceHostname: String?
         if #available(iOS 16.0, *) {
             instanceHostname = instanceUrl.host(percentEncoded: false)
@@ -31,6 +34,8 @@ public final class LemmyApi {
             instanceHostname = instanceUrl.host
         }
         self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
+
+        self.credential = credential
 
         baseUrl = URL(string: "/api/v3/", relativeTo: instanceUrl)!
 
@@ -78,6 +83,10 @@ public final class LemmyApi {
         urlRequest.httpMethod = Endpoint.method.rawValue
         extraHeaders.headers.forEach {
             urlRequest.addValue($0.value, forHTTPHeaderField: $0.name)
+        }
+
+        if let credential {
+            urlRequest.setValue("Bearer \(credential.jwt)", forHTTPHeaderField: "Authorization")
         }
 
         if Endpoint.method != .get {

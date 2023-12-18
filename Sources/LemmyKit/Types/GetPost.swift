@@ -17,19 +17,14 @@ public struct GetPost: LemmyApiEndpoint {
         /// The comment identifier to fetch.
         public let comment_id: CommentId?
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
             id: PostId? = nil,
-            comment_id: CommentId? = nil,
-            auth: String? = nil
+            comment_id: CommentId? = nil
         ) {
             self.id = id
             self.comment_id = comment_id
-            self.auth = auth
         }
     }
 

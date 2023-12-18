@@ -27,9 +27,6 @@ public struct GetPersonDetails: LemmyApiEndpoint {
         /// Whether to fetch only saved posts.
         public let saved_only: Bool?
 
-        /// Authentication token.
-        public let auth: String?
-
         // MARK: Functions
 
         public init(
@@ -39,8 +36,7 @@ public struct GetPersonDetails: LemmyApiEndpoint {
             page: Int64? = nil,
             limit: Int64? = nil,
             community_id: CommunityId? = nil,
-            saved_only: Bool? = nil,
-            auth: String? = nil
+            saved_only: Bool? = nil
         ) {
             self.person_id = person_id
             self.username = username
@@ -49,7 +45,6 @@ public struct GetPersonDetails: LemmyApiEndpoint {
             self.limit = limit
             self.community_id = community_id
             self.saved_only = saved_only
-            self.auth = auth
         }
     }
 

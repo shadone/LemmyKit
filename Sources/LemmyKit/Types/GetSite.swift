@@ -11,15 +11,10 @@ public struct GetSite: LemmyApiEndpoint {
     static let method: HTTPMethod = .get
 
     public struct Request: Encodable {
-        /// Authentication token.
-        public let auth: String?
 
         // MARK: Functions
 
-        public init(
-            auth: String? = nil
-        ) {
-            self.auth = auth
+        public init() {
         }
     }
 
