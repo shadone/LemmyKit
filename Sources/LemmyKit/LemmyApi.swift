@@ -130,7 +130,7 @@ public final class LemmyApi {
             } catch {
                 throw LemmyApiError.unknownServerError(httpStatusCode: statusCode)
             }
-            throw LemmyApiError.serverError(.init(from: errorResponse.error))
+            throw LemmyApiError.serverError(.init(from: errorResponse))
         }
     }
 }

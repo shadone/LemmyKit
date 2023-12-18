@@ -11,7 +11,8 @@ public struct MarkPostAsRead: LemmyApiEndpoint {
     static let method: HTTPMethod = .post
 
     public struct Request: Encodable {
-        public let post_id: PostId
+        public let post_id: PostId?
+        public let post_ids: [PostId]?
 
         public let read: Bool
 
@@ -21,15 +22,17 @@ public struct MarkPostAsRead: LemmyApiEndpoint {
         // MARK: Functions
 
         public init(
-            post_id: PostId,
+            post_id: PostId?,
+            post_ids: [PostId]?,
             read: Bool,
             auth: String? = nil
         ) {
             self.post_id = post_id
+            self.post_ids = post_ids
             self.read = read
             self.auth = auth
         }
     }
 
-    public typealias Response = PostResponse
+    public typealias Response = SuccessResponse
 }

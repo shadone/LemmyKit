@@ -26,6 +26,11 @@ public enum SortType:
     case topAll = "TopAll"
     case mostComments = "MostComments"
     case newComments = "NewComments"
+    case topThreeMonths = "TopThreeMonths"
+    case topSixMonths = "TopSixMonths"
+    case topNineMonths = "TopNineMonths"
+    case controversial = "Controversial"
+    case scaled = "Scaled"
 
     public var id: String { rawValue }
     public var description: String { rawValue }

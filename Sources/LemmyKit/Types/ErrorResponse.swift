@@ -8,8 +8,13 @@ import Foundation
 
 public struct ErrorResponse: Decodable {
     public let error: String
+    public let message: String?
 
-    init(error: String) {
+    init(
+        error: String,
+        message: String?
+    ) {
         self.error = error
+        self.message = message
     }
 }

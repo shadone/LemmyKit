@@ -57,9 +57,6 @@ public struct LocalSite: Decodable {
     /// Whether federation is enabled.
     public let federation_enabled: Bool
 
-    /// The number of concurrent federation http workers.
-    public let federation_worker_count: Int32?
-
     /// Whether captcha is enabled.
     public let captcha_enabled: Bool
 
@@ -74,6 +71,10 @@ public struct LocalSite: Decodable {
 
     /// Whether to email admins on new reports.
     public let reports_email_admins: Bool
+
+    /// Whether to sign outgoing Activitypub fetches with private key of local instance.
+    /// Some Fediverse instances and platforms require this.
+    public let federation_signed_fetch: Bool
 
     public init(
         id: LocalSiteId,
@@ -93,13 +94,13 @@ public struct LocalSite: Decodable {
         slur_filter_regex: String? = nil,
         actor_name_max_length: Int32,
         federation_enabled: Bool,
-        federation_worker_count: Int32? = nil,
         captcha_enabled: Bool,
         captcha_difficulty: String,
         published: Date,
         updated: Date? = nil,
         registration_mode: RegistrationMode,
-        reports_email_admins: Bool
+        reports_email_admins: Bool,
+        federation_signed_fetch: Bool
     ) {
         self.id = id
         self.site_id = site_id
@@ -118,12 +119,12 @@ public struct LocalSite: Decodable {
         self.slur_filter_regex = slur_filter_regex
         self.actor_name_max_length = actor_name_max_length
         self.federation_enabled = federation_enabled
-        self.federation_worker_count = federation_worker_count
         self.captcha_enabled = captcha_enabled
         self.captcha_difficulty = captcha_difficulty
         self.published = published
         self.updated = updated
         self.registration_mode = registration_mode
         self.reports_email_admins = reports_email_admins
+        self.federation_signed_fetch = federation_signed_fetch
     }
 }

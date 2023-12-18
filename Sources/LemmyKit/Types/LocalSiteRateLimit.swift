@@ -8,6 +8,7 @@ import Foundation
 
 // Source: https://github.com/LemmyNet/lemmy/blob/main/crates/db_schema/src/source/local_site_rate_limit.rs
 
+/// Rate limits for your site. Given in count / length of time.
 public struct LocalSiteRateLimit: Decodable {
     public let local_site_id: LocalSiteId
     public let message: Int32
@@ -24,6 +25,8 @@ public struct LocalSiteRateLimit: Decodable {
     public let search_per_second: Int32
     public let published: Date
     public let updated: Date?
+    public let import_user_settings: Int32
+    public let import_user_settings_per_second: Int32
 
     public init(
         local_site_id: LocalSiteId,
@@ -40,7 +43,9 @@ public struct LocalSiteRateLimit: Decodable {
         search: Int32,
         search_per_second: Int32,
         published: Date,
-        updated: Date? = nil
+        updated: Date? = nil,
+        import_user_settings: Int32,
+        import_user_settings_per_second: Int32
     ) {
         self.local_site_id = local_site_id
         self.message = message
@@ -57,5 +62,7 @@ public struct LocalSiteRateLimit: Decodable {
         self.search_per_second = search_per_second
         self.published = published
         self.updated = updated
+        self.import_user_settings = import_user_settings
+        self.import_user_settings_per_second = import_user_settings_per_second
     }
 }

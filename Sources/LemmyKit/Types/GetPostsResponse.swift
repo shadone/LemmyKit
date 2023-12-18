@@ -9,7 +9,13 @@ import Foundation
 public struct GetPostsResponse: Decodable {
     public let posts: [PostView]
 
-    public init(posts: [PostView]) {
+    public let next_page: PaginationCursor?
+
+    public init(
+        posts: [PostView],
+        next_page: PaginationCursor?
+    ) {
         self.posts = posts
+        self.next_page = next_page
     }
 }

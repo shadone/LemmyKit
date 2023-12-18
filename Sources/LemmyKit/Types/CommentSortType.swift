@@ -17,6 +17,7 @@ public enum CommentSortType:
     case top = "Top"
     case new = "New"
     case old = "Old"
+    case controversial = "Controversial"
 
     public var id: String { rawValue }
     public var description: String { rawValue }

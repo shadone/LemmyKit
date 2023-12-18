@@ -41,6 +41,10 @@ public struct GetComments: LemmyApiEndpoint {
         /// Whether to fetch only saved comments.
         public let saved_only: Bool?
 
+        public let liked_only: Bool?
+
+        public let disliked_only: Bool?
+
         /// Authentication token.
         public let auth: String?
 
@@ -57,6 +61,8 @@ public struct GetComments: LemmyApiEndpoint {
             post_id: PostId? = nil,
             parent_id: CommentId? = nil,
             saved_only: Bool? = nil,
+            liked_only: Bool? = nil,
+            disliked_only: Bool? = nil,
             auth: String? = nil
         ) {
             self.type_ = type_
@@ -69,6 +75,8 @@ public struct GetComments: LemmyApiEndpoint {
             self.post_id = post_id
             self.parent_id = parent_id
             self.saved_only = saved_only
+            self.liked_only = liked_only
+            self.disliked_only = disliked_only
             self.auth = auth
         }
     }

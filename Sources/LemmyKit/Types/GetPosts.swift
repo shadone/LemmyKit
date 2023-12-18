@@ -37,6 +37,12 @@ public struct GetPosts: LemmyApiEndpoint {
         /// Whether to fetch only saved posts.
         public let saved_only: Bool?
 
+        public let liked_only: Bool?
+
+        public let disliked_only: Bool?
+
+        public let page_cursor: PaginationCursor?
+
         /// Authentication token.
         public let auth: String?
 
@@ -50,6 +56,9 @@ public struct GetPosts: LemmyApiEndpoint {
             community_id: CommunityId? = nil,
             community_name: String? = nil,
             saved_only: Bool? = nil,
+            liked_only: Bool? = nil,
+            disliked_only: Bool? = nil,
+            page_cursor: PaginationCursor? = nil,
             auth: String? = nil
         ) {
             self.type_ = type_
@@ -59,6 +68,9 @@ public struct GetPosts: LemmyApiEndpoint {
             self.community_id = community_id
             self.community_name = community_name
             self.saved_only = saved_only
+            self.liked_only = liked_only
+            self.disliked_only = disliked_only
+            self.page_cursor = page_cursor
             self.auth = auth
         }
     }

@@ -11,16 +11,11 @@ public struct CommentResponse: Decodable {
 
     public let recipient_ids: [LocalUserId]
 
-    /// An optional front end ID, to tell which is coming back
-    public let form_id: String?
-
     public init(
         comment_view: CommentView,
-        recipient_ids: [LocalUserId],
-        form_id: String? = nil
+        recipient_ids: [LocalUserId]
     ) {
         self.comment_view = comment_view
         self.recipient_ids = recipient_ids
-        self.form_id = form_id
     }
 }

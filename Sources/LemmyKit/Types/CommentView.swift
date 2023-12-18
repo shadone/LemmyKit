@@ -27,6 +27,10 @@ public struct CommentView: Decodable {
     /// Specifies whether the comment author is banned from the community.
     public let creator_banned_from_community: Bool
 
+    public let creator_is_moderator: Bool
+
+    public let creator_is_admin: Bool
+
     public let subscribed: SubscribedType
 
     /// Specifies whether the user marked the comment as saved.
@@ -45,6 +49,8 @@ public struct CommentView: Decodable {
         community: Community,
         counts: CommentAggregates,
         creator_banned_from_community: Bool,
+        creator_is_moderator: Bool,
+        creator_is_admin: Bool,
         subscribed: SubscribedType,
         saved: Bool,
         creator_blocked: Bool,
@@ -56,6 +62,8 @@ public struct CommentView: Decodable {
         self.community = community
         self.counts = counts
         self.creator_banned_from_community = creator_banned_from_community
+        self.creator_is_moderator = creator_is_moderator
+        self.creator_is_admin = creator_is_admin
         self.subscribed = subscribed
         self.saved = saved
         self.creator_blocked = creator_blocked
