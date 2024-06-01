@@ -7,25 +7,25 @@
 import Foundation
 
 public enum LemmyApiError: Error {
-    /// Failed to create a network request due to an internal error.
-    case failedToSerializeRequest(underlyingError: Error?)
-
     /// A network error has occurred.
     case network(Error)
 
-    /// Received a response without data payload.
-    case responseContainsNoData
-
-    /// Faile to parse network response.
+    /// Failed to parse network response.
     case failedToDeserializeResponse(underlyingError: Error)
 
     /// Lemmy server returned a specified error.
-    case serverError(LemmyServerError)
+    case serverError(Components.Schemas.ErrorResponse)
 
-    /// Lemmy server is currently unavailable, returned 5XX status code.
-    case serverUnavailable(httpStatusCode: Int)
+    /// Lemmy server returned an authorization error.
+    case unauthorized(message: String?)
 
     /// Request to Lemmy server failed with an unexpected error.
+    ///
     /// This is a catch-all case that should never happen, if it does we need to catch and handle errors better.
     case unknownServerError(httpStatusCode: Int)
+
+    /// An unexpected error has occurred.
+    ///
+    /// This is a catch-all case that should never happen, if it does we need to catch and handle errors better.
+    case unknown(Error)
 }
