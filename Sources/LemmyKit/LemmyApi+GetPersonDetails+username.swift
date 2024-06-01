@@ -8,13 +8,23 @@ import Combine
 import Foundation
 
 public extension LemmyApi {
+    /// Fetch a person by their username.
+    /// - Parameter username: the name of the person to fetch info for.
+    /// The username could be a name of a user local to this instance (e.g. `milan`);
+    /// or a fully qualified person name (e.g. `ruud@lemmy.world`).
     func getPersonDetails(
-        personId: Components.Schemas.PersonID
+        username: String,
+        sort: Components.Parameters.Sort? = nil,
+        page: Components.Parameters.Page? = nil,
+        limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.GetPersonDetailsResponse {
         let response: Operations.getPersonDetails.Output
         do {
             response = try await client.getPersonDetails(query: .init(
-                person_id: personId
+                username: username,
+                sort: sort,
+                page: page,
+                limit: limit
             ))
         } catch {
             throw LemmyApiError(from: error)
@@ -47,11 +57,20 @@ public extension LemmyApi {
         }
     }
 
+    @available(*, deprecated)
     func getPersonDetails(
-        personId: Components.Schemas.PersonID
+        username: String,
+        sort: Components.Parameters.Sort? = nil,
+        page: Components.Parameters.Page? = nil,
+        limit: Components.Parameters.Limit? = nil
     ) -> AnyPublisher<Components.Schemas.GetPersonDetailsResponse, LemmyApiError> {
         Future {
-            try await self.getPersonDetails(personId: personId)
+            try await self.getPersonDetails(
+                username: username,
+                sort: sort,
+                page: page,
+                limit: limit
+            )
         }.eraseToAnyPublisher()
     }
 }
