@@ -11,10 +11,40 @@ public extension LemmyApi {
     func getPersonDetails(
         personId: Components.Schemas.PersonID
     ) async throws -> Components.Schemas.GetPersonDetailsResponse {
-        let response = try await client.getPersonDetails(query: .init(
-            person_id: personId
-        ))
-        return try response.ok.body.json
+        let response: Operations.getPersonDetails.Output
+        do {
+            response = try await client.getPersonDetails(query: .init(
+                person_id: personId
+            ))
+        } catch {
+            throw LemmyApiError(from: error)
+        }
+
+        switch response {
+        case let .ok(response):
+            switch response.body {
+            case let .json(json):
+                return json
+            }
+
+        case let .unauthorized(response):
+            switch response.body {
+            case let .json(json):
+                switch json.error {
+                case .incorrect_login:
+                    throw LemmyApiError.unauthorized(message: json.message)
+                }
+            }
+
+        case let .badRequest(response):
+            switch response.body {
+            case let .json(json):
+                throw LemmyApiError.serverError(json)
+            }
+
+        case let .undocumented(statusCode, _):
+            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode)
+        }
     }
 
     func getPersonDetails(

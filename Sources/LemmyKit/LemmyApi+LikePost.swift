@@ -13,11 +13,41 @@ public extension LemmyApi {
         _ postID: Components.Schemas.PostID,
         status: LikeStatus
     ) async throws -> Components.Schemas.PostResponse {
-        let response = try await client.likePost(body: .json(.init(
-            post_id: postID,
-            score: status.rawValue
-        )))
-        return try response.ok.body.json
+        let response: Operations.likePost.Output
+        do {
+            response = try await client.likePost(body: .json(.init(
+                post_id: postID,
+                score: status.rawValue
+            )))
+        } catch {
+            throw LemmyApiError(from: error)
+        }
+
+        switch response {
+        case let .ok(response):
+            switch response.body {
+            case let .json(json):
+                return json
+            }
+
+        case let .unauthorized(response):
+            switch response.body {
+            case let .json(json):
+                switch json.error {
+                case .incorrect_login:
+                    throw LemmyApiError.unauthorized(message: json.message)
+                }
+            }
+
+        case let .badRequest(response):
+            switch response.body {
+            case let .json(json):
+                throw LemmyApiError.serverError(json)
+            }
+
+        case let .undocumented(statusCode, _):
+            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode)
+        }
     }
 
     /// Update the post like status to be as specified by `status`.

@@ -12,11 +12,41 @@ public extension LemmyApi {
         username: String,
         password: String
     ) async throws -> Components.Schemas.LoginResponse {
-        let response = try await client.login(body: .json(.init(
-            username_or_email: username,
-            password: password
-        )))
-        return try response.ok.body.json
+        let response: Operations.login.Output
+        do {
+            response = try await client.login(body: .json(.init(
+                username_or_email: username,
+                password: password
+            )))
+        } catch {
+            throw LemmyApiError(from: error)
+        }
+
+        switch response {
+        case let .ok(response):
+            switch response.body {
+            case let .json(json):
+                return json
+            }
+
+        case let .unauthorized(response):
+            switch response.body {
+            case let .json(json):
+                switch json.error {
+                case .incorrect_login:
+                    throw LemmyApiError.unauthorized(message: json.message)
+                }
+            }
+
+        case let .badRequest(response):
+            switch response.body {
+            case let .json(json):
+                throw LemmyApiError.serverError(json)
+            }
+
+        case let .undocumented(statusCode, _):
+            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode)
+        }
     }
 
     func login(
