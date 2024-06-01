@@ -7,7 +7,7 @@
 import Foundation
 
 public struct CommentPath {
-    let path: [CommentId]
+    let path: [Components.Schemas.CommentID]
 
     public var depth: Int {
         assert(!path.isEmpty)
@@ -23,7 +23,7 @@ public struct CommentPath {
     /// Return a comment that that is the parent of the commit represented by this path.
     ///
     /// For example for path `0.1234.5678.9876` the parent commit id is `5678`.
-    public var parent: CommentId? {
+    public var parent: Components.Schemas.CommentID? {
         guard path.count > 2 else {
             // if only 2 elements that this is the root most comment, no parent
             // e.g. path: "0.1234"
@@ -36,7 +36,7 @@ public struct CommentPath {
 
     // MARK: Functions
 
-    init(path: [CommentId]) {
+    init(path: [Components.Schemas.CommentID]) {
         self.path = path
     }
 
@@ -44,7 +44,7 @@ public struct CommentPath {
         self.path = path
             .split(separator: ".")
             .compactMap {
-                guard let commentId = CommentId($0) else {
+                guard let commentId = Components.Schemas.CommentID($0) else {
                     assertionFailure("Got invalid comment path '\(path)'")
                     return nil
                 }
@@ -52,7 +52,7 @@ public struct CommentPath {
             }
     }
 
-    public func appending(_ commentId: CommentId) -> CommentPath {
+    public func appending(_ commentId: Components.Schemas.CommentID) -> CommentPath {
         CommentPath(path: path + [commentId])
     }
 }

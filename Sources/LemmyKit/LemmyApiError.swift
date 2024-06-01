@@ -20,7 +20,7 @@ public enum LemmyApiError: Error {
     case failedToDeserializeResponse(underlyingError: Error)
 
     /// Lemmy server returned a specified error.
-    case serverError(LemmyServerError)
+    case serverError(Components.Schemas.ErrorResponse)
 
     /// Lemmy server is currently unavailable, returned 5XX status code.
     case serverUnavailable(httpStatusCode: Int)
