@@ -32,8 +32,8 @@ public extension Components.Schemas.SortType {
         let value = Components.Schemas.SortType.Active
         switch value {
         case .Active, .Hot, .New, .Old, .TopSixHour, .TopTwelveHour, .TopDay, .TopWeek,
-                .TopMonth, .TopYear, .TopAll, .MostComments, .NewComments, .TopThreeMonths,
-                .TopSixMonths, .TopNineMonths, .Controversial, .Scaled:
+             .TopMonth, .TopYear, .TopAll, .MostComments, .NewComments, .TopThreeMonths,
+             .TopSixMonths, .TopNineMonths, .Controversial, .Scaled:
             break
         }
     }

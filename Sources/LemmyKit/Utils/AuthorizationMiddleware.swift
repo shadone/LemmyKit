@@ -5,8 +5,8 @@
 //
 
 import Foundation
-import OpenAPIRuntime
 import HTTPTypes
+import OpenAPIRuntime
 
 actor AuthorizationMiddleware: ClientMiddleware {
     private var token: String?

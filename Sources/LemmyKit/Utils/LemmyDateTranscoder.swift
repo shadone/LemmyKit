@@ -11,6 +11,7 @@ struct LemmyDateTranscoder: DateTranscoder {
     func decode(_ value: String) throws -> Date {
         try Date(lemmyFormat: value)
     }
+
     func encode(_ value: Date) throws -> String {
         fatalError("not implemented")
     }

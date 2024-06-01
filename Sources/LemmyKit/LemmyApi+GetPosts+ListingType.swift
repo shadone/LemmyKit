@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: BSD-2-Clause
 //
 
-import Foundation
 import Combine
+import Foundation
 
 public extension LemmyApi {
     /// Get a list of posts of a given `type`.
