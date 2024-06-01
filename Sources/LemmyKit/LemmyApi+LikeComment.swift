@@ -51,6 +51,7 @@ public extension LemmyApi {
     }
 
     /// Update the comment like status to be as specified by `status`.
+    @available(*, deprecated)
     func likeComment(
         _ commentID: Components.Schemas.CommentID,
         status: LikeStatus

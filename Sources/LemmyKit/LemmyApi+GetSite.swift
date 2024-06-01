@@ -43,6 +43,7 @@ public extension LemmyApi {
         }
     }
 
+    @available(*, deprecated)
     func getSite() -> AnyPublisher<Components.Schemas.GetSiteResponse, LemmyApiError> {
         Future {
             try await self.getSite()

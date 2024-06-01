@@ -49,6 +49,7 @@ public extension LemmyApi {
     }
 
     /// Fetch a post by its id.
+    @available(*, deprecated)
     func getPost(
         id: Components.Schemas.PostID
     ) -> AnyPublisher<Components.Schemas.GetPostResponse, LemmyApiError> {

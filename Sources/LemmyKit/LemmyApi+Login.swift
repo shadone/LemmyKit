@@ -49,6 +49,7 @@ public extension LemmyApi {
         }
     }
 
+    @available(*, deprecated)
     func login(
         username: String,
         password: String

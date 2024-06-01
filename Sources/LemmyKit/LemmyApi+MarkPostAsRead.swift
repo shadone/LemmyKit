@@ -49,6 +49,7 @@ public extension LemmyApi {
         }
     }
 
+    @available(*, deprecated)
     func markPostAsRead(
         postIds: [Components.Schemas.PostID],
         read: Bool

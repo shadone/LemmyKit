@@ -61,6 +61,7 @@ public extension LemmyApi {
         }
     }
 
+    @available(*, deprecated)
     func getComments(
         postID: Components.Schemas.PostID? = nil,
         sort: Components.Schemas.CommentSortType? = nil,
