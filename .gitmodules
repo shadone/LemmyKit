@@ -1,4 +1,4 @@
 [submodule "Lemmy-OpenAPI-Spec"]
 	path = Lemmy-OpenAPI-Spec
-	url = https://github.com/shadone/Lemmy-OpenAPI-Spec.ait
+	url = https://github.com/shadone/Lemmy-OpenAPI-Spec
 	branch = 0.19.2
