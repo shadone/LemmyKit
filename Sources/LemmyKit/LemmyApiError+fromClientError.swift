@@ -29,7 +29,20 @@ extension LemmyApiError {
             return
         }
 
-        assertionFailure("Got unexpected error \(error)")
+        // Here be dragons...
+        //
+        // Don't know what the error is, it could be a bug in LemmyKit or it could be an internal
+        // OpenAPIRuntime error.
+        // For example the `error.underlayingError` could be of type `OpenAPIRuntime.RuntimeError`
+        // when the server responds with unexpected content-type (e.g. we expect application/json
+        // but the server is down and returned us text/html). Unfortunately the `RuntimeError` is
+        // an internal type that we don't have access to.
+
+        if let status = error.response?.status {
+            self = .unknownServerError(httpStatusCode: status.code, error: error)
+            return
+        }
+
         self = .unknown(error)
     }
 }

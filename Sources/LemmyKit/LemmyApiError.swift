@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2023, Denis Dzyubenko <denis@ddenis.info>
+// Copyright (c) 2023-2024, Denis Dzyubenko <denis@ddenis.info>
 //
 // SPDX-License-Identifier: BSD-2-Clause
 //
@@ -20,9 +20,7 @@ public enum LemmyApiError: Error {
     case unauthorized(message: String?)
 
     /// Request to Lemmy server failed with an unexpected error.
-    ///
-    /// This is a catch-all case that should never happen, if it does we need to catch and handle errors better.
-    case unknownServerError(httpStatusCode: Int)
+    case unknownServerError(httpStatusCode: Int, error: Error?)
 
     /// An unexpected error has occurred.
     ///

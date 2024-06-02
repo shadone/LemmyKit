@@ -50,7 +50,7 @@ public extension LemmyApi {
             }
 
         case let .undocumented(statusCode, _):
-            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode)
+            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
     }
 
