@@ -11,9 +11,7 @@ import OpenAPIRuntime
 actor AuthorizationMiddleware: ClientMiddleware {
     private var token: String?
 
-    init() { }
-
-    func setToken(_ token: String) {
+    init(token: String?) {
         self.token = token
     }
 

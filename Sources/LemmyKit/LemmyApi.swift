@@ -11,7 +11,7 @@ import OpenAPIURLSession
 
 public final class LemmyApi {
     let client: Client
-    let authorizationMiddleware = AuthorizationMiddleware()
+    let authorizationMiddleware: AuthorizationMiddleware
 
     let credential: LemmyCredential?
 
@@ -34,6 +34,7 @@ public final class LemmyApi {
         self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
 
         self.credential = credential
+        authorizationMiddleware = AuthorizationMiddleware(token: credential?.jwt)
 
         client = Client(
             serverURL: instanceUrl,
