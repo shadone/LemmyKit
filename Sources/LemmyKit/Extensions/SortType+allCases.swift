@@ -29,7 +29,7 @@ public extension Components.Schemas.SortType {
     ]
 
     private func trigger_compiler_error_when_new_cases_added() {
-        let value = Components.Schemas.SortType.Active
+        let value = Components.Schemas.SortType.allCases.first!
         switch value {
         case .Active, .Hot, .New, .Old, .TopSixHour, .TopTwelveHour, .TopDay, .TopWeek,
              .TopMonth, .TopYear, .TopAll, .MostComments, .NewComments, .TopThreeMonths,

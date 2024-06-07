@@ -16,7 +16,7 @@ public extension Components.Schemas.CommentSortType {
     ]
 
     private func trigger_compiler_error_when_new_cases_added() {
-        let value = Components.Schemas.CommentSortType.Hot
+        let value = Components.Schemas.CommentSortType.allCases.first!
         switch value {
         case .Hot, .Top, .New, .Old, .Controversial:
             break
