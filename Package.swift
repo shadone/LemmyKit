@@ -7,7 +7,7 @@ let package = Package(
     name: "LemmyKit",
     platforms: [
         .iOS(.v15),
-        .macOS(.v11),
+        .macOS(.v13),
     ],
     products: [
         .library(
