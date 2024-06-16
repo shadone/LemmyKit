@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct CommentPath {
+public struct CommentPath: Sendable {
     let path: [Components.Schemas.CommentID]
 
     public var depth: Int {

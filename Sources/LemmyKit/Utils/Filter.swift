@@ -6,8 +6,8 @@
 
 import Foundation
 
-public enum Filter: Hashable {
-    public enum LikeFilter: Hashable {
+public enum Filter: Hashable, Sendable {
+    public enum LikeFilter: Hashable, Sendable {
         /// Filter only `liked` (upvoted) posts.
         case liked
         /// Filter only `disliked` (downvoted) posts.
@@ -20,9 +20,9 @@ public enum Filter: Hashable {
     case like(LikeFilter)
 
     /// Filter only `liked` (upvoted) posts.
-    public static var liked = Filter.like(.liked)
+    public static let liked = Filter.like(.liked)
     /// Filter only `disliked` (downvoted) posts.
-    public static var disliked = Filter.like(.disliked)
+    public static let disliked = Filter.like(.disliked)
 
     /// Return true if the filter is set for only saved posts.
     var isSaved: Bool {
