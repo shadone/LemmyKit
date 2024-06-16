@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 //
 
-import Combine
 import Foundation
 
 public extension LemmyApi {
@@ -41,12 +40,5 @@ public extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
-    }
-
-    @available(*, deprecated)
-    func getSite() -> AnyPublisher<Components.Schemas.GetSiteResponse, LemmyApiError> {
-        Future {
-            try await self.getSite()
-        }.eraseToAnyPublisher()
     }
 }

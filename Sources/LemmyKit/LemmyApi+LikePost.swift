@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 //
 
-import Combine
 import Foundation
 
 public extension LemmyApi {
@@ -48,16 +47,5 @@ public extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
-    }
-
-    /// Update the post like status to be as specified by `status`.
-    @available(*, deprecated)
-    func likePost(
-        _ postID: Components.Schemas.PostID,
-        status: LikeStatus
-    ) -> AnyPublisher<Components.Schemas.PostResponse, LemmyApiError> {
-        Future {
-            try await self.likePost(postID, status: status)
-        }.eraseToAnyPublisher()
     }
 }

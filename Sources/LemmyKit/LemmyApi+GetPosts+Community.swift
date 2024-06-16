@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 //
 
-import Combine
 import Foundation
 
 public extension LemmyApi {
@@ -58,25 +57,6 @@ public extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
-    }
-
-    @available(*, deprecated)
-    func getPosts(
-        community: CommunityFilter? = nil,
-        sort: Components.Schemas.SortType,
-        filter: Set<Filter>? = nil,
-        page: Components.Parameters.Page? = nil,
-        limit: Components.Parameters.Limit? = nil
-    ) -> AnyPublisher<Components.Schemas.GetPostsResponse, LemmyApiError> {
-        Future {
-            try await self.getPosts(
-                community: community,
-                sort: sort,
-                filter: filter,
-                page: page,
-                limit: limit
-            )
-        }.eraseToAnyPublisher()
     }
 
     /// Get a list of posts from a given `community`.
