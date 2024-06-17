@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum LikeStatus: Int32, CustomStringConvertible {
+public enum LikeStatus: Int32, CustomStringConvertible, Sendable {
     case liked = 1
     case disliked = -1
     case neutral = 0
