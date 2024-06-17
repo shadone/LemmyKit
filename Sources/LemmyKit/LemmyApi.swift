@@ -8,7 +8,7 @@ import Foundation
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-public final class LemmyApi {
+public actor LemmyApi {
     let client: Client
     let authorizationMiddleware: AuthorizationMiddleware
 
