@@ -6,7 +6,14 @@
 
 import Foundation
 
-public enum LemmyApiError: Error {
+/// Errors thrown by ``LemmyApi`` calls.
+///
+/// Marked `@unchecked Sendable` so callers can store an instance in
+/// `@Observable` view-model state. The carried `any Error` payloads are
+/// not themselves `Sendable`, but in practice callers pass them around
+/// as immutable terminal failure values; the conformance is a pragmatic
+/// concession to that usage.
+public enum LemmyApiError: Error, @unchecked Sendable {
     /// A network error has occurred.
     case network(Error)
 

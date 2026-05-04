@@ -13,9 +13,9 @@ public enum LikeStatus: Int32, CustomStringConvertible, Sendable {
 
     public var description: String {
         switch self {
-        case .liked: return "liked"
-        case .disliked: return "disliked"
-        case .neutral: return "neutral"
+        case .liked: "liked"
+        case .disliked: "disliked"
+        case .neutral: "neutral"
         }
     }
 }
