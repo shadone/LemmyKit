@@ -8,10 +8,6 @@ import Foundation
 
 extension Date {
     init(lemmyFormat stringValue: String) throws {
-        guard #available(macOS 12.0, *) else {
-            fatalError()
-        }
-
         let utc = TimeZone(abbreviation: "UTC")!
 
         // Lemmy 0.19.0 format: 2024-06-09T11:54:37.981990Z

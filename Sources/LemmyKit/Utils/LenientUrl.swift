@@ -12,7 +12,7 @@ import Foundation
 /// about the url strings it parses. Not everything that is permitted in a browser url bar is permitted by ``URL``.
 ///
 /// LenientUrl attempts to decode raw string into URL as leniently as possible but does not fail if it fails.
-public struct LenientUrl: Decodable {
+public struct LenientUrl: Decodable, Sendable {
     /// The original raw string representation of the url.
     public let rawValue: String
 

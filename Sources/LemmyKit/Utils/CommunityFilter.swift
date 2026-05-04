@@ -6,21 +6,15 @@
 
 import Foundation
 
-public enum CommunityFilter {
+public enum CommunityFilter: Sendable {
     case id(Components.Schemas.CommunityID)
     case name(String)
 
     var id: Components.Schemas.CommunityID? {
-        if case let .id(communityID) = self {
-            return communityID
-        }
-        return nil
+        if case let .id(communityID) = self { communityID } else { nil }
     }
 
     var name: String? {
-        if case let .name(string) = self {
-            return string
-        }
-        return nil
+        if case let .name(string) = self { string } else { nil }
     }
 }
