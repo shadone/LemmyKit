@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct LemmyCredential: Codable {
+public struct LemmyCredential: Codable, Sendable {
     let jwt: String
 
     public init(jwt: String) {
