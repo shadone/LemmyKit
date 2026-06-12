@@ -42,4 +42,33 @@ public actor LemmyApi {
             middlewares: [authorizationMiddleware]
         )
     }
+
+    /// Creates an api instance backed by a caller-supplied transport.
+    ///
+    /// Intended for tests: inject a stub `ClientTransport` to return canned
+    /// responses without hitting the network. Production code uses
+    /// ``init(instanceUrl:credential:)`` which wires up `URLSessionTransport`.
+    public init(
+        instanceUrl: URL,
+        credential: LemmyCredential?,
+        transport: any ClientTransport
+    ) {
+        let instanceHostname: String?
+        if #available(iOS 16.0, *) {
+            instanceHostname = instanceUrl.host(percentEncoded: false)
+        } else {
+            instanceHostname = instanceUrl.host
+        }
+        self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
+
+        self.credential = credential
+        authorizationMiddleware = AuthorizationMiddleware(token: credential?.jwt)
+
+        client = Client(
+            serverURL: instanceUrl,
+            configuration: .init(dateTranscoder: LemmyDateTranscoder()),
+            transport: transport,
+            middlewares: [authorizationMiddleware]
+        )
+    }
 }
