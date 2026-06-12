@@ -18,12 +18,18 @@ public actor LemmyApi {
 
     public let instanceHostname: String
 
+    /// Base url for the instance e.g. `https://lemmy.world`. Retained so
+    /// hand-written transports (such as the pict-rs multipart image upload)
+    /// can build absolute urls without going through the generated client.
+    let instanceUrl: URL
+
     // MARK: Functions
 
     /// Creates a new api instance for the given Lemmy instance.
     /// - Parameter instanceUrl: base url for the instance e.g. "https://lemmy.world"
     /// - Parameter credential: Lemmy JWT auth for making authenticated requests on behalf of a user account.
     public init(instanceUrl: URL, credential: LemmyCredential?) {
+        self.instanceUrl = instanceUrl
         let instanceHostname: String?
         if #available(iOS 16.0, *) {
             instanceHostname = instanceUrl.host(percentEncoded: false)
@@ -53,6 +59,7 @@ public actor LemmyApi {
         credential: LemmyCredential?,
         transport: any ClientTransport
     ) {
+        self.instanceUrl = instanceUrl
         let instanceHostname: String?
         if #available(iOS 16.0, *) {
             instanceHostname = instanceUrl.host(percentEncoded: false)
