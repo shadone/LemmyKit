@@ -12,7 +12,7 @@ public extension LemmyApi {
     func createComment(
         postID: Components.Schemas.PostID,
         content: String,
-        parentID: Components.Schemas.CommentID?
+        parentID: Components.Schemas.CommentID? = nil
     ) async throws -> Components.Schemas.CommentResponse {
         let response: Operations.createComment.Output
         do {

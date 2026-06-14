@@ -22,9 +22,9 @@ public extension LemmyApi {
     func createPost(
         communityID: Components.Schemas.CommunityID,
         name: String,
-        url: String?,
-        body: String?,
-        nsfw: Bool?,
+        url: String? = nil,
+        body: String? = nil,
+        nsfw: Bool? = nil,
         altText: String? = nil,
         customThumbnail: String? = nil
     ) async throws -> Components.Schemas.PostResponse {
