@@ -33,7 +33,8 @@ let package = Package(
         ),
         .testTarget(
             name: "LemmyKitTests",
-            dependencies: ["LemmyKit"]
+            dependencies: ["LemmyKit"],
+            resources: [.copy("Fixtures")]
         ),
     ],
     swiftLanguageModes: [.v6]

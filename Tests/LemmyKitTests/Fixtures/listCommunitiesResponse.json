@@ -1,0 +1,100 @@
+{
+  "communities": [
+    {
+      "community": {
+        "id": 26,
+        "name": "selfhosted",
+        "title": "Self-Hosted",
+        "removed": false,
+        "published": "2026-06-12T23:37:20.771808Z",
+        "deleted": false,
+        "nsfw": false,
+        "actor_id": "https://test1.lemmy.ddenis.info/c/selfhosted",
+        "local": true,
+        "hidden": false,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "Public"
+      },
+      "subscribed": "NotSubscribed",
+      "blocked": false,
+      "counts": {
+        "community_id": 26,
+        "subscribers": 10,
+        "posts": 8,
+        "comments": 33,
+        "published": "2026-06-12T23:37:20.771808Z",
+        "users_active_day": 10,
+        "users_active_week": 10,
+        "users_active_month": 10,
+        "users_active_half_year": 10,
+        "subscribers_local": 1
+      },
+      "banned_from_community": false
+    },
+    {
+      "community": {
+        "id": 25,
+        "name": "gaming",
+        "title": "Gaming",
+        "removed": false,
+        "published": "2026-06-12T23:37:20.227519Z",
+        "deleted": false,
+        "nsfw": false,
+        "actor_id": "https://test1.lemmy.ddenis.info/c/gaming",
+        "local": true,
+        "hidden": false,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "Public"
+      },
+      "subscribed": "NotSubscribed",
+      "blocked": false,
+      "counts": {
+        "community_id": 25,
+        "subscribers": 10,
+        "posts": 8,
+        "comments": 27,
+        "published": "2026-06-12T23:37:20.227519Z",
+        "users_active_day": 10,
+        "users_active_week": 10,
+        "users_active_month": 10,
+        "users_active_half_year": 10,
+        "subscribers_local": 1
+      },
+      "banned_from_community": false
+    },
+    {
+      "community": {
+        "id": 24,
+        "name": "technology",
+        "title": "Technology",
+        "removed": false,
+        "published": "2026-06-12T23:37:19.555773Z",
+        "deleted": false,
+        "nsfw": false,
+        "actor_id": "https://test1.lemmy.ddenis.info/c/technology",
+        "local": true,
+        "hidden": false,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "Public"
+      },
+      "subscribed": "NotSubscribed",
+      "blocked": false,
+      "counts": {
+        "community_id": 24,
+        "subscribers": 10,
+        "posts": 6,
+        "comments": 10,
+        "published": "2026-06-12T23:37:19.555773Z",
+        "users_active_day": 11,
+        "users_active_week": 11,
+        "users_active_month": 11,
+        "users_active_half_year": 11,
+        "subscribers_local": 1
+      },
+      "banned_from_community": false
+    }
+  ]
+}

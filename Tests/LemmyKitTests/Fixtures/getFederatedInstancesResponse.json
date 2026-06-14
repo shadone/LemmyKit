@@ -1,0 +1,37 @@
+{
+  "federated_instances": {
+    "linked": [
+      {
+        "id": 2,
+        "domain": "test2.lemmy.ddenis.info",
+        "published": "2026-06-12T21:09:46.740715Z",
+        "updated": "2026-06-14T00:00:01.229322Z",
+        "software": "lemmy",
+        "version": "0.19.18",
+        "federation_state": {
+          "instance_id": 2,
+          "last_successful_id": 1422,
+          "last_successful_published_time": "2026-06-12T23:38:57.128036Z",
+          "fail_count": 0
+        }
+      }
+    ],
+    "allowed": [
+      {
+        "id": 2,
+        "domain": "test2.lemmy.ddenis.info",
+        "published": "2026-06-12T21:09:46.740715Z",
+        "updated": "2026-06-14T00:00:01.229322Z",
+        "software": "lemmy",
+        "version": "0.19.18",
+        "federation_state": {
+          "instance_id": 2,
+          "last_successful_id": 1422,
+          "last_successful_published_time": "2026-06-12T23:38:57.128036Z",
+          "fail_count": 0
+        }
+      }
+    ],
+    "blocked": []
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "creator_id": 101,
+  "private_message_id": 55,
+  "original_pm_text": "This is the reported private message text.",
+  "reason": "spam",
+  "resolved": false,
+  "published": "2024-03-01T12:00:00.000000Z"
+}
