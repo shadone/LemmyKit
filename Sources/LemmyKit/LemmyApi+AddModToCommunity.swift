@@ -12,7 +12,7 @@ public extension LemmyApi {
     func addModToCommunity(
         communityID: Components.Schemas.CommunityID,
         personID: Components.Schemas.PersonID,
-        added: Swift.Bool
+        added: Bool
     ) async throws -> Components.Schemas.AddModToCommunityResponse {
         let response: Operations.addModToCommunity.Output
         do {

@@ -14,11 +14,11 @@ public extension LemmyApi {
     ///   - altText: Accessibility alt text describing the emoji.
     ///   - keywords: Search keywords associated with the emoji.
     func createCustomEmoji(
-        category: Swift.String,
-        shortcode: Swift.String,
-        imageURL: Swift.String,
-        altText: Swift.String,
-        keywords: [Swift.String]
+        category: String,
+        shortcode: String,
+        imageURL: String,
+        altText: String,
+        keywords: [String]
     ) async throws -> Components.Schemas.CustomEmojiResponse {
         let response: Operations.createCustomEmoji.Output
         do {

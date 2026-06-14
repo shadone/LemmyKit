@@ -9,7 +9,7 @@ import Foundation
 public extension LemmyApi {
     /// Request a password reset email for the given address.
     func passwordReset(
-        email: Swift.String
+        email: String
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.passwordReset.Output
         do {

@@ -10,9 +10,9 @@ public extension LemmyApi {
     /// Change the logged-in account's password. Returns a fresh login response
     /// (the existing session may be invalidated, so use the returned token).
     func changePassword(
-        newPassword: Swift.String,
-        newPasswordVerify: Swift.String,
-        oldPassword: Swift.String
+        newPassword: String,
+        newPasswordVerify: String,
+        oldPassword: String
     ) async throws -> Components.Schemas.LoginResponse {
         let response: Operations.changePassword.Output
         do {

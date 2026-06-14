@@ -11,7 +11,7 @@ public extension LemmyApi {
     /// `false` to restore a previously deleted community.
     func deleteCommunity(
         communityID: Components.Schemas.CommunityID,
-        deleted: Swift.Bool
+        deleted: Bool
     ) async throws -> Components.Schemas.CommunityResponse {
         let response: Operations.deleteCommunity.Output
         do {

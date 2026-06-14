@@ -17,8 +17,8 @@ public extension LemmyApi {
     ///     proving ownership of the file.
     ///   - filename: the pict-rs file alias (e.g. `abc123.jpg`) to delete.
     func deleteImage(
-        deleteToken: Swift.String,
-        filename: Swift.String
+        deleteToken: String,
+        filename: String
     ) async throws {
         let response: Operations.deleteImage.Output
         do {

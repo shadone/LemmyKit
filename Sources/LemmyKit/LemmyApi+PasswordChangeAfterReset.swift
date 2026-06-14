@@ -12,9 +12,9 @@ public extension LemmyApi {
     ///   - token: The reset token delivered by email.
     ///   - passwordVerify: Repeat of `password` for confirmation.
     func passwordChangeAfterReset(
-        token: Swift.String,
-        password: Swift.String,
-        passwordVerify: Swift.String
+        token: String,
+        password: String,
+        passwordVerify: String
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.passwordChangeAfterReset.Output
         do {

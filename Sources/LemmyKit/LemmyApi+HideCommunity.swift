@@ -11,8 +11,8 @@ public extension LemmyApi {
     /// `hidden: true` to hide, or `false` to unhide, optionally with a `reason`.
     func hideCommunity(
         communityID: Components.Schemas.CommunityID,
-        hidden: Swift.Bool,
-        reason: Swift.String? = nil
+        hidden: Bool,
+        reason: String? = nil
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.hideCommunity.Output
         do {

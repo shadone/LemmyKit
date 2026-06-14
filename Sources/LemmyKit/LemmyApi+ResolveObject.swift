@@ -13,7 +13,7 @@ public extension LemmyApi {
     /// - Parameters:
     ///   - query: The object URL or name to resolve.
     func resolveObject(
-        query: Swift.String
+        query: String
     ) async throws -> Components.Schemas.ResolveObjectResponse {
         let response: Operations.resolveObject.Output
         do {

@@ -11,7 +11,7 @@ public extension LemmyApi {
     /// Admin only. This is irreversible.
     func purgeCommunity(
         communityID: Components.Schemas.CommunityID,
-        reason: Swift.String? = nil
+        reason: String? = nil
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.purgeCommunity.Output
         do {

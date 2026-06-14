@@ -24,9 +24,9 @@ public extension LemmyApi {
     ///   - maxBytes: the maximum number of bytes to accumulate in memory.
     /// - Returns: the raw image bytes.
     func getImage(
-        filename: Swift.String,
+        filename: String,
         format: Operations.getImage.Input.Query.formatPayload? = nil,
-        thumbnail: Swift.Int32? = nil,
+        thumbnail: Int32? = nil,
         maxBytes: Int = 50 * 1024 * 1024
     ) async throws -> Data {
         let response: Operations.getImage.Output

@@ -9,7 +9,7 @@ import Foundation
 public extension LemmyApi {
     /// Verify the account's email address using the token from a verification email.
     func verifyEmail(
-        token: Swift.String
+        token: String
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.verifyEmail.Output
         do {

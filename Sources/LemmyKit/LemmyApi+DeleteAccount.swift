@@ -11,8 +11,8 @@ public extension LemmyApi {
     /// - Parameters:
     ///   - deleteContent: Whether to also delete all content created by the account.
     func deleteAccount(
-        password: Swift.String,
-        deleteContent: Swift.Bool
+        password: String,
+        deleteContent: Bool
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.deleteAccount.Output
         do {

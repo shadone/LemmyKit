@@ -11,7 +11,7 @@ public extension LemmyApi {
     /// to `true` to delete it or `false` to restore it.
     func deletePost(
         postID: Components.Schemas.PostID,
-        deleted: Swift.Bool
+        deleted: Bool
     ) async throws -> Components.Schemas.PostResponse {
         let response: Operations.deletePost.Output
         do {

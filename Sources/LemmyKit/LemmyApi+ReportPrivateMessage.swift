@@ -10,7 +10,7 @@ public extension LemmyApi {
     /// Report a private message for moderator review.
     func reportPrivateMessage(
         privateMessageID: Components.Schemas.PrivateMessageID,
-        reason: Swift.String
+        reason: String
     ) async throws -> Components.Schemas.PrivateMessageReportResponse {
         let response: Operations.reportPrivateMessage.Output
         do {

@@ -12,7 +12,7 @@ public extension LemmyApi {
     ///   - resolved: Pass `true` to mark the report resolved, `false` to reopen it.
     func resolveCommentReport(
         reportID: Components.Schemas.CommentReportID,
-        resolved: Swift.Bool
+        resolved: Bool
     ) async throws -> Components.Schemas.CommentReportResponse {
         let response: Operations.resolveCommentReport.Output
         do {

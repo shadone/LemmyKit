@@ -11,7 +11,7 @@ public extension LemmyApi {
     /// only. This is irreversible.
     func purgePost(
         postID: Components.Schemas.PostID,
-        reason: Swift.String? = nil
+        reason: String? = nil
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.purgePost.Output
         do {

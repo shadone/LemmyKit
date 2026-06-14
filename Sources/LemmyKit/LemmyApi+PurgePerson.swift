@@ -11,7 +11,7 @@ public extension LemmyApi {
     /// Admin only. This is irreversible.
     func purgePerson(
         personID: Components.Schemas.PersonID,
-        reason: Swift.String? = nil
+        reason: String? = nil
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.purgePerson.Output
         do {

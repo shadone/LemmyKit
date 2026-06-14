@@ -14,10 +14,10 @@ public extension LemmyApi {
     ///   - keywords: Search keywords associated with the emoji.
     func editCustomEmoji(
         id: Components.Schemas.CustomEmojiID,
-        category: Swift.String,
-        imageURL: Swift.String,
-        altText: Swift.String,
-        keywords: [Swift.String]
+        category: String,
+        imageURL: String,
+        altText: String,
+        keywords: [String]
     ) async throws -> Components.Schemas.CustomEmojiResponse {
         let response: Operations.editCustomEmoji.Output
         do {

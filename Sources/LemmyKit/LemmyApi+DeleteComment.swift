@@ -11,7 +11,7 @@ public extension LemmyApi {
     /// - Parameter deleted: Pass `true` to delete, `false` to restore.
     func deleteComment(
         commentID: Components.Schemas.CommentID,
-        deleted: Swift.Bool
+        deleted: Bool
     ) async throws -> Components.Schemas.CommentResponse {
         let response: Operations.deleteComment.Output
         do {

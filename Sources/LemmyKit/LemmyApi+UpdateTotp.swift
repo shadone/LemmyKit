@@ -13,8 +13,8 @@ public extension LemmyApi {
     /// token here with `enabled` set to `true`. Disabling also requires a
     /// valid token.
     func updateTotp(
-        totpToken: Swift.String,
-        enabled: Swift.Bool
+        totpToken: String,
+        enabled: Bool
     ) async throws -> Components.Schemas.UpdateTotpResponse {
         let response: Operations.updateTotp.Output
         do {

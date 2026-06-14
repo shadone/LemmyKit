@@ -14,10 +14,10 @@ public extension LemmyApi {
     ///   - expires: A time that the ban will expire, in unix epoch seconds.
     func banPerson(
         personID: Components.Schemas.PersonID,
-        ban: Swift.Bool,
-        removeData: Swift.Bool? = nil,
-        reason: Swift.String? = nil,
-        expires: Swift.Int64? = nil
+        ban: Bool,
+        removeData: Bool? = nil,
+        reason: String? = nil,
+        expires: Int64? = nil
     ) async throws -> Components.Schemas.BanPersonResponse {
         let response: Operations.banPerson.Output
         do {

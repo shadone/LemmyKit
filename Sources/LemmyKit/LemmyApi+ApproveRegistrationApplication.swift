@@ -10,9 +10,9 @@ public extension LemmyApi {
     /// Approve or deny a registration application. Admin only. Pass
     /// `approve: false` with a `denyReason` to reject the applicant.
     func approveRegistrationApplication(
-        id: Swift.Int32,
-        approve: Swift.Bool,
-        denyReason: Swift.String? = nil
+        id: Int32,
+        approve: Bool,
+        denyReason: String? = nil
     ) async throws -> Components.Schemas.RegistrationApplicationResponse {
         let response: Operations.approveRegistrationApplication.Output
         do {

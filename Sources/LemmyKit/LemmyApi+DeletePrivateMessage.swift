@@ -12,7 +12,7 @@ public extension LemmyApi {
     /// - Parameter deleted: pass `true` to delete the message, `false` to restore it.
     func deletePrivateMessage(
         privateMessageID: Components.Schemas.PrivateMessageID,
-        deleted: Swift.Bool
+        deleted: Bool
     ) async throws -> Components.Schemas.PrivateMessageResponse {
         let response: Operations.deletePrivateMessage.Output
         do {

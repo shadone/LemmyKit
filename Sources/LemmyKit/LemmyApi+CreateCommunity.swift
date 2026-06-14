@@ -9,13 +9,13 @@ import Foundation
 public extension LemmyApi {
     /// Create a new community with the unique `name` and a human-readable `title`.
     func createCommunity(
-        name: Swift.String,
-        title: Swift.String,
-        description: Swift.String? = nil,
-        icon: Swift.String? = nil,
-        banner: Swift.String? = nil,
-        nsfw: Swift.Bool? = nil,
-        postingRestrictedToMods: Swift.Bool? = nil,
+        name: String,
+        title: String,
+        description: String? = nil,
+        icon: String? = nil,
+        banner: String? = nil,
+        nsfw: Bool? = nil,
+        postingRestrictedToMods: Bool? = nil,
         discussionLanguages: [Components.Schemas.LanguageID]? = nil,
         visibility: Components.Schemas.CommunityVisibility? = nil
     ) async throws -> Components.Schemas.CommunityResponse {

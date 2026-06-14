@@ -10,7 +10,7 @@ public extension LemmyApi {
     /// Edit the content of an existing private message.
     func editPrivateMessage(
         privateMessageID: Components.Schemas.PrivateMessageID,
-        content: Swift.String
+        content: String
     ) async throws -> Components.Schemas.PrivateMessageResponse {
         let response: Operations.editPrivateMessage.Output
         do {

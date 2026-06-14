@@ -15,13 +15,13 @@ public extension LemmyApi {
     ///   - customThumbnail: Instead of fetching a thumbnail, use a custom one.
     func editPost(
         postID: Components.Schemas.PostID,
-        name: Swift.String? = nil,
-        url: Swift.String? = nil,
-        body: Swift.String? = nil,
-        altText: Swift.String? = nil,
-        nsfw: Swift.Bool? = nil,
+        name: String? = nil,
+        url: String? = nil,
+        body: String? = nil,
+        altText: String? = nil,
+        nsfw: Bool? = nil,
         languageID: Components.Schemas.LanguageID? = nil,
-        customThumbnail: Swift.String? = nil
+        customThumbnail: String? = nil
     ) async throws -> Components.Schemas.PostResponse {
         let response: Operations.editPost.Output
         do {

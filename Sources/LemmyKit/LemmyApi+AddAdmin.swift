@@ -10,7 +10,7 @@ public extension LemmyApi {
     /// Add or remove an admin to the instance.
     func addAdmin(
         personID: Components.Schemas.PersonID,
-        added: Swift.Bool
+        added: Bool
     ) async throws -> Components.Schemas.AddAdminResponse {
         let response: Operations.addAdmin.Output
         do {

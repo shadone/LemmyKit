@@ -11,7 +11,7 @@ public extension LemmyApi {
     func listCommunities(
         type: Components.Parameters.Type_? = nil,
         sort: Components.Parameters.Sort? = nil,
-        showNSFW: Swift.Bool? = nil,
+        showNSFW: Bool? = nil,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.ListCommunitiesResponse {

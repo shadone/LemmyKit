@@ -11,12 +11,12 @@ public extension LemmyApi {
     /// to change whether the community is public or local-only.
     func editCommunity(
         communityID: Components.Schemas.CommunityID,
-        title: Swift.String? = nil,
-        description: Swift.String? = nil,
-        icon: Swift.String? = nil,
-        banner: Swift.String? = nil,
-        nsfw: Swift.Bool? = nil,
-        postingRestrictedToMods: Swift.Bool? = nil,
+        title: String? = nil,
+        description: String? = nil,
+        icon: String? = nil,
+        banner: String? = nil,
+        nsfw: Bool? = nil,
+        postingRestrictedToMods: Bool? = nil,
         discussionLanguages: [Components.Schemas.LanguageID]? = nil,
         visibility: Components.Schemas.CommunityVisibility? = nil
     ) async throws -> Components.Schemas.CommunityResponse {

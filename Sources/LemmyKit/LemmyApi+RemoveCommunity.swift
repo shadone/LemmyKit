@@ -11,8 +11,8 @@ public extension LemmyApi {
     /// remove, or `false` to restore, optionally with a `reason`.
     func removeCommunity(
         communityID: Components.Schemas.CommunityID,
-        removed: Swift.Bool,
-        reason: Swift.String? = nil
+        removed: Bool,
+        reason: String? = nil
     ) async throws -> Components.Schemas.CommunityResponse {
         let response: Operations.removeCommunity.Output
         do {

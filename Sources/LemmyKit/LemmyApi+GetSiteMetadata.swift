@@ -10,7 +10,7 @@ public extension LemmyApi {
     /// Fetch the metadata (title, description, thumbnail) for the web page at
     /// `url`.
     func getSiteMetadata(
-        url: Swift.String? = nil
+        url: String? = nil
     ) async throws -> Components.Schemas.GetSiteMetadataResponse {
         let response: Operations.getSiteMetadata.Output
         do {

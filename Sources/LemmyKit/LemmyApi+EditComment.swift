@@ -10,7 +10,7 @@ public extension LemmyApi {
     /// Edit an existing comment identified by `commentID`.
     func editComment(
         commentID: Components.Schemas.CommentID,
-        content: Swift.String? = nil,
+        content: String? = nil,
         languageID: Components.Schemas.LanguageID? = nil
     ) async throws -> Components.Schemas.CommentResponse {
         let response: Operations.editComment.Output

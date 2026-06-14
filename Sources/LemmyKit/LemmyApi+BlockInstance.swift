@@ -10,7 +10,7 @@ public extension LemmyApi {
     /// Block or unblock an instance.
     func blockInstance(
         instanceID: Components.Schemas.InstanceID,
-        block: Swift.Bool
+        block: Bool
     ) async throws -> Components.Schemas.BlockInstanceResponse {
         let response: Operations.blockInstance.Output
         do {
