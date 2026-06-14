@@ -12,6 +12,10 @@ public actor LemmyApi {
     let client: Client
     let authorizationMiddleware: AuthorizationMiddleware
 
+    /// `User-Agent` sent on every request (generated client calls and the
+    /// hand-written pict-rs upload alike). See ``UserAgentMiddleware``.
+    let userAgent: String
+
     let credential: LemmyCredential?
 
     // MARK: Public
@@ -28,7 +32,7 @@ public actor LemmyApi {
     /// Creates a new api instance for the given Lemmy instance.
     /// - Parameter instanceUrl: base url for the instance e.g. "https://lemmy.world"
     /// - Parameter credential: Lemmy JWT auth for making authenticated requests on behalf of a user account.
-    public init(instanceUrl: URL, credential: LemmyCredential?) {
+    public init(instanceUrl: URL, credential: LemmyCredential?, userAgent: String = "LemmyKit") {
         self.instanceUrl = instanceUrl
         let instanceHostname: String?
         if #available(iOS 16.0, *) {
@@ -39,13 +43,14 @@ public actor LemmyApi {
         self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
 
         self.credential = credential
+        self.userAgent = userAgent
         authorizationMiddleware = AuthorizationMiddleware(token: credential?.jwt)
 
         client = Client(
             serverURL: instanceUrl,
             configuration: .init(dateTranscoder: LemmyDateTranscoder()),
             transport: URLSessionTransport(),
-            middlewares: [authorizationMiddleware]
+            middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
         )
     }
 
@@ -57,7 +62,8 @@ public actor LemmyApi {
     public init(
         instanceUrl: URL,
         credential: LemmyCredential?,
-        transport: any ClientTransport
+        transport: any ClientTransport,
+        userAgent: String = "LemmyKit"
     ) {
         self.instanceUrl = instanceUrl
         let instanceHostname: String?
@@ -69,13 +75,14 @@ public actor LemmyApi {
         self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
 
         self.credential = credential
+        self.userAgent = userAgent
         authorizationMiddleware = AuthorizationMiddleware(token: credential?.jwt)
 
         client = Client(
             serverURL: instanceUrl,
             configuration: .init(dateTranscoder: LemmyDateTranscoder()),
             transport: transport,
-            middlewares: [authorizationMiddleware]
+            middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
         )
     }
 }

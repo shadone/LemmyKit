@@ -56,6 +56,9 @@ public extension LemmyApi {
         request.setValue("Bearer \(jwt)", forHTTPHeaderField: "Authorization")
         request.setValue(form.contentType, forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        // Same plain agent as the generated client (see UserAgentMiddleware) so
+        // an instance's nginx does not 403 the default CFNetwork agent.
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.httpBody = form.encode()
 
         let data: Data
