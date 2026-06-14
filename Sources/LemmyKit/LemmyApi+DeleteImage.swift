@@ -15,16 +15,16 @@ public extension LemmyApi {
     /// - Parameters:
     ///   - deleteToken: the delete token returned when the image was uploaded,
     ///     proving ownership of the file.
-    ///   - filename: the pict-rs file alias (e.g. `abc123.jpg`) to delete.
+    ///   - fileName: the pict-rs file alias (e.g. `abc123.jpg`) to delete.
     func deleteImage(
         deleteToken: String,
-        filename: String
+        fileName: String
     ) async throws {
         let response: Operations.deleteImage.Output
         do {
             response = try await client.deleteImage(path: .init(
                 delete_token: deleteToken,
-                filename: filename
+                filename: fileName
             ))
         } catch {
             throw LemmyApiError(from: error)

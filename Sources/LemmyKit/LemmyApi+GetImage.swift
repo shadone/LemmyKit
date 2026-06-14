@@ -17,23 +17,23 @@ public extension LemmyApi {
     /// than fetching the image by URL.
     ///
     /// - Parameters:
-    ///   - filename: the pict-rs file alias (e.g. `abc123.jpg`) to fetch.
-    ///   - format: an optional re-encoding format for the returned image.
+    ///   - fileName: the pict-rs file alias (e.g. `abc123.jpg`) to fetch.
+    ///   - format: an optional format to transcode the returned image into.
     ///   - thumbnail: when set, request a thumbnail fitting inside a square of
     ///     this many points per side.
     ///   - maxBytes: the maximum number of bytes to accumulate in memory.
     /// - Returns: the raw image bytes.
     func getImage(
-        filename: String,
-        format: Operations.getImage.Input.Query.formatPayload? = nil,
+        fileName: String,
+        format: ImageFormat? = nil,
         thumbnail: Int32? = nil,
         maxBytes: Int = 50 * 1024 * 1024
     ) async throws -> Data {
         let response: Operations.getImage.Output
         do {
             response = try await client.getImage(
-                path: .init(filename: filename),
-                query: .init(format: format, thumbnail: thumbnail)
+                path: .init(filename: fileName),
+                query: .init(format: format?.payload, thumbnail: thumbnail)
             )
         } catch {
             throw LemmyApiError(from: error)
@@ -55,6 +55,21 @@ public extension LemmyApi {
 
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
+        }
+    }
+}
+
+private extension ImageFormat {
+    /// The generated query payload matching this format.
+    var payload: Operations.getImage.Input.Query.formatPayload {
+        switch self {
+        case .apng: .apng
+        case .avif: .avif
+        case .gif: .gif
+        case .jpg: .jpg
+        case .jxl: .jxl
+        case .png: .png
+        case .webp: .webp
         }
     }
 }
