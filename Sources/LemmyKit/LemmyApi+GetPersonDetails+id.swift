@@ -9,7 +9,7 @@ import Foundation
 public extension LemmyApi {
     /// Fetch a person by their id.
     func getPersonDetails(
-        personId: Components.Schemas.PersonID,
+        personID: Components.Schemas.PersonID,
         sort: Components.Parameters.Sort? = nil,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
@@ -17,7 +17,7 @@ public extension LemmyApi {
         let response: Operations.getPersonDetails.Output
         do {
             response = try await client.getPersonDetails(query: .init(
-                person_id: personId,
+                person_id: personID,
                 sort: sort,
                 page: page,
                 limit: limit

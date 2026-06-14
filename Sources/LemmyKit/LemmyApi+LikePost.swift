@@ -9,7 +9,7 @@ import Foundation
 public extension LemmyApi {
     /// Update the post like status to be as specified by `status`.
     func likePost(
-        _ postID: Components.Schemas.PostID,
+        postID: Components.Schemas.PostID,
         status: LikeStatus
     ) async throws -> Components.Schemas.PostResponse {
         let response: Operations.likePost.Output

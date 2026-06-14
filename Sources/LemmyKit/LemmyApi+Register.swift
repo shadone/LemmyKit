@@ -12,7 +12,7 @@ public extension LemmyApi {
     /// On success the response carries either a `jwt` (account ready to use) or
     /// `registration_created` / `verify_email_sent` flags describing a pending
     /// state (admin approval and/or email verification required before the
-    /// account can log in). Captcha (`captchaUuid` / `captchaAnswer`) and the
+    /// account can log in). Captcha (`captchaUUID` / `captchaAnswer`) and the
     /// application `answer` are optional and only required when the instance
     /// enables them.
     func register(
@@ -20,8 +20,8 @@ public extension LemmyApi {
         password: String,
         passwordVerify: String,
         email: String? = nil,
-        showNsfw: Bool? = nil,
-        captchaUuid: String? = nil,
+        showNSFW: Bool? = nil,
+        captchaUUID: String? = nil,
         captchaAnswer: String? = nil,
         answer: String? = nil,
         honeypot: String? = nil
@@ -32,9 +32,9 @@ public extension LemmyApi {
                 username: username,
                 password: password,
                 password_verify: passwordVerify,
-                show_nsfw: showNsfw,
+                show_nsfw: showNSFW,
                 email: email,
-                captcha_uuid: captchaUuid,
+                captcha_uuid: captchaUUID,
                 captcha_answer: captchaAnswer,
                 honeypot: honeypot,
                 answer: answer

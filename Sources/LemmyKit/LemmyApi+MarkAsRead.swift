@@ -39,13 +39,13 @@ public extension LemmyApi {
     /// Mark a single comment reply as read/unread. Requires authentication.
     @discardableResult
     func markCommentReplyAsRead(
-        commentReplyId: Components.Schemas.CommentReplyID,
+        commentReplyID: Components.Schemas.CommentReplyID,
         read: Bool
     ) async throws -> Components.Schemas.CommentReplyResponse {
         let response: Operations.markCommentReplyAsRead.Output
         do {
             response = try await client.markCommentReplyAsRead(body: .json(.init(
-                comment_reply_id: commentReplyId,
+                comment_reply_id: commentReplyID,
                 read: read
             )))
         } catch {
@@ -82,13 +82,13 @@ public extension LemmyApi {
     /// Mark a single person mention as read/unread. Requires authentication.
     @discardableResult
     func markPersonMentionAsRead(
-        personMentionId: Components.Schemas.PersonMentionID,
+        personMentionID: Components.Schemas.PersonMentionID,
         read: Bool
     ) async throws -> Components.Schemas.PersonMentionResponse {
         let response: Operations.markPersonMentionAsRead.Output
         do {
             response = try await client.markPersonMentionAsRead(body: .json(.init(
-                person_mention_id: personMentionId,
+                person_mention_id: personMentionID,
                 read: read
             )))
         } catch {
@@ -125,13 +125,13 @@ public extension LemmyApi {
     /// Mark a single private message as read/unread. Requires authentication.
     @discardableResult
     func markPrivateMessageAsRead(
-        privateMessageId: Components.Schemas.PrivateMessageID,
+        privateMessageID: Components.Schemas.PrivateMessageID,
         read: Bool
     ) async throws -> Components.Schemas.PrivateMessageResponse {
         let response: Operations.markPrivateMessageAsRead.Output
         do {
             response = try await client.markPrivateMessageAsRead(body: .json(.init(
-                private_message_id: privateMessageId,
+                private_message_id: privateMessageID,
                 read: read
             )))
         } catch {

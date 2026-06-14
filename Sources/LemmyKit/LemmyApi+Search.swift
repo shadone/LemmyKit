@@ -18,7 +18,7 @@ public extension LemmyApi {
     ///   - sort: result ordering.
     ///   - listingType: scope of the search (All/Local/Subscribed/ModeratorView).
     ///   - community: restrict the search to a single community, by id or name.
-    ///   - creatorId: restrict the search to a single author.
+    ///   - creatorID: restrict the search to a single author.
     ///   - postTitleOnly: when searching posts, match only the title and ignore
     ///     the body. When `nil` the server's default applies.
     ///   - page: 1-based page number.
@@ -29,7 +29,7 @@ public extension LemmyApi {
         sort: Components.Schemas.SortType? = nil,
         listingType: Components.Schemas.ListingType? = nil,
         community: CommunityFilter? = nil,
-        creatorId: Components.Schemas.PersonID? = nil,
+        creatorID: Components.Schemas.PersonID? = nil,
         postTitleOnly: Bool? = nil,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
@@ -40,7 +40,7 @@ public extension LemmyApi {
                 q: query,
                 community_id: community?.id,
                 community_name: community?.name,
-                creator_id: creatorId,
+                creator_id: creatorID,
                 type_: type,
                 sort: sort,
                 listing_type: listingType,

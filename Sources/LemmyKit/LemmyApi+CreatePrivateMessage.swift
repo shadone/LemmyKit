@@ -7,16 +7,16 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Send a private message to `recipientId`. Requires authentication.
+    /// Send a private message to `recipientID`. Requires authentication.
     func createPrivateMessage(
         content: String,
-        recipientId: Components.Schemas.PersonID
+        recipientID: Components.Schemas.PersonID
     ) async throws -> Components.Schemas.PrivateMessageResponse {
         let response: Operations.createPrivateMessage.Output
         do {
             response = try await client.createPrivateMessage(body: .json(.init(
                 content: content,
-                recipient_id: recipientId
+                recipient_id: recipientID
             )))
         } catch {
             throw LemmyApiError(from: error)

@@ -8,10 +8,10 @@ import Foundation
 
 public extension LemmyApi {
     /// Fetch the account's private messages. Requires authentication. Pass
-    /// `creatorId` to restrict the list to messages from a single sender.
+    /// `creatorID` to restrict the list to messages from a single sender.
     func getPrivateMessages(
         unreadOnly: Bool? = nil,
-        creatorId: Components.Schemas.PersonID? = nil,
+        creatorID: Components.Schemas.PersonID? = nil,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.PrivateMessagesResponse {
@@ -19,7 +19,7 @@ public extension LemmyApi {
         do {
             response = try await client.getPrivateMessages(query: .init(
                 unread_only: unreadOnly,
-                creator_id: creatorId,
+                creator_id: creatorID,
                 page: page,
                 limit: limit
             ))
