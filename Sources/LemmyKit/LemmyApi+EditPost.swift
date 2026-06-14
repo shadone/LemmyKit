@@ -7,36 +7,32 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Create a new post in `communityID`. Requires authentication.
+    /// Edit an existing post identified by `postID`. Only the fields you pass
+    /// are changed.
     ///
     /// - Parameters:
-    ///   - communityID: the community to post to.
-    ///   - name: the post title (required).
-    ///   - url: an optional link url. For image posts, pass the uploaded
-    ///     pict-rs url returned by ``uploadImage(imageData:fileName:mimeType:)``.
-    ///   - body: an optional markdown body.
-    ///   - nsfw: whether the post is flagged not-safe-for-work.
-    ///   - altText: alt text describing the linked image, for accessibility.
-    ///   - customThumbnail: an optional custom thumbnail url (overrides the
-    ///     auto-generated one); pass an uploaded pict-rs url.
-    func createPost(
-        communityID: Components.Schemas.CommunityID,
-        name: String,
-        url: String?,
-        body: String?,
-        nsfw: Bool?,
-        altText: String? = nil,
-        customThumbnail: String? = nil
+    ///   - altText: Optional alt text, usable for image posts.
+    ///   - customThumbnail: Instead of fetching a thumbnail, use a custom one.
+    func editPost(
+        postID: Components.Schemas.PostID,
+        name: Swift.String? = nil,
+        url: Swift.String? = nil,
+        body: Swift.String? = nil,
+        altText: Swift.String? = nil,
+        nsfw: Swift.Bool? = nil,
+        languageID: Components.Schemas.LanguageID? = nil,
+        customThumbnail: Swift.String? = nil
     ) async throws -> Components.Schemas.PostResponse {
-        let response: Operations.createPost.Output
+        let response: Operations.editPost.Output
         do {
-            response = try await client.createPost(body: .json(.init(
+            response = try await client.editPost(body: .json(.init(
+                post_id: postID,
                 name: name,
-                community_id: communityID,
                 url: url,
                 body: body,
                 alt_text: altText,
                 nsfw: nsfw,
+                language_id: languageID,
                 custom_thumbnail: customThumbnail
             )))
         } catch {
