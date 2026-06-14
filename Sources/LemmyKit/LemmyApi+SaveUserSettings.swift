@@ -1,0 +1,111 @@
+//
+// Copyright (c) 2026, Denis Dzyubenko <denis@ddenis.info>
+//
+// SPDX-License-Identifier: BSD-2-Clause
+//
+
+import Foundation
+
+public extension LemmyApi {
+    /// Save settings for the logged-in account. All parameters are optional;
+    /// pass only the fields you want to change.
+    /// - Parameters:
+    ///   - avatar: A URL for the avatar.
+    ///   - banner: A URL for the banner.
+    ///   - interfaceLanguage: The language of the Lemmy interface.
+    ///   - bio: The bio / info, in markdown.
+    func saveUserSettings(
+        showNSFW: Swift.Bool? = nil,
+        blurNSFW: Swift.Bool? = nil,
+        autoExpand: Swift.Bool? = nil,
+        theme: Swift.String? = nil,
+        defaultSortType: Components.Schemas.SortType? = nil,
+        defaultListingType: Components.Schemas.ListingType? = nil,
+        interfaceLanguage: Swift.String? = nil,
+        avatar: Swift.String? = nil,
+        banner: Swift.String? = nil,
+        displayName: Swift.String? = nil,
+        email: Swift.String? = nil,
+        bio: Swift.String? = nil,
+        matrixUserID: Swift.String? = nil,
+        showAvatars: Swift.Bool? = nil,
+        sendNotificationsToEmail: Swift.Bool? = nil,
+        botAccount: Swift.Bool? = nil,
+        showBotAccounts: Swift.Bool? = nil,
+        showReadPosts: Swift.Bool? = nil,
+        discussionLanguages: [Components.Schemas.LanguageID]? = nil,
+        openLinksInNewTab: Swift.Bool? = nil,
+        infiniteScrollEnabled: Swift.Bool? = nil,
+        postListingMode: Components.Schemas.PostListingMode? = nil,
+        enableKeyboardNavigation: Swift.Bool? = nil,
+        enableAnimatedImages: Swift.Bool? = nil,
+        collapseBotComments: Swift.Bool? = nil,
+        showScores: Swift.Bool? = nil,
+        showUpvotes: Swift.Bool? = nil,
+        showDownvotes: Swift.Bool? = nil,
+        showUpvotePercentage: Swift.Bool? = nil
+    ) async throws -> Components.Schemas.SuccessResponse {
+        let response: Operations.saveUserSettings.Output
+        do {
+            response = try await client.saveUserSettings(body: .json(.init(
+                show_nsfw: showNSFW,
+                blur_nsfw: blurNSFW,
+                auto_expand: autoExpand,
+                theme: theme,
+                default_sort_type: defaultSortType,
+                default_listing_type: defaultListingType,
+                interface_language: interfaceLanguage,
+                avatar: avatar,
+                banner: banner,
+                display_name: displayName,
+                email: email,
+                bio: bio,
+                matrix_user_id: matrixUserID,
+                show_avatars: showAvatars,
+                send_notifications_to_email: sendNotificationsToEmail,
+                bot_account: botAccount,
+                show_bot_accounts: showBotAccounts,
+                show_read_posts: showReadPosts,
+                discussion_languages: discussionLanguages,
+                open_links_in_new_tab: openLinksInNewTab,
+                infinite_scroll_enabled: infiniteScrollEnabled,
+                post_listing_mode: postListingMode,
+                enable_keyboard_navigation: enableKeyboardNavigation,
+                enable_animated_images: enableAnimatedImages,
+                collapse_bot_comments: collapseBotComments,
+                show_scores: showScores,
+                show_upvotes: showUpvotes,
+                show_downvotes: showDownvotes,
+                show_upvote_percentage: showUpvotePercentage
+            )))
+        } catch {
+            throw LemmyApiError(from: error)
+        }
+
+        switch response {
+        case let .ok(response):
+            switch response.body {
+            case let .json(json):
+                return json
+            }
+
+        case let .unauthorized(response):
+            switch response.body {
+            case let .json(json):
+                switch json.error {
+                case .incorrect_login:
+                    throw LemmyApiError.unauthorized(message: json.message)
+                }
+            }
+
+        case let .badRequest(response):
+            switch response.body {
+            case let .json(json):
+                throw LemmyApiError.serverError(json)
+            }
+
+        case let .undocumented(statusCode, _):
+            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
+        }
+    }
+}
