@@ -10,14 +10,16 @@ public extension LemmyApi {
     /// Ban or unban a person from the instance.
     ///
     /// - Parameters:
+    ///   - ban: `true` to ban, `false` to lift an existing ban.
     ///   - removeData: Optionally remove all their data. Useful for new troll accounts.
-    ///   - expires: A time that the ban will expire, in unix epoch seconds.
+    ///   - expires: When the ban should lift. Pass `nil` for a permanent ban.
+    ///     Only meaningful when `ban` is `true`.
     func banPerson(
         personID: Components.Schemas.PersonID,
         ban: Bool,
         removeData: Bool? = nil,
         reason: String? = nil,
-        expires: Int64? = nil
+        expires: Date? = nil
     ) async throws -> Components.Schemas.BanPersonResponse {
         let response: Operations.banPerson.Output
         do {
@@ -26,7 +28,7 @@ public extension LemmyApi {
                 ban: ban,
                 remove_data: removeData,
                 reason: reason,
-                expires: expires
+                expires: expires.map { Int64($0.timeIntervalSince1970) }
             )))
         } catch {
             throw LemmyApiError(from: error)

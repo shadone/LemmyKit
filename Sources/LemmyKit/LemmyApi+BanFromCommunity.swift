@@ -14,15 +14,15 @@ public extension LemmyApi {
     ///   - removeData: when banning, also remove the person's existing posts
     ///     and comments in the community.
     ///   - reason: optional reason recorded in the mod log.
-    ///   - expires: optional unix timestamp (seconds) at which the ban lifts;
-    ///     `nil` is a permanent ban.
+    ///   - expires: when the ban should lift. Pass `nil` for a permanent ban.
+    ///     Only meaningful when `ban` is `true`.
     func banFromCommunity(
         communityID: Components.Schemas.CommunityID,
         personID: Components.Schemas.PersonID,
         ban: Bool,
         removeData: Bool? = nil,
         reason: String? = nil,
-        expires: Int64? = nil
+        expires: Date? = nil
     ) async throws -> Components.Schemas.BanFromCommunityResponse {
         let response: Operations.banUserFromCommunity.Output
         do {
@@ -32,7 +32,7 @@ public extension LemmyApi {
                 ban: ban,
                 remove_data: removeData,
                 reason: reason,
-                expires: expires
+                expires: expires.map { Int64($0.timeIntervalSince1970) }
             )))
         } catch {
             throw LemmyApiError(from: error)
