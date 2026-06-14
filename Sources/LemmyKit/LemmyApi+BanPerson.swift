@@ -7,29 +7,50 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Ban or unban a person from the instance.
+    /// Ban `personID` from the instance. Requires admin.
     ///
     /// - Parameters:
-    ///   - ban: `true` to ban, `false` to lift an existing ban.
-    ///   - removeData: Optionally remove all their data. Useful for new troll accounts.
-    ///   - expires: When the ban should lift. Pass `nil` for a permanent ban.
-    ///     Only meaningful when `ban` is `true`.
+    ///   - reason: optional reason recorded in the mod log.
+    ///   - removeData: also remove all of the person's posts and comments.
+    ///     Useful for spam or troll accounts.
+    ///   - expires: when the ban should lift. Pass `nil` for a permanent ban.
     func banPerson(
         personID: Components.Schemas.PersonID,
-        ban: Bool,
-        removeData: Bool? = nil,
         reason: String? = nil,
+        removeData: Bool? = nil,
         expires: Date? = nil
+    ) async throws -> Components.Schemas.BanPersonResponse {
+        try await sendBanPerson(.init(
+            person_id: personID,
+            ban: true,
+            remove_data: removeData,
+            reason: reason,
+            expires: expires.map { Int64($0.timeIntervalSince1970) }
+        ))
+    }
+
+    /// Lift an existing instance ban on `personID`. Requires admin.
+    ///
+    /// - Parameter reason: optional reason recorded in the mod log.
+    func unbanPerson(
+        personID: Components.Schemas.PersonID,
+        reason: String? = nil
+    ) async throws -> Components.Schemas.BanPersonResponse {
+        try await sendBanPerson(.init(
+            person_id: personID,
+            ban: false,
+            remove_data: nil,
+            reason: reason,
+            expires: nil
+        ))
+    }
+
+    private func sendBanPerson(
+        _ body: Components.Schemas.BanPerson
     ) async throws -> Components.Schemas.BanPersonResponse {
         let response: Operations.banPerson.Output
         do {
-            response = try await client.banPerson(body: .json(.init(
-                person_id: personID,
-                ban: ban,
-                remove_data: removeData,
-                reason: reason,
-                expires: expires.map { Int64($0.timeIntervalSince1970) }
-            )))
+            response = try await client.banPerson(body: .json(body))
         } catch {
             throw LemmyApiError(from: error)
         }
