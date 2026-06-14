@@ -19,6 +19,8 @@ public extension LemmyApi {
     ///   - listingType: scope of the search (All/Local/Subscribed/ModeratorView).
     ///   - community: restrict the search to a single community, by id or name.
     ///   - creatorId: restrict the search to a single author.
+    ///   - postTitleOnly: when searching posts, match only the title and ignore
+    ///     the body. When `nil` the server's default applies.
     ///   - page: 1-based page number.
     ///   - limit: number of results per page.
     func search(
@@ -28,6 +30,7 @@ public extension LemmyApi {
         listingType: Components.Schemas.ListingType? = nil,
         community: CommunityFilter? = nil,
         creatorId: Components.Schemas.PersonID? = nil,
+        postTitleOnly: Bool? = nil,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.SearchResponse {
@@ -42,7 +45,8 @@ public extension LemmyApi {
                 sort: sort,
                 listing_type: listingType,
                 page: page,
-                limit: limit
+                limit: limit,
+                post_title_only: postTitleOnly
             ))
         } catch {
             throw LemmyApiError(from: error)

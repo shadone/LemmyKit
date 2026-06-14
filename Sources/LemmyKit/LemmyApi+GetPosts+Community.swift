@@ -60,10 +60,21 @@ public extension LemmyApi {
     }
 
     /// Get a list of posts from a given `community`.
+    ///
+    /// - Parameters:
+    ///   - showHidden: include posts the user has hidden. When `nil` the
+    ///     server's default applies (hidden posts are excluded).
+    ///   - showRead: include posts already marked as read. When `nil` the
+    ///     account's "show read posts" setting applies.
+    ///   - showNSFW: include not-safe-for-work posts. When `nil` the account's
+    ///     NSFW setting applies.
     func getPosts(
         community: CommunityFilter? = nil,
         sort: Components.Schemas.SortType,
         filter: Set<Filter>? = nil,
+        showHidden: Bool? = nil,
+        showRead: Bool? = nil,
+        showNSFW: Bool? = nil,
         page: Components.Schemas.PaginationCursor? = nil,
         limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.GetPostsResponse {
@@ -77,6 +88,9 @@ public extension LemmyApi {
                 saved_only: filter?.contains(where: \.isSaved),
                 liked_only: filter?.contains(where: \.isLiked),
                 disliked_only: filter?.contains(where: \.isDisliked),
+                show_hidden: showHidden,
+                show_read: showRead,
+                show_nsfw: showNSFW,
                 page_cursor: page
             )))
         } catch {
