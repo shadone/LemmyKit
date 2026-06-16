@@ -7,5 +7,6 @@
 import Foundation
 
 extension Components.Schemas.CommentSortType: Identifiable {
+    /// The raw value string, used as a stable identity (e.g. in SwiftUI lists).
     public var id: String { rawValue }
 }

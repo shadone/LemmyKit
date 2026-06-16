@@ -7,6 +7,7 @@
 import Foundation
 
 public extension Components.Schemas.SortType {
+    /// The post sort options, in the order to present them to the user.
     static let allCases: [Components.Schemas.SortType] = [
         .Active,
         .Hot,

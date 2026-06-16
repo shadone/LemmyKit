@@ -12,11 +12,18 @@ import Foundation
 /// a specific output format. When omitted, pict-rs returns the image in its
 /// stored format.
 public enum ImageFormat: String, Sendable, CaseIterable {
+    /// Animated PNG.
     case apng
+    /// AV1 Image File Format.
     case avif
+    /// Graphics Interchange Format.
     case gif
+    /// JPEG.
     case jpg
+    /// JPEG XL.
     case jxl
+    /// Portable Network Graphics.
     case png
+    /// WebP.
     case webp
 }

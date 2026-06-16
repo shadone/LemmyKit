@@ -21,11 +21,15 @@ public struct LenientUrl: Decodable, Sendable {
 
     // MARK: Functions
 
+    /// Creates a lenient url from a raw string, keeping the original string
+    /// whether or not it parses into a ``URL``.
+    /// - Parameter stringValue: the raw url string.
     public init(stringValue: String) {
         rawValue = stringValue
         url = URL(lenientString: stringValue)
     }
 
+    /// Decodes a lenient url from a single string value.
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         rawValue = try container.decode(String.self)

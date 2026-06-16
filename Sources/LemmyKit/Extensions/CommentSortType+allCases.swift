@@ -7,6 +7,7 @@
 import Foundation
 
 public extension Components.Schemas.CommentSortType {
+    /// The comment sort options, in the order to present them to the user.
     static let allCases: [Components.Schemas.CommentSortType] = [
         .Hot,
         .Top,
