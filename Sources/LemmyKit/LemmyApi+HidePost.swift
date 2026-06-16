@@ -8,13 +8,13 @@ import Foundation
 
 public extension LemmyApi {
     func hidePost(
-        postIds: [Components.Schemas.PostID],
+        postIDs: [Components.Schemas.PostID],
         hide: Bool
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.hidePost.Output
         do {
             response = try await client.hidePost(body: .json(.init(
-                post_ids: postIds,
+                post_ids: postIDs,
                 hide: hide
             )))
         } catch {

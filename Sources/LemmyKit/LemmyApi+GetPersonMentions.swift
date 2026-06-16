@@ -8,8 +8,8 @@ import Foundation
 
 public extension LemmyApi {
     func getPersonMentions(
-        commentSort: Components.Schemas.CommentSortType,
-        unreadOnly: Bool,
+        commentSort: Components.Schemas.CommentSortType? = nil,
+        unreadOnly: Bool? = nil,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.GetPersonMentionsResponse {

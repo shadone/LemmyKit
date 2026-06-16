@@ -7,14 +7,16 @@
 import Foundation
 
 public extension LemmyApi {
+    /// Log in with a username or email and password. Lemmy accepts either in
+    /// the same field.
     func login(
-        username: String,
+        usernameOrEmail: String,
         password: String
     ) async throws -> Components.Schemas.LoginResponse {
         let response: Operations.login.Output
         do {
             response = try await client.login(body: .json(.init(
-                username_or_email: username,
+                username_or_email: usernameOrEmail,
                 password: password
             )))
         } catch {

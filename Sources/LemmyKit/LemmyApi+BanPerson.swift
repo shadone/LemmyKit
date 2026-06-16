@@ -10,14 +10,14 @@ public extension LemmyApi {
     /// Ban `personID` from the instance. Requires admin.
     ///
     /// - Parameters:
-    ///   - reason: optional reason recorded in the mod log.
     ///   - removeData: also remove all of the person's posts and comments.
     ///     Useful for spam or troll accounts.
+    ///   - reason: optional reason recorded in the mod log.
     ///   - expires: when the ban should lift. Pass `nil` for a permanent ban.
     func banPerson(
         personID: Components.Schemas.PersonID,
-        reason: String? = nil,
         removeData: Bool? = nil,
+        reason: String? = nil,
         expires: Date? = nil
     ) async throws -> Components.Schemas.BanPersonResponse {
         try await sendBanPerson(.init(

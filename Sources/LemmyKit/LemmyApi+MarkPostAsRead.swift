@@ -8,13 +8,13 @@ import Foundation
 
 public extension LemmyApi {
     func markPostAsRead(
-        postIds: [Components.Schemas.PostID],
+        postIDs: [Components.Schemas.PostID],
         read: Bool
     ) async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.markPostAsRead.Output
         do {
             response = try await client.markPostAsRead(body: .json(.init(
-                post_ids: postIds,
+                post_ids: postIDs,
                 read: read
             )))
         } catch {
