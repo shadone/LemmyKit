@@ -12,7 +12,7 @@ public extension LemmyApi {
         postID: Components.Schemas.PostID,
         sort: Components.Schemas.CommentSortType? = nil,
         maxDepth: Int32? = nil,
-        filter: Set<Filter>? = nil
+        filter: ContentFilter? = nil
     ) async throws -> Components.Schemas.GetCommentsResponse {
         // A post-scoped fetch must not be narrowed by listing type: with no
         // type the server falls back to its default (`Local` on most
@@ -25,9 +25,9 @@ public extension LemmyApi {
             sort: sort,
             max_depth: maxDepth,
             post_id: postID,
-            saved_only: filter?.contains(where: \.isSaved),
-            liked_only: filter?.contains(where: \.isLiked),
-            disliked_only: filter?.contains(where: \.isDisliked)
+            saved_only: filter?.savedOnly,
+            liked_only: filter?.likedOnly,
+            disliked_only: filter?.dislikedOnly
         ))
     }
 }

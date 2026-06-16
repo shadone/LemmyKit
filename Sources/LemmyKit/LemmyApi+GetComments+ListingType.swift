@@ -11,7 +11,7 @@ public extension LemmyApi {
     func getComments(
         type: Components.Schemas.ListingType,
         sort: Components.Schemas.CommentSortType? = nil,
-        filter: Set<Filter>? = nil,
+        filter: ContentFilter? = nil,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.GetCommentsResponse {
@@ -20,9 +20,9 @@ public extension LemmyApi {
             sort: sort,
             page: page,
             limit: limit,
-            saved_only: filter?.contains(where: \.isSaved),
-            liked_only: filter?.contains(where: \.isLiked),
-            disliked_only: filter?.contains(where: \.isDisliked)
+            saved_only: filter?.savedOnly,
+            liked_only: filter?.likedOnly,
+            disliked_only: filter?.dislikedOnly
         ))
     }
 }
