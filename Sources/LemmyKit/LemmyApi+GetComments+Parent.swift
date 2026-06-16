@@ -7,31 +7,24 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Get list of comments for a given post.
+    /// Get list of replies under a given parent comment.
     func getComments(
-        postID: Components.Schemas.PostID,
+        parentID: Components.Schemas.CommentID,
         sort: Components.Schemas.CommentSortType? = nil,
         maxDepth: Int32? = nil,
         filter: Set<Filter>? = nil
     ) async throws -> Components.Schemas.GetCommentsResponse {
         let response: Operations.getComments.Output
         do {
+            // As with a post-scoped fetch, a thread must not be narrowed by
+            // listing type: with no type the server falls back to its default
+            // (`Local` on most instances), which drops replies on
+            // remote/federated communities even when a parent id is given.
             response = try await client.getComments(.init(query: .init(
-                // A post-scoped fetch must not be narrowed by listing type: with no
-                // type the server falls back to its default (`Local` on most
-                // instances), which drops comments on remote/federated communities
-                // even when a post id is given — so a federated post reports its
-                // real `comment_count` but the comment list comes back empty.
-                // lemmy-ui and Jerboa hardcode `All` on the post page for this reason.
                 type_: .All,
                 sort: sort,
                 max_depth: maxDepth,
-                page: nil,
-                limit: nil,
-                community_id: nil,
-                community_name: nil,
-                post_id: postID,
-                parent_id: nil,
+                parent_id: parentID,
                 saved_only: filter?.contains(where: \.isSaved),
                 liked_only: filter?.contains(where: \.isLiked),
                 disliked_only: filter?.contains(where: \.isDisliked)
