@@ -7,9 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// List communities, optionally filtered by listing `type` and `sort`, and paged.
+    /// List communities of a given listing `type`, optionally sorted and paged.
     func listCommunities(
-        type: Components.Parameters.Type_? = nil,
+        type: Components.Schemas.ListingType,
         sort: Components.Parameters.Sort? = nil,
         showNSFW: Bool? = nil,
         page: Components.Parameters.Page? = nil,
