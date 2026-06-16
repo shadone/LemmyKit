@@ -7,6 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
+    /// List @mentions of the logged-in account across the instance.
+    ///
+    /// - Parameters:
+    ///   - commentSort: mention ordering; when nil, the server's default applies.
+    ///   - unreadOnly: when true, return only unread mentions.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of mentions to return.
+    /// - Note: requires authentication.
     func getPersonMentions(
         commentSort: Components.Schemas.CommentSortType? = nil,
         unreadOnly: Bool? = nil,

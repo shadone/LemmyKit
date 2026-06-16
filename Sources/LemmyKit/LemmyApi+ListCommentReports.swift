@@ -8,10 +8,14 @@ import Foundation
 
 public extension LemmyApi {
     /// List comment reports visible to the logged-in moderator or admin.
+    ///
     /// - Parameters:
-    ///   - commentID: Restrict results to reports for the given comment.
-    ///   - unresolvedOnly: When `true`, return only reports that have not yet been resolved.
-    ///   - communityID: Restrict results to reports in the given community.
+    ///   - commentID: restrict results to reports for the given comment; nil lists all.
+    ///   - unresolvedOnly: true to return only unresolved reports, false to return all.
+    ///   - communityID: restrict results to reports in the given community; nil lists all.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of reports to return.
+    /// - Note: requires moderator or admin.
     func listCommentReports(
         commentID: Components.Parameters.CommentID? = nil,
         unresolvedOnly: Components.Parameters.UnresolvedOnly? = nil,

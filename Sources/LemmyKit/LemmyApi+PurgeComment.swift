@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Purge a comment and all of its attached content from the database. Admin
-    /// only. This is irreversible.
+    /// Permanently purge a comment and all attached content from the database. This is irreversible.
+    ///
+    /// - Parameters:
+    ///   - commentID: the comment to purge.
+    ///   - reason: optional reason recorded in the admin log.
+    /// - Note: admin only.
     func purgeComment(
         commentID: Components.Schemas.CommentID,
         reason: String? = nil

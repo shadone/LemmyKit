@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Purge a community and all of its attached content from the database.
-    /// Admin only. This is irreversible.
+    /// Permanently purge a community and all of its content from the database (irreversible).
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to purge.
+    ///   - reason: optional reason recorded in the admin log.
+    /// - Note: admin only.
     func purgeCommunity(
         communityID: Components.Schemas.CommunityID,
         reason: String? = nil

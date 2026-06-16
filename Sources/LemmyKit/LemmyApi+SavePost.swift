@@ -8,6 +8,11 @@ import Foundation
 
 public extension LemmyApi {
     /// Save or unsave the post `postID` for the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - postID: the post to save or unsave.
+    ///   - save: true to save the post, false to unsave it.
+    /// - Note: requires authentication.
     func savePost(
         postID: Components.Schemas.PostID,
         save: Bool

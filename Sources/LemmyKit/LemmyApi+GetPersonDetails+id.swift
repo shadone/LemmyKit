@@ -7,7 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch a person by their id.
+    /// Fetch a person's profile and activity by their numeric id.
+    ///
+    /// - Parameters:
+    ///   - personID: the person whose details to fetch.
+    ///   - sort: sort order for the person's posts and comments; when nil, the server's default applies.
+    ///   - page: 1-based page number; when nil, the server's default applies.
+    ///   - limit: maximum number of items to return; when nil, the server's default applies.
     func getPersonDetails(
         personID: Components.Schemas.PersonID,
         sort: Components.Parameters.Sort? = nil,

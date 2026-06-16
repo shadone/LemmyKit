@@ -9,7 +9,10 @@ import Foundation
 public extension LemmyApi {
     /// Delete or restore a private message.
     ///
-    /// - Parameter deleted: pass `true` to delete the message, `false` to restore it.
+    /// - Parameters:
+    ///   - privateMessageID: the private message to delete or restore.
+    ///   - deleted: true to delete the message, false to restore it.
+    /// - Note: requires authentication.
     func deletePrivateMessage(
         privateMessageID: Components.Schemas.PrivateMessageID,
         deleted: Bool

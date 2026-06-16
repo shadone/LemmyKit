@@ -8,6 +8,9 @@ import Foundation
 
 public extension LemmyApi {
     /// Request a password reset email for the given address.
+    ///
+    /// - Parameters:
+    ///   - email: the email address associated with the account.
     func passwordReset(
         email: String
     ) async throws -> Components.Schemas.SuccessResponse {

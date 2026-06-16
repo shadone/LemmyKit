@@ -7,7 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Update the post like status to be as specified by `status`.
+    /// Vote on the post `postID` with the given `status`.
+    ///
+    /// - Parameters:
+    ///   - postID: the post to vote on.
+    ///   - status: the vote to cast: `.liked`, `.disliked`, or `.neutral` to remove an existing vote.
+    /// - Note: requires authentication.
     func likePost(
         postID: Components.Schemas.PostID,
         status: LikeStatus

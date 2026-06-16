@@ -7,8 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Remove or restore a community (moderator action). Pass `removed: true` to
-    /// remove, or `false` to restore, optionally with a `reason`.
+    /// Remove or restore a community as a moderator action.
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to remove or restore.
+    ///   - removed: true to remove, false to restore a previously removed community.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: requires moderator or admin.
     func removeCommunity(
         communityID: Components.Schemas.CommunityID,
         removed: Bool,

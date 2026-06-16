@@ -7,7 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Save or unsave the comment `commentID` for the logged-in account.
+    /// Save or unsave a comment for the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - commentID: the comment to save or unsave.
+    ///   - save: true to save the comment, false to unsave it.
+    /// - Note: requires authentication.
     func saveComment(
         commentID: Components.Schemas.CommentID,
         save: Bool

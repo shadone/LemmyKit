@@ -8,6 +8,8 @@ import Foundation
 
 public extension LemmyApi {
     /// List the active login tokens for the current user.
+    ///
+    /// - Note: requires authentication.
     func listLogins() async throws -> [Components.Schemas.LoginToken] {
         let response: Operations.listLogins.Output
         do {

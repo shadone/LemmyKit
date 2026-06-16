@@ -7,10 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Remove (or restore) the post `postID` as a moderator or admin.
+    /// Remove or restore the post `postID` as a moderator or admin.
     ///
-    /// Pass `removed: true` to remove the post, `removed: false` to restore
-    /// it. An optional `reason` is recorded in the mod log.
+    /// - Parameters:
+    ///   - postID: the post to remove or restore.
+    ///   - removed: true to remove the post, false to restore it.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: requires moderator or admin.
     func removePost(
         postID: Components.Schemas.PostID,
         removed: Bool,

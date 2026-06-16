@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Follow (subscribe) or unfollow (unsubscribe) the community `communityID`
-    /// for the logged-in account.
+    /// Subscribe to or unsubscribe from a community.
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to follow or unfollow.
+    ///   - follow: true to subscribe, false to unsubscribe.
+    /// - Note: requires authentication.
     func followCommunity(
         communityID: Components.Schemas.CommunityID,
         follow: Bool

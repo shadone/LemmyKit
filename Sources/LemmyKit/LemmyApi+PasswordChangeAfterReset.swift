@@ -7,10 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Set a new password using the token from a password-reset email.
+    /// Set a new password using the token delivered in a password-reset email.
+    ///
     /// - Parameters:
-    ///   - token: The reset token delivered by email.
-    ///   - passwordVerify: Repeat of `password` for confirmation.
+    ///   - token: the reset token delivered by email.
+    ///   - password: the desired new password.
+    ///   - passwordVerify: repeat of `password` for confirmation.
     func passwordChangeAfterReset(
         token: String,
         password: String,

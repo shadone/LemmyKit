@@ -8,6 +8,11 @@ import Foundation
 
 public extension LemmyApi {
     /// Block or unblock the person `personID` for the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - personID: the person to block or unblock.
+    ///   - block: true to block the person, false to unblock.
+    /// - Note: requires authentication.
     func blockPerson(
         personID: Components.Schemas.PersonID,
         block: Bool

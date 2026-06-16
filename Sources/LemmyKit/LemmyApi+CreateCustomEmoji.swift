@@ -7,12 +7,15 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Create a custom emoji. Admin only.
+    /// Create a custom emoji.
+    ///
     /// - Parameters:
-    ///   - shortcode: The text used to reference the emoji, e.g. `party_blob`.
-    ///   - imageURL: The URL of the emoji image.
-    ///   - altText: Accessibility alt text describing the emoji.
-    ///   - keywords: Search keywords associated with the emoji.
+    ///   - category: the emoji category to group it under.
+    ///   - shortcode: the emoji shortcode (without colons).
+    ///   - imageURL: the url of the emoji image.
+    ///   - altText: alt text describing the emoji, for accessibility.
+    ///   - keywords: searchable keywords for the emoji.
+    /// - Note: admin only.
     func createCustomEmoji(
         category: String,
         shortcode: String,

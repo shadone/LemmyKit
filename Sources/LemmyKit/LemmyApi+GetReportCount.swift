@@ -7,9 +7,10 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the number of open reports for the logged-in moderator or admin.
-    /// - Parameters:
-    ///   - communityID: Restrict the count to reports in the given community.
+    /// Fetch the number of unresolved reports visible to the logged-in moderator or admin.
+    ///
+    /// - Parameter communityID: restrict the count to reports in this community; nil returns counts across all moderated communities.
+    /// - Note: requires moderator or admin.
     func getReportCount(
         communityID: Components.Parameters.CommunityID? = nil
     ) async throws -> Components.Schemas.GetReportCountResponse {

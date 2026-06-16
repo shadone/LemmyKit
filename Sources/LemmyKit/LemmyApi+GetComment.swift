@@ -8,6 +8,9 @@ import Foundation
 
 public extension LemmyApi {
     /// Fetch a single comment by its id.
+    ///
+    /// - Parameters:
+    ///   - id: the comment to fetch.
     func getComment(
         id: Components.Schemas.CommentID
     ) async throws -> Components.Schemas.CommentResponse {

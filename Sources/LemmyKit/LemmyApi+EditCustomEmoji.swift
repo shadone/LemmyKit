@@ -7,11 +7,15 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Edit an existing custom emoji. Admin only.
+    /// Edit an existing custom emoji.
+    ///
     /// - Parameters:
-    ///   - imageURL: The URL of the emoji image.
-    ///   - altText: Accessibility alt text describing the emoji.
-    ///   - keywords: Search keywords associated with the emoji.
+    ///   - id: the custom emoji to edit.
+    ///   - category: the emoji category to group it under.
+    ///   - imageURL: the url of the emoji image.
+    ///   - altText: alt text describing the emoji, for accessibility.
+    ///   - keywords: searchable keywords for the emoji.
+    /// - Note: admin only.
     func editCustomEmoji(
         id: Components.Schemas.CustomEmojiID,
         category: String,

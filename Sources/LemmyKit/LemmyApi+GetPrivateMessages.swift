@@ -7,8 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the account's private messages. Requires authentication. Pass
-    /// `creatorID` to restrict the list to messages from a single sender.
+    /// List the logged-in account's private messages.
+    ///
+    /// - Parameters:
+    ///   - unreadOnly: when true, return only unread messages.
+    ///   - creatorID: when provided, return only messages from this sender; nil returns all.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of messages to return.
+    /// - Note: requires authentication.
     func getPrivateMessages(
         unreadOnly: Bool? = nil,
         creatorID: Components.Schemas.PersonID? = nil,

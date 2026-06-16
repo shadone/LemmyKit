@@ -7,10 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Remove (or restore) the comment `commentID` as a moderator or admin.
+    /// Remove or restore the comment `commentID` as a moderator or admin.
     ///
-    /// Pass `removed: true` to remove the comment, `removed: false` to restore
-    /// it. An optional `reason` is recorded in the mod log.
+    /// - Parameters:
+    ///   - commentID: the comment to remove or restore.
+    ///   - removed: true to remove the comment, false to restore it.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: requires moderator or admin.
     func removeComment(
         commentID: Components.Schemas.CommentID,
         removed: Bool,

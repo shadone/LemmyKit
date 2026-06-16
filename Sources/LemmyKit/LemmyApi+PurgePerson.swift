@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Purge a person and all of their attached content from the database.
-    /// Admin only. This is irreversible.
+    /// Permanently purge a person and all of their content from the database.
+    ///
+    /// - Parameters:
+    ///   - personID: the person to purge.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: admin only.
     func purgePerson(
         personID: Components.Schemas.PersonID,
         reason: String? = nil

@@ -7,7 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Leave the admin team. Returns the updated site information.
+    /// Resign from the instance admin team and return the updated site.
+    ///
+    /// - Note: requires authentication.
     func leaveAdmin() async throws -> Components.Schemas.GetSiteResponse {
         let response: Operations.leaveAdmin.Output
         do {

@@ -9,10 +9,11 @@ import Foundation
 public extension LemmyApi {
     /// Feature (pin) or unfeature the post `postID`.
     ///
-    /// `featureType` chooses where the post is featured: `.Community` pins it
-    /// to the top of its community (available to community moderators), while
-    /// `.Local` pins it to the instance front page (admin-only on most
-    /// instances).
+    /// - Parameters:
+    ///   - postID: the post to feature or unfeature.
+    ///   - featured: true to feature the post, false to unfeature it.
+    ///   - featureType: where to feature the post; `.Community` pins it to the top of its community, `.Local` pins it to the instance front page.
+    /// - Note: requires moderator or admin.
     func featurePost(
         postID: Components.Schemas.PostID,
         featured: Bool,

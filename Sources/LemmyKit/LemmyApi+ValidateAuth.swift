@@ -7,7 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Validate the current auth token. Returns an error if it is invalid.
+    /// Validate the current auth token, throwing an error if it is invalid or expired.
+    ///
+    /// - Note: requires authentication.
     func validateAuth() async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.validateAuth.Output
         do {

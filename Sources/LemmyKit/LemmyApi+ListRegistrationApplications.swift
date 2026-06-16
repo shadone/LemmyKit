@@ -7,9 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// List the registration applications. Admin only.
+    /// List registration applications.
+    ///
     /// - Parameters:
-    ///   - unreadOnly: Filter the results to only unread (pending) applications.
+    ///   - unreadOnly: true to return only unread (pending) applications; optional, when nil the server's default applies.
+    ///   - page: 1-based page number; optional, when nil the server's default applies.
+    ///   - limit: maximum number of results to return; optional, when nil the server's default applies.
+    /// - Note: admin only.
     func listRegistrationApplications(
         unreadOnly: Components.Parameters.UnreadOnly? = nil,
         page: Components.Parameters.Page? = nil,

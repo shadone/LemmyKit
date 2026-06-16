@@ -7,7 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Edit an existing comment identified by `commentID`.
+    /// Edit the body or language of an existing comment.
+    ///
+    /// - Parameters:
+    ///   - commentID: the comment to edit.
+    ///   - content: the new markdown body; when nil, the body is left unchanged.
+    ///   - languageID: the language of the comment; when nil, the language is left unchanged.
+    /// - Note: requires authentication.
     func editComment(
         commentID: Components.Schemas.CommentID,
         content: String? = nil,

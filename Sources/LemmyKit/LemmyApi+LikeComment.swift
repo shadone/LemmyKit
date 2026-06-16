@@ -7,7 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Update the comment like status to be as specified by `status`.
+    /// Cast or retract a vote on a comment.
+    ///
+    /// - Parameters:
+    ///   - commentID: the comment to vote on.
+    ///   - status: the desired vote state (upvote, downvote, or none).
+    /// - Note: requires authentication.
     func likeComment(
         commentID: Components.Schemas.CommentID,
         status: LikeStatus

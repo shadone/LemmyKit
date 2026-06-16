@@ -10,8 +10,9 @@ import OpenAPIRuntime
 public extension LemmyApi {
     /// Import a backup of the user's settings.
     ///
-    /// - Parameter settings: the opaque settings object previously returned by
-    ///   ``exportSettings()``, passed back verbatim.
+    /// - Parameters:
+    ///   - settings: the previously exported settings blob to import, as returned by ``exportSettings()``.
+    /// - Note: requires authentication.
     func importSettings(
         settings: OpenAPIRuntime.OpenAPIObjectContainer
     ) async throws -> Components.Schemas.SuccessResponse {

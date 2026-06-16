@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Log in with a username or email and password. Lemmy accepts either in
-    /// the same field.
+    /// Log in with a username or email address and password.
+    ///
+    /// - Parameters:
+    ///   - usernameOrEmail: the account's username or email address.
+    ///   - password: the account password.
+    /// - Returns: a login response carrying the new session JWT.
     func login(
         usernameOrEmail: String,
         password: String

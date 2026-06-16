@@ -7,7 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the number of unread (pending) registration applications. Admin only.
+    /// Fetch the count of unread (pending) registration applications.
+    ///
+    /// - Note: admin only.
     func getUnreadRegistrationApplicationCount(
     ) async throws -> Components.Schemas.GetUnreadRegistrationApplicationCountResponse {
         let response: Operations.getUnreadRegistrationApplicationCount.Output

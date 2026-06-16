@@ -8,6 +8,10 @@ import Foundation
 
 public extension LemmyApi {
     /// List the images uploaded by the current account.
+    ///
+    /// - Parameters:
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of results to return.
     func listMedia(
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil

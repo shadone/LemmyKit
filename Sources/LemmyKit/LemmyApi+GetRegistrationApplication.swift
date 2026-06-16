@@ -7,7 +7,11 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the registration application for a given person. Admin only.
+    /// Fetch the registration application for a given person.
+    ///
+    /// - Parameters:
+    ///   - personID: the person whose registration application to retrieve.
+    /// - Note: admin only.
     func getRegistrationApplication(
         personID: Components.Schemas.PersonID
     ) async throws -> Components.Schemas.RegistrationApplicationResponse {

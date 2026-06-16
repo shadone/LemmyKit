@@ -7,7 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Transfer ownership of `communityID` to the person identified by `personID`.
+    /// Transfer ownership of a community to another person.
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to transfer.
+    ///   - personID: the person who will become the new owner.
+    /// - Note: requires authentication as the current community owner or admin.
     func transferCommunity(
         communityID: Components.Schemas.CommunityID,
         personID: Components.Schemas.PersonID

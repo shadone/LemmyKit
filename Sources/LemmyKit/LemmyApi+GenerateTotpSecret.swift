@@ -7,8 +7,10 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Generate a new TOTP secret. The returned URL must be confirmed by
-    /// calling ``updateTotp(totpToken:enabled:)`` with a valid token.
+    /// Generate a new TOTP secret for the logged-in account.
+    ///
+    /// - Returns: the new TOTP secret and provisioning URI; confirm by calling ``updateTotp(totpToken:enabled:)`` with a valid token.
+    /// - Note: requires authentication.
     func generateTotpSecret() async throws -> Components.Schemas.GenerateTotpSecretResponse {
         let response: Operations.generateTotpSecret.Output
         do {

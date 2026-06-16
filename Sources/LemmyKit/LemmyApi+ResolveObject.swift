@@ -10,8 +10,7 @@ public extension LemmyApi {
     /// Resolve a federated object (community, person, post, or comment) by its
     /// ActivityPub URL or fully-qualified name.
     ///
-    /// - Parameters:
-    ///   - query: The object URL or name to resolve.
+    /// - Parameter query: the federated object url or handle to resolve.
     func resolveObject(
         query: String
     ) async throws -> Components.Schemas.ResolveObjectResponse {

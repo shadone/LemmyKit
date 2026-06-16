@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Delete or restore a comment identified by `commentID`.
-    /// - Parameter deleted: Pass `true` to delete, `false` to restore.
+    /// Delete or restore a comment owned by the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - commentID: the comment to delete or restore.
+    ///   - deleted: true to delete the comment, false to restore it.
+    /// - Note: requires authentication.
     func deleteComment(
         commentID: Components.Schemas.CommentID,
         deleted: Bool

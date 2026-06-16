@@ -7,10 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch a person by their username.
-    /// - Parameter username: the name of the person to fetch info for.
-    /// The username could be a name of a user local to this instance (e.g. `milan`);
-    /// or a fully qualified person name (e.g. `ruud@lemmy.world`).
+    /// Fetch a person's profile and activity by their username.
+    ///
+    /// - Parameters:
+    ///   - username: local username (e.g. `milan`) or fully-qualified name (e.g. `ruud@lemmy.world`).
+    ///   - sort: sort order for the person's posts and comments; when nil, the server's default applies.
+    ///   - page: 1-based page number; when nil, the server's default applies.
+    ///   - limit: maximum number of items to return; when nil, the server's default applies.
     func getPersonDetails(
         username: String,
         sort: Components.Parameters.Sort? = nil,

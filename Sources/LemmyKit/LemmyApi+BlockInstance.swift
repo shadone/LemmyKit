@@ -7,7 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Block or unblock an instance.
+    /// Block or unblock an instance for the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - instanceID: the instance to block or unblock.
+    ///   - block: true to block the instance, false to unblock.
+    /// - Note: requires authentication.
     func blockInstance(
         instanceID: Components.Schemas.InstanceID,
         block: Bool

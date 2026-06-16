@@ -7,8 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Hide or unhide a community from the main view (admin action). Pass
-    /// `hidden: true` to hide, or `false` to unhide, optionally with a `reason`.
+    /// Hide or unhide a community from the main listing (admin action).
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to hide or unhide.
+    ///   - hidden: true to hide, false to unhide.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: admin only.
     func hideCommunity(
         communityID: Components.Schemas.CommunityID,
         hidden: Bool,

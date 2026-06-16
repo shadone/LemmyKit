@@ -7,7 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// List the votes (likes) on a comment. Admin/mod only.
+    /// List the votes cast on a comment.
+    ///
+    /// - Parameters:
+    ///   - commentID: the comment whose votes to list.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of votes to return.
+    /// - Note: requires moderator or admin.
     func listCommentLikes(
         commentID: Components.Schemas.CommentID,
         page: Components.Parameters.Page? = nil,

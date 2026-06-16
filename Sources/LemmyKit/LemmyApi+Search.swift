@@ -13,7 +13,7 @@ public extension LemmyApi {
     /// results reflect the account's subscribed/saved/vote state.
     ///
     /// - Parameters:
-    ///   - query: the search term. Must be non-empty.
+    ///   - query: the search term; must be non-empty.
     ///   - type: which kind of result to return (All/Posts/Comments/Communities/Users/Url).
     ///   - sort: result ordering.
     ///   - listingType: scope of the search (All/Local/Subscribed/ModeratorView).

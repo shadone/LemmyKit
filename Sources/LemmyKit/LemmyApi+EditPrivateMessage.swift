@@ -8,6 +8,12 @@ import Foundation
 
 public extension LemmyApi {
     /// Edit the content of an existing private message.
+    ///
+    /// - Parameters:
+    ///   - privateMessageID: the private message to edit.
+    ///   - content: the new markdown body of the message.
+    /// - Returns: the updated private message.
+    /// - Note: requires authentication.
     func editPrivateMessage(
         privateMessageID: Components.Schemas.PrivateMessageID,
         content: String

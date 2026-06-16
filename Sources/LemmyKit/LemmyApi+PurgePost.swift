@@ -7,8 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Purge a post and all of its attached content from the database. Admin
-    /// only. This is irreversible.
+    /// Permanently purge a post and all of its attached content from the database.
+    ///
+    /// This operation is irreversible.
+    ///
+    /// - Parameters:
+    ///   - postID: the post to purge.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: admin only.
     func purgePost(
         postID: Components.Schemas.PostID,
         reason: String? = nil

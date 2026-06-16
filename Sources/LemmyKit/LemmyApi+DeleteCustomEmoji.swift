@@ -7,7 +7,11 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Delete a custom emoji. Admin only.
+    /// Delete a custom emoji.
+    ///
+    /// - Parameters:
+    ///   - id: the custom emoji to delete.
+    /// - Note: admin only.
     func deleteCustomEmoji(
         id: Components.Schemas.CustomEmojiID
     ) async throws -> Components.Schemas.SuccessResponse {

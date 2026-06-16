@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Delete or restore your own community. Pass `deleted: true` to delete, or
-    /// `false` to restore a previously deleted community.
+    /// Delete or restore a community you own.
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to delete or restore.
+    ///   - deleted: true to delete, false to restore a previously deleted community.
+    /// - Note: requires authentication as the community owner.
     func deleteCommunity(
         communityID: Components.Schemas.CommunityID,
         deleted: Bool

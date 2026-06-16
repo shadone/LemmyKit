@@ -7,8 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the inbox replies (comment replies to the account's posts and
-    /// comments). Requires authentication.
+    /// List replies to the logged-in account's posts and comments.
+    ///
+    /// - Parameters:
+    ///   - commentSort: reply ordering; when nil, the server's default applies.
+    ///   - unreadOnly: when true, return only unread replies.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of replies to return.
+    /// - Note: requires authentication.
     func getReplies(
         commentSort: Components.Schemas.CommentSortType? = nil,
         unreadOnly: Bool? = nil,

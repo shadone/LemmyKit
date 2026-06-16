@@ -7,8 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Change the logged-in account's password. Returns a fresh login response
-    /// (the existing session may be invalidated, so use the returned token).
+    /// Change the logged-in account's password.
+    ///
+    /// - Parameters:
+    ///   - newPassword: the desired new password.
+    ///   - newPasswordVerify: repeat of `newPassword` for confirmation.
+    ///   - oldPassword: the current account password.
+    /// - Returns: a fresh login response carrying the new session JWT; the existing session may be invalidated.
+    /// - Note: requires authentication.
     func changePassword(
         newPassword: String,
         newPasswordVerify: String,

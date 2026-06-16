@@ -7,7 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// List all images uploaded to the instance. Admin only.
+    /// List all images uploaded to the instance.
+    ///
+    /// - Note: admin only.
+    ///
+    /// - Parameters:
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of results to return.
     func listAllMedia(
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil

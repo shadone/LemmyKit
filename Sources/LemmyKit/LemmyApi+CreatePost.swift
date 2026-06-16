@@ -7,18 +7,18 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Create a new post in `communityID`. Requires authentication.
+    /// Create a new post in `communityID`.
     ///
     /// - Parameters:
-    ///   - communityID: the community to post to.
-    ///   - name: the post title (required).
-    ///   - url: an optional link url. For image posts, pass the uploaded
-    ///     pict-rs url returned by ``uploadImage(imageData:fileName:mimeType:)``.
-    ///   - body: an optional markdown body.
-    ///   - nsfw: whether the post is flagged not-safe-for-work.
-    ///   - altText: alt text describing the linked image, for accessibility.
-    ///   - customThumbnail: an optional custom thumbnail url (overrides the
-    ///     auto-generated one); pass an uploaded pict-rs url.
+    ///   - communityID: the community to post in.
+    ///   - name: the post title.
+    ///   - url: optional link url; for image posts pass the pict-rs url from ``uploadImage(imageData:fileName:mimeType:)``.
+    ///   - body: optional markdown body.
+    ///   - nsfw: whether to flag the post not-safe-for-work.
+    ///   - altText: optional alt text describing the linked image, for accessibility.
+    ///   - customThumbnail: optional custom thumbnail url overriding the auto-generated one; pass an uploaded pict-rs url.
+    /// - Returns: the created post, including its new server id.
+    /// - Note: requires authentication.
     func createPost(
         communityID: Components.Schemas.CommunityID,
         name: String,

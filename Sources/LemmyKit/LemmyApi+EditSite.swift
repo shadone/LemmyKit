@@ -9,6 +9,54 @@ import Foundation
 public extension LemmyApi {
     /// Edit the site. Every field is optional; pass only the settings you want
     /// to change.
+    ///
+    /// - Note: admin only.
+    ///
+    /// - Parameters:
+    ///   - name: the human-readable site name.
+    ///   - sidebar: sidebar markdown text.
+    ///   - description: short site description.
+    ///   - icon: url of the site icon image.
+    ///   - banner: url of the site banner image.
+    ///   - enableDownvotes: whether downvoting is allowed site-wide.
+    ///   - enableNSFW: whether NSFW content is allowed to be posted.
+    ///   - communityCreationAdminOnly: when true, only admins may create communities.
+    ///   - requireEmailVerification: whether new accounts must verify their email address.
+    ///   - applicationQuestion: markdown prompt shown to users applying for an account.
+    ///   - privateInstance: when true, the instance is not publicly browsable without an account.
+    ///   - defaultTheme: name of the default UI theme.
+    ///   - defaultPostListingType: default listing scope for post feeds (all, local, subscribed).
+    ///   - defaultSortType: default sort order for post feeds.
+    ///   - legalInformation: markdown text for the site's legal information page.
+    ///   - applicationEmailAdmins: whether admins receive email notifications for new applications.
+    ///   - hideModlogModNames: when true, moderator names are hidden in the public modlog.
+    ///   - discussionLanguages: list of language ids enabled for discussions on this site.
+    ///   - slurFilterRegex: regular expression used to filter disallowed words from content.
+    ///   - actorNameMaxLength: maximum character length for new actor (user/community) names.
+    ///   - rateLimitMessage: max private messages allowed per rate-limit window.
+    ///   - rateLimitMessagePerSecond: duration in seconds of the private-message rate-limit window.
+    ///   - rateLimitPost: max posts allowed per rate-limit window.
+    ///   - rateLimitPostPerSecond: duration in seconds of the post rate-limit window.
+    ///   - rateLimitRegister: max account registrations allowed per rate-limit window.
+    ///   - rateLimitRegisterPerSecond: duration in seconds of the registration rate-limit window.
+    ///   - rateLimitImage: max image uploads allowed per rate-limit window.
+    ///   - rateLimitImagePerSecond: duration in seconds of the image rate-limit window.
+    ///   - rateLimitComment: max comments allowed per rate-limit window.
+    ///   - rateLimitCommentPerSecond: duration in seconds of the comment rate-limit window.
+    ///   - rateLimitSearch: max search requests allowed per rate-limit window.
+    ///   - rateLimitSearchPerSecond: duration in seconds of the search rate-limit window.
+    ///   - federationEnabled: whether the instance federates with other instances.
+    ///   - federationDebug: whether verbose federation debug logging is enabled.
+    ///   - captchaEnabled: whether captcha challenges are required at registration.
+    ///   - captchaDifficulty: difficulty level of the captcha (e.g. "easy", "medium", "hard").
+    ///   - allowedInstances: allowlist of remote instance hostnames to federate with; nil allows all.
+    ///   - blockedInstances: blocklist of remote instance hostnames to refuse federation with.
+    ///   - blockedURLs: list of urls whose linked content is blocked from being posted.
+    ///   - taglines: list of rotating tagline strings shown on the site.
+    ///   - registrationMode: who is permitted to register (open, requires application, closed).
+    ///   - reportsEmailAdmins: whether admins receive email notifications for new content reports.
+    ///   - contentWarning: site-wide content warning message shown to visitors.
+    ///   - defaultPostListingMode: default post display density (list, card, small card).
     func editSite(
         name: String? = nil,
         sidebar: String? = nil,

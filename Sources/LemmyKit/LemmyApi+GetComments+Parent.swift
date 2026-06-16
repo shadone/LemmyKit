@@ -8,6 +8,12 @@ import Foundation
 
 public extension LemmyApi {
     /// Get list of replies under a given parent comment.
+    ///
+    /// - Parameters:
+    ///   - parentID: the comment whose reply thread to fetch.
+    ///   - sort: comment ordering; when nil, the server's default applies.
+    ///   - maxDepth: how deep to traverse the comment tree; when nil, the server's default applies.
+    ///   - filter: restrict to the viewer's saved or voted comments; nil for no restriction.
     func getComments(
         parentID: Components.Schemas.CommentID,
         sort: Components.Schemas.CommentSortType? = nil,

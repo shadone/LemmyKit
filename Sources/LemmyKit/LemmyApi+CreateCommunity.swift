@@ -7,7 +7,20 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Create a new community with the unique `name` and a human-readable `title`.
+    /// Create a new community.
+    ///
+    /// - Parameters:
+    ///   - name: the community's url-safe actor name (cannot be changed later).
+    ///   - title: the human-readable display title.
+    ///   - description: optional markdown sidebar description.
+    ///   - icon: url of the community's icon image.
+    ///   - banner: url of the community's banner image.
+    ///   - nsfw: true to mark the community as NSFW.
+    ///   - postingRestrictedToMods: true to allow only moderators to create posts.
+    ///   - discussionLanguages: language ids the community accepts; nil for no restriction.
+    ///   - visibility: who can see and find the community; nil uses the server default.
+    /// - Returns: the created community.
+    /// - Note: requires authentication.
     func createCommunity(
         name: String,
         title: String,

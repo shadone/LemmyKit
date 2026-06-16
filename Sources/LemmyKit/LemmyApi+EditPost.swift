@@ -7,12 +7,20 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Edit an existing post identified by `postID`. Only the fields you pass
-    /// are changed.
+    /// Edit an existing post identified by `postID`.
+    ///
+    /// Only the fields you pass are changed; omitted parameters leave the existing values intact.
     ///
     /// - Parameters:
-    ///   - altText: Optional alt text, usable for image posts.
-    ///   - customThumbnail: Instead of fetching a thumbnail, use a custom one.
+    ///   - postID: the post to edit.
+    ///   - name: new post title; nil leaves the existing title unchanged.
+    ///   - url: new link url; nil leaves the existing url unchanged.
+    ///   - body: new markdown body; nil leaves the existing body unchanged.
+    ///   - altText: alt text describing the linked image; nil leaves the existing value unchanged.
+    ///   - nsfw: whether to flag the post not-safe-for-work; nil leaves the existing flag unchanged.
+    ///   - languageID: language of the post content; nil leaves the existing language unchanged.
+    ///   - customThumbnail: custom thumbnail url overriding the auto-generated one; nil leaves the existing thumbnail unchanged.
+    /// - Note: requires authentication.
     func editPost(
         postID: Components.Schemas.PostID,
         name: String? = nil,

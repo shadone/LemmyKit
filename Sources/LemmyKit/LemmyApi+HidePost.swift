@@ -7,6 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
+    /// Hide or unhide one or more posts for the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - postIDs: the posts to hide or unhide.
+    ///   - hide: true to hide the posts, false to unhide them.
+    /// - Note: requires authentication.
     func hidePost(
         postIDs: [Components.Schemas.PostID],
         hide: Bool

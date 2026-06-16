@@ -7,6 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
+    /// Mark one or more posts as read or unread for the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - postIDs: the posts to mark as read or unread.
+    ///   - read: true to mark the posts as read, false to mark them as unread.
+    /// - Note: requires authentication.
     func markPostAsRead(
         postIDs: [Components.Schemas.PostID],
         read: Bool

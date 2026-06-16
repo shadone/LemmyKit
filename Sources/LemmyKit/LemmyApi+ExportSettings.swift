@@ -8,11 +8,10 @@ import Foundation
 import OpenAPIRuntime
 
 public extension LemmyApi {
-    /// Export a backup of the current user's settings, including saved content,
-    /// followed communities, and blocks.
+    /// Export a backup of the current user's settings, including saved content, followed communities, and blocks.
     ///
-    /// The backup is an opaque JSON object; pass it back verbatim to
-    /// ``importSettings(settings:)`` to restore it.
+    /// - Returns: an opaque settings blob; pass it verbatim to ``importSettings(settings:)`` to restore.
+    /// - Note: requires authentication.
     func exportSettings() async throws -> OpenAPIRuntime.OpenAPIObjectContainer {
         let response: Operations.exportSettings.Output
         do {

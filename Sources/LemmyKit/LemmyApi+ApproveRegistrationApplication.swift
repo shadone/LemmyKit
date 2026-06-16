@@ -7,8 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Approve or deny a registration application. Admin only. Pass
-    /// `approve: false` with a `denyReason` to reject the applicant.
+    /// Approve or deny a registration application.
+    ///
+    /// - Parameters:
+    ///   - id: the registration application to act on.
+    ///   - approve: true to approve the application, false to deny it.
+    ///   - denyReason: optional reason shown to the applicant when denied; omitted when not provided.
+    /// - Note: admin only.
     func approveRegistrationApplication(
         id: Int32,
         approve: Bool,

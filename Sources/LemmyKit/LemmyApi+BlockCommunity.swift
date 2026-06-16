@@ -7,7 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Block or unblock the community `communityID` for the logged-in account.
+    /// Block or unblock a community for the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to block or unblock.
+    ///   - block: true to block, false to unblock.
+    /// - Note: requires authentication.
     func blockCommunity(
         communityID: Components.Schemas.CommunityID,
         block: Bool

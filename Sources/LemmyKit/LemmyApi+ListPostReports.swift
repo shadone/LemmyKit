@@ -8,10 +8,14 @@ import Foundation
 
 public extension LemmyApi {
     /// List post reports visible to the logged-in moderator or admin.
+    ///
     /// - Parameters:
-    ///   - unresolvedOnly: When `true`, return only reports that have not yet been resolved.
-    ///   - communityID: Restrict results to reports in the given community.
-    ///   - postID: Restrict results to reports for the given post.
+    ///   - unresolvedOnly: when true, return only reports not yet resolved.
+    ///   - communityID: restrict to reports in this community; nil lists all communities.
+    ///   - postID: restrict to reports for this post; nil lists all posts.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of reports to return.
+    /// - Note: requires moderator or admin.
     func listPostReports(
         unresolvedOnly: Components.Parameters.UnresolvedOnly? = nil,
         communityID: Components.Parameters.CommunityID? = nil,

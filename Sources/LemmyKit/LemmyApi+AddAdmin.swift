@@ -7,7 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Add or remove an admin to the instance.
+    /// Add or remove a person from the instance admin team.
+    ///
+    /// - Parameters:
+    ///   - personID: the person to promote or demote.
+    ///   - added: true to grant admin privileges, false to revoke them.
+    /// - Note: admin only.
     func addAdmin(
         personID: Components.Schemas.PersonID,
         added: Bool

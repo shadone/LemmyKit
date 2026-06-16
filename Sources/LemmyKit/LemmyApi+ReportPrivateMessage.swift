@@ -8,6 +8,11 @@ import Foundation
 
 public extension LemmyApi {
     /// Report a private message for moderator review.
+    ///
+    /// - Parameters:
+    ///   - privateMessageID: the private message to report.
+    ///   - reason: a short explanation of why the message is being reported.
+    /// - Note: requires authentication.
     func reportPrivateMessage(
         privateMessageID: Components.Schemas.PrivateMessageID,
         reason: String

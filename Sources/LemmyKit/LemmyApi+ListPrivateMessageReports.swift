@@ -8,8 +8,12 @@ import Foundation
 
 public extension LemmyApi {
     /// List private message reports visible to the logged-in admin.
+    ///
     /// - Parameters:
-    ///   - unresolvedOnly: When `true`, return only reports that have not yet been resolved.
+    ///   - unresolvedOnly: when true, return only reports that have not yet been resolved.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of reports to return.
+    /// - Note: requires authentication.
     func listPrivateMessageReports(
         unresolvedOnly: Components.Parameters.UnresolvedOnly? = nil,
         page: Components.Parameters.Page? = nil,

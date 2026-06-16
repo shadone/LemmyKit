@@ -7,9 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Resolve or unresolve the private message report `reportID`.
+    /// Resolve or reopen a private message report.
+    ///
     /// - Parameters:
-    ///   - resolved: Pass `true` to mark the report resolved, `false` to reopen it.
+    ///   - reportID: the private message report to update.
+    ///   - resolved: true to mark the report resolved, false to reopen it.
+    /// - Note: requires authentication.
     func resolvePrivateMessageReport(
         reportID: Components.Schemas.PrivateMessageReportID,
         resolved: Bool

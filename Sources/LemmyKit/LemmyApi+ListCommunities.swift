@@ -7,7 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// List communities of a given listing `type`, optionally sorted and paged.
+    /// List communities matching the given listing type, with optional sorting and pagination.
+    ///
+    /// - Parameters:
+    ///   - type: the scope of communities to return (e.g. subscribed, local, all).
+    ///   - sort: sort order for the results; nil uses the server default.
+    ///   - showNSFW: true to include NSFW communities in the results; nil uses the server default.
+    ///   - page: 1-based page number; nil returns the first page.
+    ///   - limit: maximum number of communities to return; nil uses the server default.
     func listCommunities(
         type: Components.Schemas.ListingType,
         sort: Components.Parameters.Sort? = nil,

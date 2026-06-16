@@ -7,9 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Lock (or unlock) the post `postID` as a moderator or admin.
+    /// Lock or unlock the post `postID` as a moderator or admin.
     ///
     /// A locked post cannot receive new comments.
+    ///
+    /// - Parameters:
+    ///   - postID: the post to lock or unlock.
+    ///   - locked: true to lock the post, false to unlock it.
+    /// - Note: requires moderator or admin.
     func lockPost(
         postID: Components.Schemas.PostID,
         locked: Bool

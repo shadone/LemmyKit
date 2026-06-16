@@ -8,8 +8,11 @@ import Foundation
 
 public extension LemmyApi {
     /// Resolve or unresolve the post report `reportID`.
+    ///
     /// - Parameters:
-    ///   - resolved: Pass `true` to mark the report resolved, `false` to reopen it.
+    ///   - reportID: the post report to resolve or unresolve.
+    ///   - resolved: true to mark the report resolved, false to reopen it.
+    /// - Note: requires moderator or admin.
     func resolvePostReport(
         reportID: Components.Schemas.PostReportID,
         resolved: Bool

@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Delete (or restore) the post identified by `postID`. Pass `deleted`
-    /// to `true` to delete it or `false` to restore it.
+    /// Delete or restore the post identified by `postID`.
+    ///
+    /// - Parameters:
+    ///   - postID: the post to delete or restore.
+    ///   - deleted: true to delete the post, false to restore it.
+    /// - Note: requires authentication.
     func deletePost(
         postID: Components.Schemas.PostID,
         deleted: Bool

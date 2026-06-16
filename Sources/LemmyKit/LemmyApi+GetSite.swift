@@ -7,6 +7,7 @@
 import Foundation
 
 public extension LemmyApi {
+    /// Fetch the site's metadata, configuration, and local user list.
     func getSite() async throws -> Components.Schemas.GetSiteResponse {
         let response: Operations.getSite.Output
         do {

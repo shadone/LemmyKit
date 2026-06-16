@@ -7,14 +7,23 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Register a new user account on the backing instance.
+    /// Register a new user account on the instance.
     ///
     /// On success the response carries either a `jwt` (account ready to use) or
-    /// `registration_created` / `verify_email_sent` flags describing a pending
+    /// `registration_created` / `verify_email_sent` flags indicating a pending
     /// state (admin approval and/or email verification required before the
-    /// account can log in). Captcha (`captchaUUID` / `captchaAnswer`) and the
-    /// application `answer` are optional and only required when the instance
-    /// enables them.
+    /// account can log in).
+    ///
+    /// - Parameters:
+    ///   - username: the desired username for the new account.
+    ///   - password: the desired account password.
+    ///   - passwordVerify: repeat of `password` for confirmation.
+    ///   - email: optional email address; required on instances that mandate email verification.
+    ///   - showNSFW: whether to display NSFW content; when nil, the server's default applies.
+    ///   - captchaUUID: the UUID identifying the captcha challenge, when the instance requires one.
+    ///   - captchaAnswer: the captcha answer text, when the instance requires one.
+    ///   - answer: the application question answer, when the instance requires one.
+    ///   - honeypot: anti-spam honeypot field; should be left nil by legitimate clients.
     func register(
         username: String,
         password: String,

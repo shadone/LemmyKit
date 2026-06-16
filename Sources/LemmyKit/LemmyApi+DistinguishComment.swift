@@ -7,10 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Distinguish (or undistinguish) the comment `commentID`.
+    /// Mark or unmark a comment as a distinguished moderator or admin statement.
     ///
-    /// A distinguished comment is highlighted as an official moderator or
-    /// admin statement.
+    /// - Parameters:
+    ///   - commentID: the comment to distinguish or undistinguish.
+    ///   - distinguished: true to distinguish the comment, false to remove the distinction.
+    /// - Note: requires moderator or admin.
     func distinguishComment(
         commentID: Components.Schemas.CommentID,
         distinguished: Bool

@@ -7,7 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Send a private message to `recipientID`. Requires authentication.
+    /// Send a private message to `recipientID`.
+    ///
+    /// - Parameters:
+    ///   - content: the markdown body of the message.
+    ///   - recipientID: the person to send the message to.
+    /// - Returns: the created private message.
+    /// - Note: requires authentication.
     func createPrivateMessage(
         content: String,
         recipientID: Components.Schemas.PersonID

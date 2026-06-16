@@ -7,7 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the list of persons banned from the instance.
+    /// Fetch the list of all persons banned from the instance.
+    ///
+    /// - Note: admin only.
     func getBannedPersons() async throws -> Components.Schemas.BannedPersonsResponse {
         let response: Operations.getBannedPersons.Output
         do {

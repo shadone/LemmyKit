@@ -9,6 +9,16 @@ import Foundation
 public extension LemmyApi {
     /// Fetch the moderation log, optionally filtered by moderator, community,
     /// post, comment, action type, or affected person.
+    ///
+    /// - Parameters:
+    ///   - modPersonID: restrict results to actions taken by this moderator; nil lists all.
+    ///   - communityID: restrict results to actions in this community; nil lists all.
+    ///   - page: 1-based page number.
+    ///   - limit: maximum number of results to return.
+    ///   - postID: restrict results to actions affecting this post; nil lists all.
+    ///   - commentID: restrict results to actions affecting this comment; nil lists all.
+    ///   - type: which kind of modlog action to return; nil returns all action types.
+    ///   - otherPersonID: restrict results to actions that affected this person; nil lists all.
     func getModlog(
         modPersonID: Components.Schemas.PersonID? = nil,
         communityID: Components.Parameters.CommunityID? = nil,

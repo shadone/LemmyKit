@@ -7,16 +7,18 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch a community by its id.
+    /// Fetch a community by its numeric id.
+    ///
+    /// - Parameter communityID: the community to fetch.
     func getCommunity(
         communityID: Components.Schemas.CommunityID
     ) async throws -> Components.Schemas.GetCommunityResponse {
         try await getCommunity(query: .init(id: communityID, name: nil))
     }
 
-    /// Fetch a community by its name. Pass a bare name (`gnome`) for a local
-    /// community or a fully-qualified name (`worldnews@lemmy.world`) for a
-    /// remote one.
+    /// Fetch a community by its name.
+    ///
+    /// - Parameter name: a bare name (`gnome`) for a local community or a fully-qualified name (`worldnews@lemmy.world`) for a remote one.
     func getCommunity(
         name: String
     ) async throws -> Components.Schemas.GetCommunityResponse {

@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Report the comment `commentID` with the given `reason` on behalf of the
-    /// logged-in account.
+    /// Submit a report on a comment on behalf of the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - commentID: the comment to report.
+    ///   - reason: the reason for the report, shown to moderators.
+    /// - Note: requires authentication.
     func createCommentReport(
         commentID: Components.Schemas.CommentID,
         reason: String

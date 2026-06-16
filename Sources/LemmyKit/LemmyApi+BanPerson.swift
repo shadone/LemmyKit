@@ -7,13 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Ban `personID` from the instance. Requires admin.
+    /// Ban the person `personID` from the instance.
     ///
     /// - Parameters:
-    ///   - removeData: also remove all of the person's posts and comments.
-    ///     Useful for spam or troll accounts.
+    ///   - personID: the person to ban.
+    ///   - removeData: true to also remove all of the person's posts and comments.
     ///   - reason: optional reason recorded in the mod log.
-    ///   - expires: when the ban should lift. Pass `nil` for a permanent ban.
+    ///   - expires: when the ban should lift; nil for a permanent ban.
+    /// - Note: admin only.
     func banPerson(
         personID: Components.Schemas.PersonID,
         removeData: Bool? = nil,
@@ -29,9 +30,12 @@ public extension LemmyApi {
         ))
     }
 
-    /// Lift an existing instance ban on `personID`. Requires admin.
+    /// Lift an existing instance ban on the person `personID`.
     ///
-    /// - Parameter reason: optional reason recorded in the mod log.
+    /// - Parameters:
+    ///   - personID: the person to unban.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: admin only.
     func unbanPerson(
         personID: Components.Schemas.PersonID,
         reason: String? = nil

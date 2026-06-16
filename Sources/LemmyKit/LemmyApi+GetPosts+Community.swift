@@ -7,15 +7,17 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Get a list of posts from a given `community`.
+    /// Fetch a page of posts from a given `community`.
     ///
     /// - Parameters:
-    ///   - showHidden: include posts the user has hidden. When `nil` the
-    ///     server's default applies (hidden posts are excluded).
-    ///   - showRead: include posts already marked as read. When `nil` the
-    ///     account's "show read posts" setting applies.
-    ///   - showNSFW: include not-safe-for-work posts. When `nil` the account's
-    ///     NSFW setting applies.
+    ///   - community: the community whose posts to fetch.
+    ///   - sort: the sort order to apply to the returned posts.
+    ///   - filter: optional content filter restricting results to saved, liked, or disliked posts; nil returns all posts.
+    ///   - showHidden: true to include posts the user has hidden; when nil the server's default applies (hidden posts are excluded).
+    ///   - showRead: true to include posts already marked as read; when nil the account's "show read posts" setting applies.
+    ///   - showNSFW: true to include not-safe-for-work posts; when nil the account's NSFW setting applies.
+    ///   - page: opaque pagination cursor for the next page; nil fetches the first page.
+    ///   - limit: maximum number of posts to return; when nil the server's default applies.
     func getPosts(
         community: CommunityFilter,
         sort: Components.Schemas.SortType,

@@ -7,11 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Enable or disable TOTP / two-factor authentication.
+    /// Enable or disable two-factor authentication for the logged-in account.
     ///
-    /// To enable, first call ``generateTotpSecret()`` and then pass a valid
-    /// token here with `enabled` set to `true`. Disabling also requires a
-    /// valid token.
+    /// - Parameters:
+    ///   - totpToken: the 6-digit code from the authenticator app.
+    ///   - enabled: true to enable two-factor auth, false to disable it.
+    /// - Note: requires authentication.
     func updateTotp(
         totpToken: String,
         enabled: Bool

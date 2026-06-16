@@ -7,8 +7,19 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Edit an existing community identified by `communityID`. Pass `visibility`
-    /// to change whether the community is public or local-only.
+    /// Edit an existing community's settings.
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to edit.
+    ///   - title: new human-readable display title; nil leaves it unchanged.
+    ///   - description: new markdown sidebar description; nil leaves it unchanged.
+    ///   - icon: url of the community's icon image; nil leaves it unchanged.
+    ///   - banner: url of the community's banner image; nil leaves it unchanged.
+    ///   - nsfw: true to mark the community as NSFW, false to unmark it; nil leaves it unchanged.
+    ///   - postingRestrictedToMods: true to allow only moderators to create posts; nil leaves it unchanged.
+    ///   - discussionLanguages: replacement list of accepted language ids; nil leaves it unchanged.
+    ///   - visibility: who can see and find the community; nil leaves it unchanged.
+    /// - Note: requires authentication as a moderator or admin.
     func editCommunity(
         communityID: Components.Schemas.CommunityID,
         title: String? = nil,

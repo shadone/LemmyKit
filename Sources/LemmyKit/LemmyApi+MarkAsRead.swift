@@ -7,8 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Mark all replies and mentions as read. Requires authentication. Note
-    /// that Lemmy's `markAllAsRead` does not cover private messages.
+    /// Mark all inbox replies and mentions as read; private messages are not affected.
+    ///
+    /// - Note: requires authentication.
     @discardableResult
     func markAllAsRead() async throws -> Components.Schemas.GetRepliesResponse {
         let response: Operations.markAllAsRead.Output
@@ -36,7 +37,12 @@ public extension LemmyApi {
         }
     }
 
-    /// Mark a single comment reply as read/unread. Requires authentication.
+    /// Mark a comment reply as read or unread.
+    ///
+    /// - Parameters:
+    ///   - commentReplyID: the comment reply to update.
+    ///   - read: true to mark as read, false to mark as unread.
+    /// - Note: requires authentication.
     @discardableResult
     func markCommentReplyAsRead(
         commentReplyID: Components.Schemas.CommentReplyID,
@@ -79,7 +85,12 @@ public extension LemmyApi {
         }
     }
 
-    /// Mark a single person mention as read/unread. Requires authentication.
+    /// Mark a person mention as read or unread.
+    ///
+    /// - Parameters:
+    ///   - personMentionID: the person mention to update.
+    ///   - read: true to mark as read, false to mark as unread.
+    /// - Note: requires authentication.
     @discardableResult
     func markPersonMentionAsRead(
         personMentionID: Components.Schemas.PersonMentionID,
@@ -122,7 +133,12 @@ public extension LemmyApi {
         }
     }
 
-    /// Mark a single private message as read/unread. Requires authentication.
+    /// Mark a private message as read or unread.
+    ///
+    /// - Parameters:
+    ///   - privateMessageID: the private message to update.
+    ///   - read: true to mark as read, false to mark as unread.
+    /// - Note: requires authentication.
     @discardableResult
     func markPrivateMessageAsRead(
         privateMessageID: Components.Schemas.PrivateMessageID,

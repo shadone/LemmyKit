@@ -8,6 +8,9 @@ import Foundation
 
 public extension LemmyApi {
     /// Fetch a post by its id.
+    ///
+    /// - Parameters:
+    ///   - id: the post to fetch.
     func getPost(
         id: Components.Schemas.PostID
     ) async throws -> Components.Schemas.GetPostResponse {

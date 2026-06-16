@@ -7,14 +7,15 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Ban the person `personID` from the community `communityID` as a
-    /// moderator or admin.
+    /// Ban a person from a community as a moderator or admin.
     ///
     /// - Parameters:
-    ///   - removeData: also remove the person's existing posts and comments in
-    ///     the community.
+    ///   - communityID: the community to ban from.
+    ///   - personID: the person to ban.
+    ///   - removeData: true to also remove the person's existing posts and comments in the community.
     ///   - reason: optional reason recorded in the mod log.
-    ///   - expires: when the ban should lift. Pass `nil` for a permanent ban.
+    ///   - expires: when the ban should lift; nil for a permanent ban.
+    /// - Note: requires moderator or admin.
     func banFromCommunity(
         communityID: Components.Schemas.CommunityID,
         personID: Components.Schemas.PersonID,
@@ -32,9 +33,13 @@ public extension LemmyApi {
         ))
     }
 
-    /// Lift an existing community ban on `personID` as a moderator or admin.
+    /// Lift an existing community ban on a person as a moderator or admin.
     ///
-    /// - Parameter reason: optional reason recorded in the mod log.
+    /// - Parameters:
+    ///   - communityID: the community to lift the ban in.
+    ///   - personID: the person to unban.
+    ///   - reason: optional reason recorded in the mod log.
+    /// - Note: requires moderator or admin.
     func unbanFromCommunity(
         communityID: Components.Schemas.CommunityID,
         personID: Components.Schemas.PersonID,

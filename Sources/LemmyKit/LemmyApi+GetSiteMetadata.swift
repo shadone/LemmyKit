@@ -7,8 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the metadata (title, description, thumbnail) for the web page at
-    /// `url`.
+    /// Fetch the metadata (title, description, thumbnail) for the web page at `url`.
+    ///
+    /// - Parameter url: the url to fetch metadata for.
     func getSiteMetadata(
         url: String
     ) async throws -> Components.Schemas.GetSiteMetadataResponse {

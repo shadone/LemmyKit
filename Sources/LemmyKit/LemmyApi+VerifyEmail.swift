@@ -8,6 +8,9 @@ import Foundation
 
 public extension LemmyApi {
     /// Verify the account's email address using the token from a verification email.
+    ///
+    /// - Parameters:
+    ///   - token: the verification token delivered by email.
     func verifyEmail(
         token: String
     ) async throws -> Components.Schemas.SuccessResponse {

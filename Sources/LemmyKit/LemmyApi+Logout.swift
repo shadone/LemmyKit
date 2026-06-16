@@ -8,6 +8,8 @@ import Foundation
 
 public extension LemmyApi {
     /// Log out the current session, invalidating its token on the server.
+    ///
+    /// - Note: requires authentication.
     func logout() async throws -> Components.Schemas.SuccessResponse {
         let response: Operations.logout.Output
         do {

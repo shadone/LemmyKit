@@ -7,8 +7,13 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Add or remove a moderator on a community. Pass `added: true` to add the
-    /// person as a moderator, or `false` to remove them.
+    /// Add or remove a moderator on a community.
+    ///
+    /// - Parameters:
+    ///   - communityID: the community to modify moderators for.
+    ///   - personID: the person to add or remove as a moderator.
+    ///   - added: true to add the person as a moderator, false to remove them.
+    /// - Note: requires moderator or admin.
     func addModToCommunity(
         communityID: Components.Schemas.CommunityID,
         personID: Components.Schemas.PersonID,

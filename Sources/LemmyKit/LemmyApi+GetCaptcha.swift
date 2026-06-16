@@ -7,7 +7,7 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch a captcha challenge for registration.
+    /// Fetch a captcha challenge to be solved during registration.
     func getCaptcha() async throws -> Components.Schemas.GetCaptchaResponse {
         let response: Operations.getCaptcha.Output
         do {

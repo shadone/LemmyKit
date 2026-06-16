@@ -7,8 +7,9 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Fetch the number of unread replies, mentions, and private messages for
-    /// the account. Requires authentication.
+    /// Return the count of unread replies, mentions, and private messages for the logged-in account.
+    ///
+    /// - Note: requires authentication.
     func getUnreadCount() async throws -> Components.Schemas.GetUnreadCountResponse {
         let response: Operations.getUnreadCount.Output
         do {

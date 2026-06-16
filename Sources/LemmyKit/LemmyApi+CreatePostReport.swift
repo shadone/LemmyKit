@@ -7,8 +7,12 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Report the post `postID` with the given `reason` on behalf of the
-    /// logged-in account.
+    /// Report the post `postID` on behalf of the logged-in account.
+    ///
+    /// - Parameters:
+    ///   - postID: the post to report.
+    ///   - reason: the reason for the report.
+    /// - Note: requires authentication.
     func createPostReport(
         postID: Components.Schemas.PostID,
         reason: String

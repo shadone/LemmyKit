@@ -8,8 +8,11 @@ import Foundation
 
 public extension LemmyApi {
     /// Permanently delete the logged-in account.
+    ///
     /// - Parameters:
-    ///   - deleteContent: Whether to also delete all content created by the account.
+    ///   - password: the current account password, required to confirm deletion.
+    ///   - deleteContent: true to also delete all posts and comments created by the account.
+    /// - Note: requires authentication.
     func deleteAccount(
         password: String,
         deleteContent: Bool

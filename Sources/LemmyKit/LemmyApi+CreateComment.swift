@@ -7,8 +7,14 @@
 import Foundation
 
 public extension LemmyApi {
-    /// Create a new comment on `postID`. Pass `parentID` to reply to an
-    /// existing comment, or `nil` to reply to the post itself.
+    /// Create a new comment on `postID`.
+    ///
+    /// - Parameters:
+    ///   - postID: the post to comment on.
+    ///   - content: the markdown body of the comment.
+    ///   - parentID: the comment to reply to; nil to reply to the post itself.
+    /// - Returns: the created comment, including its new server id.
+    /// - Note: requires authentication.
     func createComment(
         postID: Components.Schemas.PostID,
         content: String,
