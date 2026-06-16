@@ -17,7 +17,7 @@ public extension LemmyApi {
     ///   - showNSFW: include not-safe-for-work posts. When `nil` the account's
     ///     NSFW setting applies.
     func getPosts(
-        community: CommunityFilter? = nil,
+        community: CommunityFilter,
         sort: Components.Schemas.SortType,
         filter: Set<Filter>? = nil,
         showHidden: Bool? = nil,
@@ -31,8 +31,8 @@ public extension LemmyApi {
             response = try await client.getPosts(.init(query: .init(
                 sort: sort,
                 limit: limit,
-                community_id: community?.id,
-                community_name: community?.name,
+                community_id: community.id,
+                community_name: community.name,
                 saved_only: filter?.contains(where: \.isSaved),
                 liked_only: filter?.contains(where: \.isLiked),
                 disliked_only: filter?.contains(where: \.isDisliked),

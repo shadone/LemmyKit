@@ -10,7 +10,7 @@ public extension LemmyApi {
     /// List the votes (likes) on the post identified by `postID`. This is an
     /// admin-only endpoint.
     func listPostLikes(
-        postID: Components.Schemas.PostID? = nil,
+        postID: Components.Schemas.PostID,
         page: Components.Parameters.Page? = nil,
         limit: Components.Parameters.Limit? = nil
     ) async throws -> Components.Schemas.ListPostLikesResponse {
