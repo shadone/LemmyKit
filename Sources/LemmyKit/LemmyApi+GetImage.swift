@@ -12,7 +12,7 @@ public extension LemmyApi {
     ///
     /// This is a pict-rs binary route: the success response is the image
     /// content itself (`image/*`), not JSON. The body is streamed as an
-    /// ``OpenAPIRuntime/HTTPBody`` and collected fully in-memory here, so this
+    /// `OpenAPIRuntime.HTTPBody` and collected fully in-memory here, so this
     /// is a thin convenience for callers that need the bytes directly rather
     /// than fetching the image by URL.
     ///

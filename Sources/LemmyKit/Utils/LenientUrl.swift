@@ -8,8 +8,8 @@ import Foundation
 
 /// A wrapper around URL for parsing not strict standard compliant links.
 ///
-/// This type could be used in ``Decodable`` models for safer parsing of URLs. Swift ``URL`` is very strict
-/// about the url strings it parses. Not everything that is permitted in a browser url bar is permitted by ``URL``.
+/// This type could be used in `Decodable` models for safer parsing of URLs. Swift `URL` is very strict
+/// about the url strings it parses. Not everything that is permitted in a browser url bar is permitted by `URL`.
 ///
 /// LenientUrl attempts to decode raw string into URL as leniently as possible but does not fail if it fails.
 public struct LenientUrl: Decodable, Sendable {
@@ -22,7 +22,7 @@ public struct LenientUrl: Decodable, Sendable {
     // MARK: Functions
 
     /// Creates a lenient url from a raw string, keeping the original string
-    /// whether or not it parses into a ``URL``.
+    /// whether or not it parses into a `URL`.
     /// - Parameter stringValue: the raw url string.
     public init(stringValue: String) {
         rawValue = stringValue

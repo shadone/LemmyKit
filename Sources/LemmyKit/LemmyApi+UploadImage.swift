@@ -24,7 +24,7 @@ public extension LemmyApi {
     /// This does NOT go through the generated OpenAPI client: pict-rs expects a
     /// `multipart/form-data` body with the field name `images[]` and a filename
     /// in the part's `Content-Disposition`, which is built by hand here for
-    /// determinism. The account JWT (same token ``AuthorizationMiddleware``
+    /// determinism. The account JWT (same token `AuthorizationMiddleware`
     /// attaches) is sent as a `Bearer` `Authorization` header.
     ///
     /// - Parameters:
