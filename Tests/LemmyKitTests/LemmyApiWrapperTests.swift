@@ -72,12 +72,12 @@ final class LemmyApiWrapperTests: XCTestCase {
         XCTAssertEqual(recorded?.path, "/api/v3/user/register")
     }
 
-    // The Filter set must translate into the saved_only / liked_only query flags.
+    // The content filter must translate into the saved_only / liked_only query flags.
     func testGetPostsMapsFilterToQueryFlags() async throws {
         let transport = RecordingTransport()
         let cursor: Components.Schemas.PaginationCursor? = nil
         _ = try? await makeApi(transport).getPosts(
-            type: .All, sort: .New, filter: [.saved, .like(.liked)], page: cursor
+            type: .All, sort: .New, filter: ContentFilter(savedOnly: true, vote: .liked), page: cursor
         )
         let path = await transport.recorded?.path ?? ""
         XCTAssertTrue(path.hasPrefix("/api/v3/post/list"), "unexpected path: \(path)")
@@ -89,7 +89,7 @@ final class LemmyApiWrapperTests: XCTestCase {
 
     // 200 + a real body decodes and is returned.
     func testGetPostsOkReturnsDecodedResponse() async throws {
-        let transport = RecordingTransport(status: 200, responseBody: try fixtureData("getPostsResponse"))
+        let transport = try RecordingTransport(status: 200, responseBody: fixtureData("getPostsResponse"))
         let cursor: Components.Schemas.PaginationCursor? = nil
         let response = try await makeApi(transport).getPosts(type: .All, sort: .New, page: cursor)
         XCTAssertFalse(response.posts.isEmpty)
