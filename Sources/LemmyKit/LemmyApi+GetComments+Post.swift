@@ -16,7 +16,13 @@ public extension LemmyApi {
         let response: Operations.getComments.Output
         do {
             response = try await client.getComments(.init(query: .init(
-                type_: nil,
+                // A post-scoped fetch must not be narrowed by listing type: with no
+                // type the server falls back to its default (`Local` on most
+                // instances), which drops comments on remote/federated communities
+                // even when a post id is given — so a federated post reports its
+                // real `comment_count` but the comment list comes back empty.
+                // lemmy-ui and Jerboa hardcode `All` on the post page for this reason.
+                type_: .All,
                 sort: sort,
                 max_depth: maxDepth,
                 page: nil,
