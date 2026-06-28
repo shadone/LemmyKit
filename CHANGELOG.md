@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While pre-1.0, breaking changes bump the minor version.
 
+## [0.5.1] - 2026-06-28
+
+### Added
+
+- `LemmyApi.login` now accepts an optional `totp2faToken`, sent to the server as
+  `totp_2fa_token`, so accounts with two-factor (TOTP) authentication enabled
+  can sign in. The parameter defaults to `nil`, so existing call sites are
+  unaffected.
+
 ## [0.5.0] - 2026-06-17
 
 ### Fixed
@@ -86,6 +95,7 @@ While pre-1.0, breaking changes bump the minor version.
 
 Earlier history (≤ 0.2.0) is available in the git log.
 
+[0.5.1]: https://github.com/shadone/LemmyKit/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/shadone/LemmyKit/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/shadone/LemmyKit/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/shadone/LemmyKit/compare/0.2.1...0.3.0
