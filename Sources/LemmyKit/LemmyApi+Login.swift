@@ -12,16 +12,21 @@ public extension LemmyApi {
     /// - Parameters:
     ///   - usernameOrEmail: the account's username or email address.
     ///   - password: the account password.
+    ///   - totp2faToken: the current time-based one-time (TOTP) code, required
+    ///     when the account has two-factor authentication enabled; nil
+    ///     otherwise. Sent to the server as `totp_2fa_token`.
     /// - Returns: a login response carrying the new session JWT.
     func login(
         usernameOrEmail: String,
-        password: String
+        password: String,
+        totp2faToken: String? = nil
     ) async throws -> Components.Schemas.LoginResponse {
         let response: Operations.login.Output
         do {
             response = try await client.login(body: .json(.init(
                 username_or_email: usernameOrEmail,
-                password: password
+                password: password,
+                totp_2fa_token: totp2faToken
             )))
         } catch {
             throw LemmyApiError(from: error)

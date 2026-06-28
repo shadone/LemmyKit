@@ -17,6 +17,7 @@ private actor RecordingTransport: ClientTransport {
     struct Recorded: Sendable {
         let method: HTTPRequest.Method
         let path: String
+        let body: Data?
     }
 
     private(set) var recorded: Recorded?
@@ -30,11 +31,15 @@ private actor RecordingTransport: ClientTransport {
 
     func send(
         _ request: HTTPRequest,
-        body _: HTTPBody?,
+        body: HTTPBody?,
         baseURL _: URL,
         operationID _: String
     ) async throws -> (HTTPResponse, HTTPBody?) {
-        recorded = Recorded(method: request.method, path: request.path ?? "")
+        var bodyData: Data?
+        if let body {
+            bodyData = try? await Data(collecting: body, upTo: 1_000_000)
+        }
+        recorded = Recorded(method: request.method, path: request.path ?? "", body: bodyData)
         var response = HTTPResponse(status: .init(code: status))
         response.headerFields[.contentType] = "application/json; charset=utf-8"
         return (response, HTTPBody(responseBody))
@@ -70,6 +75,31 @@ final class LemmyApiWrapperTests: XCTestCase {
         let recorded = await transport.recorded
         XCTAssertEqual(recorded?.method, .post)
         XCTAssertEqual(recorded?.path, "/api/v3/user/register")
+    }
+
+    // Login posts to /api/v3/user/login and must include the TOTP code in the
+    // body when one is supplied (regression: the wrapper used to drop it, so
+    // accounts with 2FA could not sign in).
+    func testLoginSendsTotpTokenInBody() async throws {
+        let transport = RecordingTransport(status: 200, responseBody: Data(#"{"jwt":"x"}"#.utf8))
+        _ = try? await makeApi(transport).login(
+            usernameOrEmail: "alice", password: "pw", totp2faToken: "123456"
+        )
+        let recorded = await transport.recorded
+        XCTAssertEqual(recorded?.method, .post)
+        XCTAssertEqual(recorded?.path, "/api/v3/user/login")
+        let bodyString = recorded?.body.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+        XCTAssertTrue(bodyString.contains("totp_2fa_token"), "body missing totp field: \(bodyString)")
+        XCTAssertTrue(bodyString.contains("123456"), "body missing totp value: \(bodyString)")
+    }
+
+    // Without a TOTP token, no stray token is sent.
+    func testLoginWithoutTotpOmitsToken() async throws {
+        let transport = RecordingTransport(status: 200, responseBody: Data(#"{"jwt":"x"}"#.utf8))
+        _ = try? await makeApi(transport).login(usernameOrEmail: "alice", password: "pw")
+        let bodyString = await transport.recorded?.body
+            .flatMap { String(data: $0, encoding: .utf8) } ?? ""
+        XCTAssertFalse(bodyString.contains("123456"), "unexpected totp value: \(bodyString)")
     }
 
     // The content filter must translate into the saved_only / liked_only query flags.
