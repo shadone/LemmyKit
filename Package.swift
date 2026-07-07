@@ -31,6 +31,18 @@ let package = Package(
                 .plugin(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
             ]
         ),
+        // Generated Lemmy v4 (1.0) client, from the envelope-stripped spec.
+        // Non-product target consumed only by the LemmyKit facade's V4 backend.
+        .target(
+            name: "LemmyKitV4Generated",
+            dependencies: [
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
+            ],
+            plugins: [
+                .plugin(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
+            ]
+        ),
         .testTarget(
             name: "LemmyKitTests",
             dependencies: ["LemmyKit"],
