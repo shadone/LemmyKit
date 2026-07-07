@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While pre-1.0, breaking changes bump the minor version.
 
+## [0.5.2] - 2026-07-07
+
+### Added
+
+- Added a neutral `Lemmy` namespace (e.g. `Lemmy.PostView`, `Lemmy.PostID`,
+  `Lemmy.SortType`, `Lemmy.GetSiteResponse`, `Lemmy.Post`) aliasing the
+  generated `Components.Schemas.*` vocabulary, DTO, model, aggregate, and
+  response types, so consumers no longer need the verbose `Components.Schemas.`
+  prefix. The members live under a caseless-enum namespace (rather than bare
+  top-level typealiases) so common nouns like `Post`, `Comment`, and `Person`
+  do not pollute consumers' global scope or shadow other modules' types (e.g.
+  Swift Testing's `Comment`). This is stage 1 of the neutral-surface migration:
+  purely additive, no breaking change; the existing `Components.Schemas.*`
+  surface is untouched and remains fully usable. A future release may retarget
+  the DTO aliases to hand-written neutral types.
+
 ## [0.5.1] - 2026-06-28
 
 ### Added
@@ -95,6 +111,7 @@ While pre-1.0, breaking changes bump the minor version.
 
 Earlier history (≤ 0.2.0) is available in the git log.
 
+[0.5.2]: https://github.com/shadone/LemmyKit/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/shadone/LemmyKit/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/shadone/LemmyKit/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/shadone/LemmyKit/compare/0.3.0...0.4.0
