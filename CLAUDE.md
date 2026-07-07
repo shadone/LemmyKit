@@ -10,6 +10,19 @@ from the in-repo spec `Sources/LemmyKit/openapi.yaml` (config:
   generated `Components.Schemas.*` / `Operations.*`.
 - Hand-written support types in `Sources/LemmyKit/Utils/` + `Extensions/`.
 
+## Neutral vocabulary namespace (`Lemmy.*`)
+- `Sources/LemmyKit/NeutralVocabulary.swift` exposes a caseless enum `Lemmy`
+  aliasing the generated vocabulary (`Lemmy.PostView`, `Lemmy.PostID`,
+  `Lemmy.SortType`, `Lemmy.Post`, ...) so consumers don't write the verbose
+  `Components.Schemas.` prefix. Stage 1 of the neutral-surface migration; purely
+  additive (the generated surface is untouched). **It is a NAMESPACE, not bare
+  top-level typealiases, on purpose**: bare aliases for common nouns (`Post`,
+  `Comment`, `Person`) would pollute consumers' global scope and shadow other
+  modules — notably Swift Testing's `Comment`, which caused `'Comment' is
+  ambiguous` build errors across the Spud test suite. When adding a new consumed
+  type, add a `public typealias X = Components.Schemas.X` member inside `enum
+  Lemmy` (and a `.self ==` identity check in `NeutralVocabularyTests`).
+
 ## Build / verify
 - `swift build` / `swift test` (the OpenAPI build-tool plugin regenerates sources).
 - Format with SwiftFormat — `.swiftformat` is authoritative.
