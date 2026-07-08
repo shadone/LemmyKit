@@ -24,6 +24,7 @@ let package = Package(
         .target(
             name: "LemmyKit",
             dependencies: [
+                "LemmyKitV4Generated",
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
             ],
@@ -45,7 +46,7 @@ let package = Package(
         ),
         .testTarget(
             name: "LemmyKitTests",
-            dependencies: ["LemmyKit"],
+            dependencies: ["LemmyKit", "LemmyKitV4Generated"],
             resources: [.copy("Fixtures")]
         ),
     ],
