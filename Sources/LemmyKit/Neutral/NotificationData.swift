@@ -10,7 +10,7 @@ import Foundation
 /// OpenAPI schema. Paired with its metadata in ``NotificationView``.
 ///
 /// Mirrors v4's `NotificationData` (an `anyOf` of four branches, discriminated by
-/// `Notification.kind` — see `NotificationV4Mapping.swift`). v3 has no combined notification feed
+/// `NotificationEntry.kind` — see `NotificationV4Mapping.swift`). v3 has no combined notification feed
 /// at all; its three separate endpoints (`getReplies`/`getPersonMentions`/`getPrivateMessages`)
 /// only ever produce `.comment`/`.comment`/`.privateMessage` respectively, never `.post` or
 /// `.modAction` (v4-only kinds — see `NotificationKind`'s doc).

@@ -161,7 +161,7 @@ final class NotificationsNeutralTests: XCTestCase {
         XCTAssertEqual(privateMessageView.privateMessage.content, "Hey there!")
 
         // v3 has no unified notification id -- every merged item's id is nil (see
-        // `Notification.id`'s doc).
+        // `NotificationEntry.id`'s doc).
         XCTAssertTrue(page.items.allSatisfy { $0.notification.id == nil })
     }
 }

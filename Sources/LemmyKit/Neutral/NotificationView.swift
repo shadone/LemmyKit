@@ -13,12 +13,12 @@ import Foundation
 /// this list by fanning out and merging its three separate endpoints.
 public struct NotificationView: Sendable, Equatable {
     /// The notification's metadata (kind, read state, id, timestamp).
-    public var notification: Notification
+    public var notification: NotificationEntry
 
     /// The notification's payload.
     public var data: NotificationData
 
-    public init(notification: Notification, data: NotificationData) {
+    public init(notification: NotificationEntry, data: NotificationData) {
         self.notification = notification
         self.data = data
     }

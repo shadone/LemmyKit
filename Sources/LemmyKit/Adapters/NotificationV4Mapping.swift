@@ -35,13 +35,13 @@ package func neutralNotificationView(
     )
 }
 
-/// Maps v4's `Notification` metadata to the neutral `Notification`. Unlike a v3-synthesized
+/// Maps v4's `Notification` metadata to the neutral `NotificationEntry`. Unlike a v3-synthesized
 /// notification (see `CommentReplyNotificationV3Mapping.swift` and its siblings), v4 always
-/// supplies a real `id` — see `Notification.id`'s doc.
+/// supplies a real `id` — see `NotificationEntry.id`'s doc.
 private func neutralNotification(
     fromV4 v4: LemmyKitV4Generated.Components.Schemas.Notification
-) -> Notification {
-    Notification(
+) -> NotificationEntry {
+    NotificationEntry(
         id: v4.id,
         kind: neutralNotificationKind(fromV4: v4.kind),
         isRead: v4.read,

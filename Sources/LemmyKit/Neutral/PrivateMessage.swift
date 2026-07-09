@@ -14,12 +14,12 @@ import Foundation
 /// pattern as `PersonV3Mapping.swift`'s post/comment counts).
 ///
 /// Deliberately has **no `isRead` field**, even though v3's `PrivateMessage` carries a bare
-/// `read` bool. Read state for a private message lives on the wrapping ``Notification/isRead``
+/// `read` bool. Read state for a private message lives on the wrapping ``NotificationEntry/isRead``
 /// (fed by v3's `private_message.read` / v4's `notification.read`), not duplicated here — v4
-/// itself moved `read` off `PrivateMessage` entirely and onto the unified `Notification`, and
+/// itself moved `read` off `PrivateMessage` entirely and onto the unified `NotificationEntry`, and
 /// this neutral type follows v4's shape rather than re-adding what v4 dropped. This is not an
 /// oversight: a v3-backed mapping (`PrivateMessageViewV3Mapping.swift`) explicitly drops
-/// `private_message.read` when building this type, feeding it into `Notification.isRead` instead
+/// `private_message.read` when building this type, feeding it into `NotificationEntry.isRead` instead
 /// at the call site (`PrivateMessageNotificationV3Mapping.swift`).
 public struct PrivateMessage: Sendable, Equatable, Identifiable {
     /// The server-assigned private message id.

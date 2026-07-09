@@ -15,7 +15,7 @@ import Foundation
 /// reconstruction — `neutralPrivateMessageView(fromV3:)` already maps it directly.
 package func neutralNotificationView(fromV3PrivateMessage pm: Components.Schemas.PrivateMessageView) -> NotificationView {
     NotificationView(
-        notification: Notification(
+        notification: NotificationEntry(
             id: nil,
             kind: .privateMessage,
             isRead: pm.private_message.read,

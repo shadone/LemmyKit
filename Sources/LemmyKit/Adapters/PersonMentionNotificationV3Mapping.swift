@@ -35,7 +35,7 @@ package func neutralNotificationView(fromV3Mention mention: Components.Schemas.P
     )
 
     return NotificationView(
-        notification: Notification(
+        notification: NotificationEntry(
             id: nil,
             kind: .mention,
             isRead: mention.person_mention.read,

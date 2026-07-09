@@ -34,7 +34,7 @@ package func neutralNotificationView(fromV3Reply reply: Components.Schemas.Comme
     )
 
     return NotificationView(
-        notification: Notification(
+        notification: NotificationEntry(
             id: nil,
             kind: .reply,
             isRead: reply.comment_reply.read,

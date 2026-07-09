@@ -11,7 +11,7 @@ import Foundation
 /// doc for the neutral shape and why it has no `isRead`).
 ///
 /// v3's `PrivateMessage.read` is dropped here, not carried onto the neutral `PrivateMessage` —
-/// see that type's doc for why (it feeds `Notification.isRead` instead, at the call site in
+/// see that type's doc for why (it feeds `NotificationEntry.isRead` instead, at the call site in
 /// `PrivateMessageNotificationV3Mapping.swift`). `deletedByRecipient`/`removed` have no v3 source
 /// and default to `false`, the same "defaults to 0, no v3 source" pattern as
 /// `PersonV3Mapping.swift`'s post/comment counts.
