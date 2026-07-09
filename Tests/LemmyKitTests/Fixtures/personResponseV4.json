@@ -1,0 +1,22 @@
+{
+  "person_view": {
+    "banned": false,
+    "is_admin": false,
+    "person": {
+      "id": 20,
+      "name": "seed_reader",
+      "display_name": "Seed Reader",
+      "avatar": "https://picsum.photos/seed/seed_reader/400/400",
+      "published_at": "2026-06-12T22:10:00.000000Z",
+      "ap_id": "https://test1.lemmy.ddenis.info/u/seed_reader",
+      "local": true,
+      "banner": "https://picsum.photos/seed/seed_reader-b/1200/300",
+      "deleted": false,
+      "bot_account": false,
+      "instance_id": 1,
+      "last_refreshed_at": "2026-06-12T22:10:00.000000Z",
+      "post_count": 3,
+      "comment_count": 9
+    }
+  }
+}

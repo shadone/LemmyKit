@@ -132,3 +132,19 @@ package func v4CommentSortType(
     case .controversial: .controversial
     }
 }
+
+/// Folds `Lemmy.ListingType` (a v3-shaped alias, see `NeutralVocabulary.swift`) into v4's
+/// differently-cased `ListingType`. v4 additionally defines a `.suggested` case with no v3
+/// equivalent; since a `Lemmy.ListingType` value can only ever be one of v3's four cases, this
+/// fold is total and never needs to produce it.
+///
+/// Shared by ``LemmyApi/getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)`` and
+/// ``LemmyApi/saveUserSettingsNeutral(showNSFW:blurNSFW:defaultSortType:defaultListingType:displayName:bio:showScores:showBotAccounts:showReadPosts:showAvatars:)``.
+package func v4ListingType(fromNeutral type: Lemmy.ListingType) -> LemmyKitV4Generated.Components.Schemas.ListingType {
+    switch type {
+    case .All: .all
+    case .Local: .local
+    case .Subscribed: .subscribed
+    case .ModeratorView: .moderator_view
+    }
+}

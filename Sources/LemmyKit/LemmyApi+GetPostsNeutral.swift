@@ -54,19 +54,6 @@ public extension LemmyApi {
     }
 }
 
-/// Folds `Lemmy.ListingType` (a v3-shaped alias, see `NeutralVocabulary.swift`) into v4's
-/// differently-cased `ListingType`. v4 additionally defines a `.suggested` case with no v3
-/// equivalent; since a `Lemmy.ListingType` value can only ever be one of v3's four cases, this
-/// fold is total and never needs to produce it.
-private func v4ListingType(fromNeutral type: Lemmy.ListingType) -> LemmyKitV4Generated.Components.Schemas.ListingType {
-    switch type {
-    case .All: .all
-    case .Local: .local
-    case .Subscribed: .subscribed
-    case .ModeratorView: .moderator_view
-    }
-}
-
 private extension LemmyApi {
     /// v3 path: reuses the shared `getPosts(query:)` transport/decoding helper (the same one the
     /// scope-pure `getPosts(type:...)`/`getPosts(community:...)` overloads forward to), then maps
