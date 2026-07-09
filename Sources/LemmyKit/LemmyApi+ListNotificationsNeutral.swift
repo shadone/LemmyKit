@@ -1,0 +1,119 @@
+//
+// Copyright (c) 2026, Denis Dzyubenko <denis@ddenis.info>
+//
+// SPDX-License-Identifier: BSD-2-Clause
+//
+
+import Foundation
+import LemmyKitV4Generated
+
+public extension LemmyApi {
+    /// Fetches the unified notification inbox and returns the version-neutral, cursor-paginated
+    /// ``Page`` of ``NotificationView``, sorted newest first.
+    ///
+    /// Dispatches to whichever generated backend this instance was configured with (see
+    /// ``ApiVersion``): v4's single `GET /account/notification/list`, mapped near-directly via
+    /// `neutralNotificationView(fromV4:)`; or, on v3 (which has no unified inbox endpoint at
+    /// all), a three-way fan-out across `getReplies`/`getPersonMentions`/`getPrivateMessages`
+    /// followed by a merge-sort into one descending timeline (see `listNotificationsNeutralV3`'s
+    /// doc for the simplifications that path makes).
+    ///
+    /// - Parameters:
+    ///   - unreadOnly: true to return only unread notifications, false for all.
+    ///   - pageCursor: opaque cursor from a previous page's `nextPage`/`prevPage`; nil fetches the
+    ///     first page. Ignored on a v3 backend — see `listNotificationsNeutralV3`'s doc for why.
+    /// - Returns: a `Page` of the neutral `NotificationView`s, newest first.
+    func listNotificationsNeutral(
+        unreadOnly: Bool = false,
+        pageCursor: Cursor? = nil
+    ) async throws -> Page<NotificationView> {
+        switch apiVersion {
+        case .v3:
+            try await listNotificationsNeutralV3(unreadOnly: unreadOnly)
+        case .v4:
+            try await listNotificationsNeutralV4(unreadOnly: unreadOnly, pageCursor: pageCursor)
+        }
+    }
+}
+
+private extension LemmyApi {
+    /// v4 path: calls the v4 generated client's `ListNotifications` operation directly, then maps
+    /// the extracted items to the neutral shape. No `type_` filter is sent — filtering by
+    /// notification kind is out of scope for this pass (see the Phase 5 design doc's
+    /// "Notifications" section); every kind the server returns comes through unfiltered. Like
+    /// `getPostsNeutral`'s v4 path, `ListNotifications` only documents the `ok` response, so
+    /// anything else falls through to `.undocumented`.
+    func listNotificationsNeutralV4(
+        unreadOnly: Bool,
+        pageCursor: Cursor?
+    ) async throws -> Page<NotificationView> {
+        let response: LemmyKitV4Generated.Operations.ListNotifications.Output
+        do {
+            response = try await v4Client.ListNotifications(query: .init(
+                page_cursor: pageCursor?.rawValue,
+                unread_only: unreadOnly
+            ))
+        } catch {
+            throw LemmyApiError(from: error)
+        }
+
+        switch response {
+        case let .ok(response):
+            switch response.body {
+            case let .json(json):
+                return try neutralPage(fromV4: json) { try neutralNotificationView(fromV4: $0) }
+            }
+
+        case let .undocumented(statusCode, _):
+            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
+        }
+    }
+
+    /// v3 path: v3 has no unified notification-inbox endpoint, so this fans the three separate
+    /// endpoints out concurrently, maps each response's items to the neutral `NotificationView`
+    /// (`neutralNotificationView(fromV3Reply:/fromV3Mention:/fromV3PrivateMessage:)`),
+    /// concatenates, and sorts the merged list by `notification.publishedAt` descending — a
+    /// k-way merge by timestamp rather than a true unified listing.
+    ///
+    /// Two deliberate simplifications, both out of scope for this pass (see the Phase 5 design
+    /// doc's "Notifications" section):
+    /// - **Single page only.** `pageCursor` is ignored and the returned `Page` always has
+    ///   `nextPage`/`prevPage` nil. Each of the three v3 sources paginates independently via its
+    ///   own page/limit; correctly merging three independent cursors into one coherent cursor
+    ///   over the merged timeline is nontrivial (a page boundary in the merge doesn't line up
+    ///   with a page boundary in any one source) and is left to a future refinement.
+    /// - **All-or-nothing.** If any of the three calls throws, the whole call throws and no
+    ///   partial results are returned. A partial-fan-out/partial-failure UX (for example, still
+    ///   showing replies if only private messages failed to load) is a future concern, not this
+    ///   pass's — simplest-thing-that-works over graceful degradation, for a first cut.
+    ///
+    /// The three calls run concurrently via `async let`, since they're independent network
+    /// round-trips — running them concurrently instead of sequentially meaningfully cuts latency,
+    /// even though `LemmyApi` is an actor (concurrent callers still interleave at each call's
+    /// network-await suspension point rather than truly running in parallel).
+    func listNotificationsNeutralV3(unreadOnly: Bool) async throws -> Page<NotificationView> {
+        async let repliesResponse = getReplies(unreadOnly: unreadOnly)
+        async let mentionsResponse = getPersonMentions(unreadOnly: unreadOnly)
+        async let privateMessagesResponse = getPrivateMessages(unreadOnly: unreadOnly)
+
+        let (replies, mentions, privateMessages) = try await (
+            repliesResponse,
+            mentionsResponse,
+            privateMessagesResponse
+        )
+
+        let merged = replies.replies.map { neutralNotificationView(fromV3Reply: $0) }
+            + mentions.mentions.map { neutralNotificationView(fromV3Mention: $0) }
+            + privateMessages.private_messages.map { neutralNotificationView(fromV3PrivateMessage: $0) }
+
+        // v3-sourced notifications always carry a real `publishedAt` (each of the three v3
+        // sources has a required, non-optional `published` date) -- `.distantPast` is a
+        // defensive fallback for the neutral field's `Date?` type, not something expected to
+        // trigger in practice.
+        let sorted = merged.sorted {
+            ($0.notification.publishedAt ?? .distantPast) > ($1.notification.publishedAt ?? .distantPast)
+        }
+
+        return Page(items: sorted, nextPage: nil, prevPage: nil)
+    }
+}

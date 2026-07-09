@@ -1,0 +1,102 @@
+{
+  "mentions": [
+    {
+      "person_mention": {
+        "id": 2,
+        "recipient_id": 20,
+        "comment_id": 502,
+        "read": false,
+        "published": "2026-07-08T15:00:00.000000Z"
+      },
+      "comment": {
+        "id": 502,
+        "creator_id": 13,
+        "post_id": 179,
+        "content": "Hey @seed_reader, check this out!",
+        "removed": false,
+        "published": "2026-06-12T23:40:00.000000Z",
+        "deleted": false,
+        "ap_id": "https://test1.lemmy.ddenis.info/comment/502",
+        "local": true,
+        "path": "0.502",
+        "distinguished": false,
+        "language_id": 0
+      },
+      "creator": {
+        "id": 13,
+        "name": "seed_botanist",
+        "display_name": "GardenBot",
+        "avatar": "https://picsum.photos/seed/seed_botanist/400/400",
+        "banned": false,
+        "published": "2026-06-12T22:09:10.564429Z",
+        "actor_id": "https://test1.lemmy.ddenis.info/u/seed_botanist",
+        "bio": "I post plant facts.",
+        "local": true,
+        "banner": "https://picsum.photos/seed/seed_botanist-b/1200/300",
+        "deleted": false,
+        "bot_account": true,
+        "instance_id": 1
+      },
+      "post": {
+        "id": 179,
+        "name": "Album on repeat this week (thread 7)",
+        "creator_id": 13,
+        "community_id": 29,
+        "removed": false,
+        "locked": false,
+        "published": "2026-06-12T23:37:46.417268Z",
+        "deleted": false,
+        "nsfw": false,
+        "ap_id": "https://test1.lemmy.ddenis.info/post/179",
+        "local": true,
+        "language_id": 0,
+        "featured_community": false,
+        "featured_local": false
+      },
+      "community": {
+        "id": 29,
+        "name": "music",
+        "title": "Music",
+        "removed": false,
+        "published": "2026-06-12T23:37:21.928884Z",
+        "deleted": false,
+        "nsfw": false,
+        "actor_id": "https://test1.lemmy.ddenis.info/c/music",
+        "local": true,
+        "hidden": false,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "Public"
+      },
+      "recipient": {
+        "id": 20,
+        "name": "seed_reader",
+        "display_name": "Seed Reader",
+        "avatar": "https://picsum.photos/seed/seed_reader/400/400",
+        "banned": false,
+        "published": "2026-06-12T22:10:00.000000Z",
+        "actor_id": "https://test1.lemmy.ddenis.info/u/seed_reader",
+        "local": true,
+        "banner": "https://picsum.photos/seed/seed_reader-b/1200/300",
+        "deleted": false,
+        "bot_account": false,
+        "instance_id": 1
+      },
+      "counts": {
+        "comment_id": 502,
+        "score": 1,
+        "upvotes": 1,
+        "downvotes": 0,
+        "published": "2026-06-12T23:40:00.000000Z",
+        "child_count": 0
+      },
+      "creator_banned_from_community": false,
+      "banned_from_community": false,
+      "creator_is_moderator": false,
+      "creator_is_admin": false,
+      "subscribed": "NotSubscribed",
+      "saved": false,
+      "creator_blocked": false
+    }
+  ]
+}
