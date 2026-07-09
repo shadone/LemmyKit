@@ -64,3 +64,18 @@ package func neutralPage<V3Item, Item>(
         prevPage: nil
     )
 }
+
+/// Builds a neutral, bidirectionally cursor-paginated `Page` from a v4
+/// `PagedResponse_PostCommentCombinedView_`, mapping each item with a throwing `mapItem`
+/// (`neutralPostOrComment(fromV4:)` -- throwing because the generator's `anyOf` shape can, in
+/// principle, decode with neither branch present; see `PostCommentCombinedV4Mapping.swift`).
+package func neutralPage<Item>(
+    fromV4 response: LemmyKitV4Generated.Components.Schemas.PagedResponse_PostCommentCombinedView_,
+    mapItem: (LemmyKitV4Generated.Components.Schemas.PostCommentCombinedView) throws -> Item
+) rethrows -> Page<Item> {
+    try Page(
+        items: response.items.map(mapItem),
+        nextPage: neutralCursor(fromV4: response.next_page),
+        prevPage: neutralCursor(fromV4: response.prev_page)
+    )
+}

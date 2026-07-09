@@ -1,0 +1,61 @@
+{
+  "person_view": {
+    "person": {
+      "id": 14,
+      "name": "seed_mod1",
+      "display_name": "Mod One",
+      "avatar": "https://picsum.photos/seed/seed_mod1/400/400",
+      "banned": false,
+      "published": "2026-06-12T22:09:11.363420Z",
+      "actor_id": "https://test1.lemmy.ddenis.info/u/seed_mod1",
+      "bio": "Community moderator.",
+      "local": true,
+      "banner": "https://picsum.photos/seed/seed_mod1-b/1200/300",
+      "deleted": false,
+      "bot_account": false,
+      "instance_id": 1
+    },
+    "counts": {
+      "person_id": 14,
+      "post_count": 5,
+      "comment_count": 12
+    },
+    "is_admin": false
+  },
+  "comments": [],
+  "posts": [],
+  "moderates": [
+    {
+      "community": {
+        "id": 29,
+        "name": "music",
+        "title": "Music",
+        "removed": false,
+        "published": "2026-06-12T23:37:21.928884Z",
+        "deleted": false,
+        "nsfw": false,
+        "actor_id": "https://test1.lemmy.ddenis.info/c/music",
+        "local": true,
+        "hidden": false,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "Public"
+      },
+      "moderator": {
+        "id": 14,
+        "name": "seed_mod1",
+        "display_name": "Mod One",
+        "avatar": "https://picsum.photos/seed/seed_mod1/400/400",
+        "banned": false,
+        "published": "2026-06-12T22:09:11.363420Z",
+        "actor_id": "https://test1.lemmy.ddenis.info/u/seed_mod1",
+        "bio": "Community moderator.",
+        "local": true,
+        "banner": "https://picsum.photos/seed/seed_mod1-b/1200/300",
+        "deleted": false,
+        "bot_account": false,
+        "instance_id": 1
+      }
+    }
+  ]
+}
