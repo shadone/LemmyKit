@@ -1,0 +1,227 @@
+{
+  "site_view": {
+    "site": {
+      "id": 1,
+      "name": "test1",
+      "sidebar": "Welcome to test1",
+      "published": "2026-06-12T19:13:11.759089Z",
+      "updated": "2026-06-12T23:39:00.241045Z",
+      "icon": "https://test1.lemmy.ddenis.info/icon.png",
+      "banner": "https://test1.lemmy.ddenis.info/banner.png",
+      "description": "A short summary of test1",
+      "actor_id": "https://test1.lemmy.ddenis.info/",
+      "last_refreshed_at": "2026-06-12T19:13:11.755568Z",
+      "inbox_url": "https://test1.lemmy.ddenis.info/inbox",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nfake\n-----END PUBLIC KEY-----\n",
+      "instance_id": 1
+    },
+    "local_site": {
+      "id": 1,
+      "site_id": 1,
+      "site_setup": true,
+      "enable_downvotes": true,
+      "enable_nsfw": true,
+      "community_creation_admin_only": false,
+      "require_email_verification": false,
+      "private_instance": false,
+      "default_theme": "browser",
+      "default_post_listing_type": "Local",
+      "hide_modlog_mod_names": true,
+      "application_email_admins": false,
+      "actor_name_max_length": 20,
+      "federation_enabled": true,
+      "captcha_enabled": false,
+      "captcha_difficulty": "easy",
+      "published": "2026-06-12T19:13:11.811561Z",
+      "updated": "2026-06-12T23:39:00.254063Z",
+      "registration_mode": "Open",
+      "reports_email_admins": false,
+      "federation_signed_fetch": false,
+      "default_post_listing_mode": "List",
+      "default_sort_type": "Active"
+    },
+    "local_site_rate_limit": {
+      "local_site_id": 1,
+      "message": 60,
+      "message_per_second": 60,
+      "post": 20,
+      "post_per_second": 300,
+      "register": 50,
+      "register_per_second": 60,
+      "image": 30,
+      "image_per_second": 300,
+      "comment": 30,
+      "comment_per_second": 300,
+      "search": 60,
+      "search_per_second": 60,
+      "published": "2026-06-12T19:13:11.839556Z",
+      "import_user_settings": 1,
+      "import_user_settings_per_second": 86400
+    },
+    "counts": {
+      "site_id": 1,
+      "users": 11,
+      "posts": 79,
+      "comments": 170,
+      "communities": 7,
+      "users_active_day": 9,
+      "users_active_week": 9,
+      "users_active_month": 9,
+      "users_active_half_year": 9
+    }
+  },
+  "admins": [
+    {
+      "person": {
+        "id": 2,
+        "name": "admin",
+        "avatar": "https://picsum.photos/seed/x/200/200",
+        "banned": false,
+        "published": "2026-06-12T19:13:11.219427Z",
+        "actor_id": "https://test1.lemmy.ddenis.info/u/admin",
+        "local": true,
+        "deleted": false,
+        "bot_account": false,
+        "instance_id": 1
+      },
+      "counts": {
+        "person_id": 2,
+        "post_count": 0,
+        "comment_count": 1
+      },
+      "is_admin": true
+    }
+  ],
+  "version": "0.19.18",
+  "my_user": {
+    "local_user_view": {
+      "local_user": {
+        "id": 2,
+        "person_id": 3,
+        "email": "john@example.invalid",
+        "show_nsfw": true,
+        "theme": "browser",
+        "default_sort_type": "Active",
+        "default_listing_type": "Subscribed",
+        "interface_language": "en",
+        "show_avatars": true,
+        "send_notifications_to_email": false,
+        "show_scores": false,
+        "show_bot_accounts": true,
+        "show_read_posts": true,
+        "email_verified": true,
+        "accepted_application": true,
+        "open_links_in_new_tab": false,
+        "blur_nsfw": true,
+        "auto_expand": false,
+        "infinite_scroll_enabled": false,
+        "admin": false,
+        "post_listing_mode": "List",
+        "totp_2fa_enabled": false,
+        "enable_keyboard_navigation": false,
+        "enable_animated_images": true,
+        "collapse_bot_comments": false,
+        "last_donation_notification": "2026-04-19T20:19:16.277780Z"
+      },
+      "local_user_vote_display_mode": {
+        "local_user_id": 2,
+        "score": false,
+        "upvotes": true,
+        "downvotes": true,
+        "upvote_percentage": false
+      },
+      "person": {
+        "id": 3,
+        "name": "john",
+        "banned": false,
+        "published": "2026-06-12T20:44:31.733780Z",
+        "actor_id": "https://test1.lemmy.ddenis.info/u/john",
+        "local": true,
+        "deleted": false,
+        "bot_account": false,
+        "instance_id": 1
+      },
+      "counts": {
+        "person_id": 3,
+        "post_count": 0,
+        "comment_count": 0
+      }
+    },
+    "follows": [
+      {
+        "community": {
+          "id": 10,
+          "name": "music",
+          "title": "Music",
+          "removed": false,
+          "published": "2026-05-01T00:00:00Z",
+          "deleted": false,
+          "nsfw": false,
+          "actor_id": "https://test1.lemmy.ddenis.info/c/music",
+          "local": true,
+          "hidden": false,
+          "posting_restricted_to_mods": false,
+          "instance_id": 1,
+          "visibility": "Public"
+        },
+        "follower": {
+          "id": 3,
+          "name": "john",
+          "banned": false,
+          "published": "2026-06-12T20:44:31.733780Z",
+          "actor_id": "https://test1.lemmy.ddenis.info/u/john",
+          "local": true,
+          "deleted": false,
+          "bot_account": false,
+          "instance_id": 1
+        }
+      }
+    ],
+    "moderates": [
+      {
+        "community": {
+          "id": 11,
+          "name": "science",
+          "title": "Science",
+          "removed": false,
+          "published": "2026-05-02T00:00:00Z",
+          "deleted": false,
+          "nsfw": false,
+          "actor_id": "https://test1.lemmy.ddenis.info/c/science",
+          "local": true,
+          "hidden": false,
+          "posting_restricted_to_mods": false,
+          "instance_id": 1,
+          "visibility": "Public"
+        },
+        "moderator": {
+          "id": 3,
+          "name": "john",
+          "banned": false,
+          "published": "2026-06-12T20:44:31.733780Z",
+          "actor_id": "https://test1.lemmy.ddenis.info/u/john",
+          "local": true,
+          "deleted": false,
+          "bot_account": false,
+          "instance_id": 1
+        }
+      }
+    ],
+    "community_blocks": [],
+    "instance_blocks": [],
+    "person_blocks": [],
+    "discussion_languages": []
+  },
+  "all_languages": [],
+  "discussion_languages": [],
+  "taglines": [
+    {
+      "id": 1,
+      "local_site_id": 1,
+      "content": "Welcome to test1!",
+      "published": "2026-06-01T00:00:00Z"
+    }
+  ],
+  "custom_emojis": [],
+  "blocked_urls": []
+}
