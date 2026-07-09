@@ -50,52 +50,8 @@ private func neutralPostActions(
     )
 }
 
-/// Maps v4's `community_actions` object to the neutral `CommunityActions`, field-by-field.
-///
-/// `notifications` (a per-community notification mode) has no neutral counterpart yet and is
-/// dropped.
-private func neutralCommunityActions(
-    fromV4 actions: LemmyKitV4Generated.Components.Schemas.CommunityActions
-) -> CommunityActions {
-    CommunityActions(
-        followState: actions.follow_state.map(neutralFollowState(fromV4:)),
-        followedAt: v4Date(actions.followed_at),
-        blockedAt: v4Date(actions.blocked_at),
-        receivedBanAt: v4Date(actions.received_ban_at),
-        banExpiresAt: v4Date(actions.ban_expires_at),
-        becameModeratorAt: v4Date(actions.became_moderator_at)
-    )
-}
-
-/// Maps v4's `person_actions` object to the neutral `PersonActions`, field-by-field.
-///
-/// v4's vote-tally fields (`upvotes`/`downvotes`, aggregate votes this viewer has cast on the
-/// person) have no neutral counterpart -- see `Neutral/PersonActions.swift`'s header (dropped
-/// per YAGNI) -- and are dropped here too.
-private func neutralPersonActions(
-    fromV4 actions: LemmyKitV4Generated.Components.Schemas.PersonActions
-) -> PersonActions {
-    PersonActions(
-        blockedAt: v4Date(actions.blocked_at),
-        note: actions.note,
-        notedAt: v4Date(actions.noted_at)
-    )
-}
-
-/// Maps v4's `CommunityFollowerState` 1:1 onto the neutral `FollowState`. The neutral-only
-/// `.notFollowing` case is handled by `PostView.followState`'s nil-default (when
-/// `communityActions` or its `followState` is absent), not by this function.
-private func neutralFollowState(
-    fromV4 state: LemmyKitV4Generated.Components.Schemas.CommunityFollowerState
-) -> FollowState {
-    switch state {
-    case .accepted:
-        .accepted
-    case .pending:
-        .pending
-    case .approval_required:
-        .approvalRequired
-    case .denied:
-        .denied
-    }
-}
+// `neutralCommunityActions(fromV4:)`, `neutralPersonActions(fromV4:)`, and
+// `neutralFollowState(fromV4:)` moved to `CommunityActionsV4Mapping.swift`,
+// `PersonActionsV4Mapping.swift`, and `FollowStateMapping.swift` respectively -- they are shared
+// verbatim with the `CommentView` v4 adapter, which carries the exact same `community_actions`/
+// `person_actions` generated types.

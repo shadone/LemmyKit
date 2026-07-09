@@ -47,3 +47,40 @@ func neutralPost(fromV3 post: Components.Schemas.Post, counts: Components.Schema
         comments: counts.comments
     )
 }
+
+/// Builds the neutral `Post` for a v3 `Components.Schemas.Post` with no separate `PostAggregates`
+/// available -- the shape of the bare `post` embedded in a v3 `CommentView`, which (unlike
+/// `PostView`) carries no accompanying aggregates for its post (confirmed against the `CommentView`
+/// schema in `openapi.yaml`: its only aggregates object is `CommentAggregates`, for the comment
+/// itself). `score`/`upvotes`/`downvotes`/`comments` all default to `0` and `newestCommentTimeAt`
+/// to `nil` -- a known, narrow emulation gap; a call site that needs accurate post-level tallies
+/// from a comment context must fetch the post (or its `PostView`) separately.
+func neutralPost(fromV3 post: Components.Schemas.Post) -> Post {
+    Post(
+        id: Int64(post.id),
+        name: post.name,
+        body: post.body,
+        url: post.url,
+        embedTitle: post.embed_title,
+        embedDescription: post.embed_description,
+        thumbnailUrl: post.thumbnail_url,
+        altText: post.alt_text,
+        creatorId: Int64(post.creator_id),
+        communityId: Int64(post.community_id),
+        apId: post.ap_id,
+        local: post.local,
+        nsfw: post.nsfw,
+        removed: post.removed,
+        deleted: post.deleted,
+        locked: post.locked,
+        featuredCommunity: post.featured_community,
+        featuredLocal: post.featured_local,
+        languageId: Int64(post.language_id),
+        publishedAt: post.published,
+        updatedAt: post.updated,
+        score: 0,
+        upvotes: 0,
+        downvotes: 0,
+        comments: 0
+    )
+}

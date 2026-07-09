@@ -64,17 +64,3 @@ private func neutralPostActions(fromV3 v3: Components.Schemas.PostView, post: Po
         readCommentsAmount: max(0, post.comments - v3.unread_comments)
     )
 }
-
-/// Maps v3's 3-state `SubscribedType` to the neutral `FollowState`. `.approvalRequired`/
-/// `.denied` are v4-only -- v3's `Pending` collapses both "awaiting mod approval" and "denied"
-/// into the same case, so a v3 backend can never produce them.
-private func neutralFollowState(fromV3 subscribed: Components.Schemas.SubscribedType) -> FollowState {
-    switch subscribed {
-    case .Subscribed:
-        .accepted
-    case .Pending:
-        .pending
-    case .NotSubscribed:
-        .notFollowing
-    }
-}
