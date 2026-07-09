@@ -80,3 +80,20 @@ func v3PersonID(_ id: Int64) throws -> Components.Schemas.PersonID {
     }
     return Components.Schemas.PersonID(narrowed)
 }
+
+/// Narrows a neutral language id down to v3's `Int32`-backed `LanguageID`. See ``v3PostID(_:)``.
+///
+/// Unlike the id conversions above, v4's `LanguageId` is already `Int64` (matching the neutral
+/// type exactly), so only the v3 content-mutation endpoints (``LemmyApi/createPostNeutral(name:communityId:url:body:nsfw:languageId:)``,
+/// ``LemmyApi/createCommentNeutral(content:postId:parentId:languageId:)``) need this narrowing.
+///
+/// - Parameter id: the neutral language id to narrow.
+/// - Returns: the equivalent v3 `LanguageID`.
+/// - Throws: ``LemmyApiError/unknown(_:)`` wrapping ``V3IDConversionError/idOutOfRange(_:)`` if
+///   `id` doesn't fit in `Int32`.
+func v3LanguageID(_ id: Int64) throws -> Components.Schemas.LanguageID {
+    guard let narrowed = Int32(exactly: id) else {
+        throw LemmyApiError.unknown(V3IDConversionError.idOutOfRange(id))
+    }
+    return Components.Schemas.LanguageID(narrowed)
+}
