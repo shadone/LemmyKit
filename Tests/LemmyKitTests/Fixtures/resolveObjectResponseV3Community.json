@@ -1,0 +1,34 @@
+{
+  "community": {
+    "community": {
+      "id": 26,
+      "name": "selfhosted",
+      "title": "Self-Hosted",
+      "removed": false,
+      "published": "2026-06-12T23:37:20.771808Z",
+      "deleted": false,
+      "nsfw": false,
+      "actor_id": "https://test1.lemmy.ddenis.info/c/selfhosted",
+      "local": true,
+      "hidden": false,
+      "posting_restricted_to_mods": false,
+      "instance_id": 1,
+      "visibility": "Public"
+    },
+    "subscribed": "NotSubscribed",
+    "blocked": false,
+    "counts": {
+      "community_id": 26,
+      "subscribers": 10,
+      "posts": 8,
+      "comments": 33,
+      "published": "2026-06-12T23:37:20.771808Z",
+      "users_active_day": 10,
+      "users_active_week": 10,
+      "users_active_month": 10,
+      "users_active_half_year": 10,
+      "subscribers_local": 1
+    },
+    "banned_from_community": false
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "post": {
+    "post": {
+      "id": 180,
+      "name": "Live recording (thread 8)",
+      "url": "https://example.com/live",
+      "creator_id": 14,
+      "community_id": 29,
+      "removed": false,
+      "locked": false,
+      "published": "2026-06-12T23:37:46.566375Z",
+      "deleted": false,
+      "nsfw": false,
+      "embed_title": "Example Domain",
+      "ap_id": "https://test1.lemmy.ddenis.info/post/180",
+      "local": true,
+      "language_id": 0,
+      "featured_community": false,
+      "featured_local": false
+    },
+    "creator": {
+      "id": 14,
+      "name": "seed_mod1",
+      "display_name": "Mod One",
+      "avatar": "https://picsum.photos/seed/seed_mod1/400/400",
+      "banned": false,
+      "published": "2026-06-12T22:09:11.363420Z",
+      "actor_id": "https://test1.lemmy.ddenis.info/u/seed_mod1",
+      "bio": "Community moderator.",
+      "local": true,
+      "banner": "https://picsum.photos/seed/seed_mod1-b/1200/300",
+      "deleted": false,
+      "bot_account": false,
+      "instance_id": 1
+    },
+    "community": {
+      "id": 29,
+      "name": "music",
+      "title": "Music",
+      "removed": false,
+      "published": "2026-06-12T23:37:21.928884Z",
+      "deleted": false,
+      "nsfw": false,
+      "actor_id": "https://test1.lemmy.ddenis.info/c/music",
+      "local": true,
+      "hidden": false,
+      "posting_restricted_to_mods": false,
+      "instance_id": 1,
+      "visibility": "Public"
+    },
+    "creator_banned_from_community": false,
+    "banned_from_community": false,
+    "creator_is_moderator": false,
+    "creator_is_admin": false,
+    "counts": {
+      "post_id": 180,
+      "comments": 7,
+      "score": 1,
+      "upvotes": 1,
+      "downvotes": 0,
+      "published": "2026-06-12T23:37:46.566375Z",
+      "newest_comment_time": "2026-06-12T23:38:31.361774Z"
+    },
+    "subscribed": "NotSubscribed",
+    "saved": false,
+    "read": false,
+    "hidden": false,
+    "creator_blocked": false,
+    "unread_comments": 7
+  }
+}

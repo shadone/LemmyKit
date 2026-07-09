@@ -1,0 +1,34 @@
+{
+  "type_": "multi_community",
+  "owner": {
+    "id": 14,
+    "name": "seed_mod1",
+    "display_name": "Mod One",
+    "avatar": "https://picsum.photos/seed/seed_mod1/400/400",
+    "published_at": "2026-06-12T22:09:11.363420Z",
+    "ap_id": "https://test1.lemmy.ddenis.info/u/seed_mod1",
+    "bio": "Community moderator.",
+    "local": true,
+    "banner": "https://picsum.photos/seed/seed_mod1-b/1200/300",
+    "deleted": false,
+    "bot_account": false,
+    "instance_id": 1,
+    "last_refreshed_at": "2026-06-12T22:09:11.363420Z",
+    "post_count": 0,
+    "comment_count": 0
+  },
+  "multi": {
+    "communities": 3,
+    "subscribers_local": 0,
+    "subscribers": 10,
+    "published_at": "2026-06-12T23:37:21.928884Z",
+    "last_refreshed_at": "2026-06-12T23:37:21.928884Z",
+    "ap_id": "https://test1.lemmy.ddenis.info/m/example",
+    "deleted": false,
+    "local": true,
+    "name": "example",
+    "instance_id": 1,
+    "creator_id": 14,
+    "id": 5
+  }
+}
