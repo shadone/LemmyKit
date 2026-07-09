@@ -1,0 +1,66 @@
+{
+  "items": [
+    {
+      "community": {
+        "id": 29,
+        "name": "music",
+        "title": "Music",
+        "removed": false,
+        "published_at": "2026-06-12T23:37:21.928884Z",
+        "deleted": false,
+        "nsfw": false,
+        "ap_id": "https://test1.lemmy.ddenis.info/c/music",
+        "local": true,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "public",
+        "last_refreshed_at": "2026-06-12T23:37:21.928884Z",
+        "subscribers": 100,
+        "posts": 50,
+        "comments": 200,
+        "subscribers_local": 0,
+        "users_active_day": 0,
+        "users_active_week": 0,
+        "users_active_month": 0,
+        "users_active_half_year": 0,
+        "report_count": 0,
+        "unresolved_report_count": 0,
+        "local_removed": false
+      },
+      "can_mod": false,
+      "tags": []
+    },
+    {
+      "community": {
+        "id": 26,
+        "name": "selfhosted",
+        "title": "Self-Hosted",
+        "removed": false,
+        "published_at": "2026-06-12T23:37:20.771808Z",
+        "deleted": false,
+        "nsfw": false,
+        "ap_id": "https://test1.lemmy.ddenis.info/c/selfhosted",
+        "local": true,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "public",
+        "last_refreshed_at": "2026-06-12T23:37:20.771808Z",
+        "subscribers": 10,
+        "posts": 8,
+        "comments": 33,
+        "subscribers_local": 1,
+        "users_active_day": 10,
+        "users_active_week": 10,
+        "users_active_month": 10,
+        "users_active_half_year": 10,
+        "report_count": 0,
+        "unresolved_report_count": 0,
+        "local_removed": false
+      },
+      "can_mod": false,
+      "tags": []
+    }
+  ],
+  "next_page": "Pc30",
+  "prev_page": null
+}

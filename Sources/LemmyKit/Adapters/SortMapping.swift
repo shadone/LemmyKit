@@ -76,6 +76,38 @@ package func v4PostSortType(fromNeutral sort: PostSort) -> LemmyKitV4Generated.C
     }
 }
 
+/// Folds the neutral `PostSort` into v4's `CommunitySortType` for community listings
+/// (``LemmyApi/listCommunitiesNeutral(sort:pageCursor:)``).
+///
+/// Lemmy's community listing uses a materially different sort vocabulary from post listings --
+/// time-bucketed "active" variants (`active_six_months`/`active_monthly`/`active_weekly`/
+/// `active_daily`), name/subscriber-count orderings, and no `top`/`controversial`/`scaled` -- so
+/// this is a lossy, best-effort approximation rather than a 1:1 mapping: `.active` picks the
+/// middle `active_monthly` bucket (no `TimeRange` accompanies `PostSort.active` the way one
+/// optionally does `.top`, so there's no finer signal to bucket by), `.mostComments`/
+/// `.newComments` both fold to `.comments` (the closest community-level analog), and anything
+/// with no community-sort equivalent at all (`.top`/`.controversial`/`.scaled`) falls back to
+/// `.hot`. A dedicated neutral `CommunitySort` type is a candidate follow-up if callers need the
+/// fuller vocabulary.
+///
+/// v3's community listing reuses the same `SortType` as post listings (see
+/// `v3SortType(fromNeutral:timeRange:)`), so only the v4 side needs this fold.
+package func v4CommunitySortType(
+    fromNeutral sort: PostSort
+) -> LemmyKitV4Generated.Components.Schemas.CommunitySortType {
+    switch sort {
+    case .active: .active_monthly
+    case .hot: .hot
+    case .new: .new
+    case .old: .old
+    case .top: .hot
+    case .mostComments: .comments
+    case .newComments: .comments
+    case .controversial: .hot
+    case .scaled: .hot
+    }
+}
+
 /// Direct, 1:1 mapping from neutral `CommentSort` to v3's `CommentSortType` -- comments have no
 /// time-bucketed sort in either API version.
 package func v3CommentSortType(fromNeutral sort: CommentSort) -> Components.Schemas.CommentSortType {

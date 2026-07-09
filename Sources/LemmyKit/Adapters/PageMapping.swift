@@ -48,6 +48,20 @@ package func neutralPage<Item>(
     )
 }
 
+/// Builds a neutral, bidirectionally cursor-paginated `Page` from a v4
+/// `PagedResponse_CommunityView_`, mapping each item with `mapItem` (typically
+/// `neutralCommunityView(fromV4:)`).
+package func neutralPage<Item>(
+    fromV4 response: LemmyKitV4Generated.Components.Schemas.PagedResponse_CommunityView_,
+    mapItem: (LemmyKitV4Generated.Components.Schemas.CommunityView) -> Item
+) -> Page<Item> {
+    Page(
+        items: response.items.map(mapItem),
+        nextPage: neutralCursor(fromV4: response.next_page),
+        prevPage: neutralCursor(fromV4: response.prev_page)
+    )
+}
+
 /// Builds a neutral, forward-only `Page` (`prevPage` always nil -- v3 has no reverse-paging
 /// cursor) from a v3 listing's already-extracted items and optional `next_page` cursor, mapping
 /// each item with `mapItem`. Pass `nextPage: nil` for a v3 listing with no cursor support at all
