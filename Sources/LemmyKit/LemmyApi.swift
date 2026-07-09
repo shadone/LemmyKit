@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import LemmyKitV4Generated
 import OpenAPIRuntime
 import OpenAPIURLSession
 
@@ -15,6 +16,7 @@ import OpenAPIURLSession
 /// optionally with a ``LemmyCredential`` to act on behalf of a user account.
 public actor LemmyApi {
     let client: Client
+    let v4Client: LemmyKitV4Generated.Client
     let authorizationMiddleware: AuthorizationMiddleware
 
     /// `User-Agent` sent on every request (generated client calls and the
@@ -33,6 +35,10 @@ public actor LemmyApi {
     /// can build absolute urls without going through the generated client.
     let instanceUrl: URL
 
+    /// Which generated backend (v3's `client` or v4's `v4Client`) the version-neutral
+    /// `LemmyApi+*Neutral` methods dispatch to. See ``ApiVersion``.
+    public let apiVersion: ApiVersion
+
     // MARK: Functions
 
     /// Creates an api client for the given Lemmy instance, using
@@ -42,45 +48,13 @@ public actor LemmyApi {
     ///   - instanceUrl: the instance base url, e.g. `https://lemmy.world`.
     ///   - credential: the session credential for authenticated requests, or nil for anonymous access.
     ///   - userAgent: the `User-Agent` to send on every request.
-    public init(instanceUrl: URL, credential: LemmyCredential?, userAgent: String = "LemmyKit") {
-        self.instanceUrl = instanceUrl
-        let instanceHostname: String?
-        if #available(iOS 16.0, *) {
-            instanceHostname = instanceUrl.host(percentEncoded: false)
-        } else {
-            instanceHostname = instanceUrl.host
-        }
-        self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
-
-        self.credential = credential
-        self.userAgent = userAgent
-        authorizationMiddleware = AuthorizationMiddleware(token: credential?.jwt)
-
-        client = Client(
-            serverURL: instanceUrl,
-            configuration: .init(dateTranscoder: LemmyDateTranscoder()),
-            transport: URLSessionTransport(),
-            middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
-        )
-    }
-
-    /// Creates an api client backed by a caller-supplied transport.
-    ///
-    /// Intended for tests: inject a stub `ClientTransport` to return canned
-    /// responses without hitting the network. Production code uses
-    /// ``init(instanceUrl:credential:userAgent:)`` which wires up
-    /// `URLSessionTransport`.
-    ///
-    /// - Parameters:
-    ///   - instanceUrl: the instance base url, e.g. `https://lemmy.world`.
-    ///   - credential: the session credential for authenticated requests, or nil for anonymous access.
-    ///   - transport: the transport used to issue requests.
-    ///   - userAgent: the `User-Agent` to send on every request.
+    ///   - apiVersion: which generated backend the version-neutral methods dispatch to.
+    ///     Defaults to `.v3`.
     public init(
         instanceUrl: URL,
         credential: LemmyCredential?,
-        transport: any ClientTransport,
-        userAgent: String = "LemmyKit"
+        userAgent: String = "LemmyKit",
+        apiVersion: ApiVersion = .v3
     ) {
         self.instanceUrl = instanceUrl
         let instanceHostname: String?
@@ -93,11 +67,66 @@ public actor LemmyApi {
 
         self.credential = credential
         self.userAgent = userAgent
+        self.apiVersion = apiVersion
+        authorizationMiddleware = AuthorizationMiddleware(token: credential?.jwt)
+
+        let transport = URLSessionTransport()
+        client = Client(
+            serverURL: instanceUrl,
+            configuration: .init(dateTranscoder: LemmyDateTranscoder()),
+            transport: transport,
+            middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
+        )
+        v4Client = LemmyKitV4Generated.Client(
+            serverURL: instanceUrl,
+            transport: transport,
+            middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
+        )
+    }
+
+    /// Creates an api client backed by a caller-supplied transport.
+    ///
+    /// Intended for tests: inject a stub `ClientTransport` to return canned
+    /// responses without hitting the network. Production code uses
+    /// ``init(instanceUrl:credential:userAgent:apiVersion:)`` which wires up
+    /// `URLSessionTransport`.
+    ///
+    /// - Parameters:
+    ///   - instanceUrl: the instance base url, e.g. `https://lemmy.world`.
+    ///   - credential: the session credential for authenticated requests, or nil for anonymous access.
+    ///   - transport: the transport used to issue requests.
+    ///   - userAgent: the `User-Agent` to send on every request.
+    ///   - apiVersion: which generated backend the version-neutral methods dispatch to.
+    ///     Defaults to `.v3`.
+    public init(
+        instanceUrl: URL,
+        credential: LemmyCredential?,
+        transport: any ClientTransport,
+        userAgent: String = "LemmyKit",
+        apiVersion: ApiVersion = .v3
+    ) {
+        self.instanceUrl = instanceUrl
+        let instanceHostname: String?
+        if #available(iOS 16.0, *) {
+            instanceHostname = instanceUrl.host(percentEncoded: false)
+        } else {
+            instanceHostname = instanceUrl.host
+        }
+        self.instanceHostname = instanceHostname ?? instanceUrl.absoluteString
+
+        self.credential = credential
+        self.userAgent = userAgent
+        self.apiVersion = apiVersion
         authorizationMiddleware = AuthorizationMiddleware(token: credential?.jwt)
 
         client = Client(
             serverURL: instanceUrl,
             configuration: .init(dateTranscoder: LemmyDateTranscoder()),
+            transport: transport,
+            middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
+        )
+        v4Client = LemmyKitV4Generated.Client(
+            serverURL: instanceUrl,
             transport: transport,
             middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
         )
