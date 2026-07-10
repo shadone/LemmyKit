@@ -6,6 +6,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While pre-1.0, breaking changes bump the minor version.
 
+## [0.6.0] - 2026-07-10
+
+Version-neutral dual-version (Lemmy v3 / v4) client surface. LemmyKit can now
+talk to both 0.19.x (API v3) and 1.0 (API v4) instances through one neutral
+API that speaks v4 semantics, with a v3 backend that emulates upward.
+
+### Added
+
+- A generated `LemmyKitV4Generated` target (the Lemmy 1.0 / API v4 client,
+  from the envelope-stripped spec), consumed only by the facade.
+- Hand-written neutral DTOs in `Sources/LemmyKit/Neutral/` (v4-shaped:
+  flattened counts, nested `*Actions` with timestamp-presence booleans,
+  4-state `FollowState`, `VoteDirection`, opaque bidirectional `Page`/`Cursor`,
+  `PostSort` + `TimeRange`, unified `NotificationView`/`NotificationEntry`,
+  `PostOrComment`, `ResolvedObject`, etc.).
+- `ApiVersion` and 26 neutral endpoints on `LemmyApi` (`*Neutral` methods) that
+  dispatch on an injected `apiVersion` to the v3 or v4 generated client and map
+  the response into the neutral DTOs — feeds, post/comment reads, vote/save/hide,
+  create/edit/delete, follow/community, person details + content (v4 split, v3
+  interleave), the unified notifications inbox (v3 fan-out + k-way merge),
+  search, login/register, settings, private messages, block, resolveObject, and
+  image upload.
+- `ApiVersionProbe` for consumers without their own version detection (probes
+  `/api/v4/site`; defaults to `.v3` on any ambiguity).
+- `LemmyApi.init` gains an `apiVersion:` parameter, defaulting to `.v3` so
+  existing call sites are unaffected.
+
+### Changed
+
+- **Breaking:** the `Lemmy.*` DTO members with a hand-written neutral
+  counterpart (`PostView`, `CommentView`, `CommunityView`, `PersonView`,
+  `PrivateMessageView`, `Post`, `Comment`, `Community`, `Person`, `Site`) now
+  alias the neutral structs instead of `Components.Schemas.*`, so `Lemmy.PostView`
+  is the neutral type. Identifiers, enums, aggregates, and `*Response` members
+  are unchanged. The generated `Components.Schemas.*` surface and the existing v3
+  wrappers remain available.
+
 ## [0.5.2] - 2026-07-07
 
 ### Added
@@ -111,6 +148,7 @@ While pre-1.0, breaking changes bump the minor version.
 
 Earlier history (≤ 0.2.0) is available in the git log.
 
+[0.6.0]: https://github.com/shadone/LemmyKit/compare/0.5.2...0.6.0
 [0.5.2]: https://github.com/shadone/LemmyKit/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/shadone/LemmyKit/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/shadone/LemmyKit/compare/0.4.0...0.5.0
