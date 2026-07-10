@@ -7,9 +7,10 @@
 import XCTest
 @testable import LemmyKit
 
-/// Proves that each member of the `Lemmy` namespace resolves to the intended generated
-/// `Components.Schemas.*` type, so a mis-alias (e.g. aliasing `Lemmy.PostID` to the wrong
-/// schema) fails to compile or fails an assertion.
+/// Proves that each member of the `Lemmy` namespace resolves to its intended target type —
+/// the hand-written neutral struct for DTO members with a neutral counterpart, otherwise the
+/// generated `Components.Schemas.*` type — so a mis-alias (e.g. aliasing `Lemmy.PostID` to
+/// the wrong schema) fails to compile or fails an assertion.
 final class NeutralVocabularyTests: XCTestCase {
     // MARK: - Identifiers
 
@@ -42,13 +43,19 @@ final class NeutralVocabularyTests: XCTestCase {
 
     // MARK: - Views
 
+    /// Views with a hand-written neutral counterpart now alias `LemmyKit.X` (the bare
+    /// top-level neutral struct in `Sources/LemmyKit/Neutral/`), not the generated schema.
+    func testViewAliasesResolveToNeutralTypes() {
+        XCTAssertTrue(Lemmy.PostView.self == LemmyKit.PostView.self)
+        XCTAssertTrue(Lemmy.CommentView.self == LemmyKit.CommentView.self)
+        XCTAssertTrue(Lemmy.CommunityView.self == LemmyKit.CommunityView.self)
+        XCTAssertTrue(Lemmy.PersonView.self == LemmyKit.PersonView.self)
+        XCTAssertTrue(Lemmy.PrivateMessageView.self == LemmyKit.PrivateMessageView.self)
+    }
+
+    /// Views without a neutral counterpart remain simple aliases to the generated schema.
     func testViewAliasesResolveToGeneratedTypes() {
-        XCTAssertTrue(Lemmy.PostView.self == Components.Schemas.PostView.self)
         XCTAssertTrue(Lemmy.SiteView.self == Components.Schemas.SiteView.self)
-        XCTAssertTrue(Lemmy.CommentView.self == Components.Schemas.CommentView.self)
-        XCTAssertTrue(Lemmy.CommunityView.self == Components.Schemas.CommunityView.self)
-        XCTAssertTrue(Lemmy.PersonView.self == Components.Schemas.PersonView.self)
-        XCTAssertTrue(Lemmy.PrivateMessageView.self == Components.Schemas.PrivateMessageView.self)
         XCTAssertTrue(Lemmy.PersonMentionView.self == Components.Schemas.PersonMentionView.self)
         XCTAssertTrue(Lemmy.CommentReplyView.self == Components.Schemas.CommentReplyView.self)
         XCTAssertTrue(Lemmy.CommunityFollowerView.self == Components.Schemas.CommunityFollowerView.self)
@@ -57,15 +64,21 @@ final class NeutralVocabularyTests: XCTestCase {
 
     // MARK: - Core models
 
+    /// Models with a hand-written neutral counterpart now alias `LemmyKit.X`, not the
+    /// generated schema.
+    func testModelAliasesResolveToNeutralTypes() {
+        XCTAssertTrue(Lemmy.Post.self == LemmyKit.Post.self)
+        XCTAssertTrue(Lemmy.Comment.self == LemmyKit.Comment.self)
+        XCTAssertTrue(Lemmy.Community.self == LemmyKit.Community.self)
+        XCTAssertTrue(Lemmy.Person.self == LemmyKit.Person.self)
+        XCTAssertTrue(Lemmy.Site.self == LemmyKit.Site.self)
+    }
+
+    /// Models without a neutral counterpart remain simple aliases to the generated schema.
     func testModelAliasesResolveToGeneratedTypes() {
-        XCTAssertTrue(Lemmy.Post.self == Components.Schemas.Post.self)
-        XCTAssertTrue(Lemmy.Comment.self == Components.Schemas.Comment.self)
         XCTAssertTrue(Lemmy.CommentReply.self == Components.Schemas.CommentReply.self)
-        XCTAssertTrue(Lemmy.Community.self == Components.Schemas.Community.self)
-        XCTAssertTrue(Lemmy.Person.self == Components.Schemas.Person.self)
         XCTAssertTrue(Lemmy.PrivateMessage.self == Components.Schemas.PrivateMessage.self)
         XCTAssertTrue(Lemmy.MyUserInfo.self == Components.Schemas.MyUserInfo.self)
-        XCTAssertTrue(Lemmy.Site.self == Components.Schemas.Site.self)
         XCTAssertTrue(Lemmy.LocalSite.self == Components.Schemas.LocalSite.self)
         XCTAssertTrue(Lemmy.LocalSiteRateLimit.self == Components.Schemas.LocalSiteRateLimit.self)
         XCTAssertTrue(Lemmy.LocalUser.self == Components.Schemas.LocalUser.self)

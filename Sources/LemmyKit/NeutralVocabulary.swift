@@ -11,11 +11,13 @@
 /// vocabulary lives under this caseless-enum namespace (rather than bare top-level
 /// typealiases) so that common nouns like `Post`, `Comment`, and `Person` do not pollute
 /// consumers' global scope — `import LemmyKit` must not shadow, say, Swift Testing's
-/// `Comment` type. In a future release the DTO members below (views, models, aggregates,
-/// responses) may retarget to hand-written neutral types decoupled from the generated
-/// surface; the identifier and enum members are expected to remain simple aliases. This
-/// file is purely additive: it introduces no behavior change, and the existing
-/// `Components.Schemas.*` surface remains untouched and fully usable.
+/// `Comment` type. The DTO members with a hand-written neutral counterpart (`PostView`,
+/// `CommentView`, `CommunityView`, `PersonView`, `PrivateMessageView`, `Post`, `Comment`,
+/// `Community`, `Person`, `Site`) now alias that neutral type (`Sources/LemmyKit/Neutral/`)
+/// instead of the generated schema; the remaining DTO members (aggregates, other views,
+/// responses without a neutral equivalent) and all identifier/enum members remain simple
+/// aliases to `Components.Schemas.*`. The existing `Components.Schemas.*` surface remains
+/// untouched and fully usable by the old v3 wrappers.
 public enum Lemmy {
     // MARK: - Identifiers
 
@@ -39,11 +41,11 @@ public enum Lemmy {
 
     // MARK: - Views
 
-    public typealias PostView = Components.Schemas.PostView
-    public typealias CommentView = Components.Schemas.CommentView
-    public typealias CommunityView = Components.Schemas.CommunityView
-    public typealias PersonView = Components.Schemas.PersonView
-    public typealias PrivateMessageView = Components.Schemas.PrivateMessageView
+    public typealias PostView = LemmyKit.PostView
+    public typealias CommentView = LemmyKit.CommentView
+    public typealias CommunityView = LemmyKit.CommunityView
+    public typealias PersonView = LemmyKit.PersonView
+    public typealias PrivateMessageView = LemmyKit.PrivateMessageView
     public typealias PersonMentionView = Components.Schemas.PersonMentionView
     public typealias CommentReplyView = Components.Schemas.CommentReplyView
     public typealias CommunityFollowerView = Components.Schemas.CommunityFollowerView
@@ -52,14 +54,14 @@ public enum Lemmy {
 
     // MARK: - Core models
 
-    public typealias Post = Components.Schemas.Post
-    public typealias Comment = Components.Schemas.Comment
+    public typealias Post = LemmyKit.Post
+    public typealias Comment = LemmyKit.Comment
     public typealias CommentReply = Components.Schemas.CommentReply
-    public typealias Community = Components.Schemas.Community
-    public typealias Person = Components.Schemas.Person
+    public typealias Community = LemmyKit.Community
+    public typealias Person = LemmyKit.Person
     public typealias PrivateMessage = Components.Schemas.PrivateMessage
     public typealias MyUserInfo = Components.Schemas.MyUserInfo
-    public typealias Site = Components.Schemas.Site
+    public typealias Site = LemmyKit.Site
     public typealias LocalSite = Components.Schemas.LocalSite
     public typealias LocalSiteRateLimit = Components.Schemas.LocalSiteRateLimit
     public typealias LocalUser = Components.Schemas.LocalUser

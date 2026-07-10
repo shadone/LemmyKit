@@ -12,16 +12,33 @@ from the in-repo spec `Sources/LemmyKit/openapi.yaml` (config:
 
 ## Neutral vocabulary namespace (`Lemmy.*`)
 - `Sources/LemmyKit/NeutralVocabulary.swift` exposes a caseless enum `Lemmy`
-  aliasing the generated vocabulary (`Lemmy.PostView`, `Lemmy.PostID`,
-  `Lemmy.SortType`, `Lemmy.Post`, ...) so consumers don't write the verbose
-  `Components.Schemas.` prefix. Stage 1 of the neutral-surface migration; purely
-  additive (the generated surface is untouched). **It is a NAMESPACE, not bare
-  top-level typealiases, on purpose**: bare aliases for common nouns (`Post`,
-  `Comment`, `Person`) would pollute consumers' global scope and shadow other
-  modules — notably Swift Testing's `Comment`, which caused `'Comment' is
-  ambiguous` build errors across the Spud test suite. When adding a new consumed
-  type, add a `public typealias X = Components.Schemas.X` member inside `enum
-  Lemmy` (and a `.self ==` identity check in `NeutralVocabularyTests`).
+  as the vocabulary surface consumers use instead of writing verbose
+  qualified type names directly. **It is a NAMESPACE, not bare top-level
+  typealiases, on purpose**: bare aliases for common nouns (`Post`, `Comment`,
+  `Person`) would pollute consumers' global scope and shadow other modules —
+  notably Swift Testing's `Comment`, which caused `'Comment' is ambiguous`
+  build errors across the Spud test suite.
+- Finalized (dual-version initiative "big bang"): the DTO members with a
+  hand-written neutral counterpart in `Sources/LemmyKit/Neutral/` —
+  `PostView`, `CommentView`, `CommunityView`, `PersonView`,
+  `PrivateMessageView`, `Post`, `Comment`, `Community`, `Person`, `Site` — now
+  alias that bare top-level neutral struct via the module-qualified form
+  (e.g. `public typealias PostView = LemmyKit.PostView`; the module prefix is
+  required so the nested alias doesn't self-reference). So `Lemmy.PostView`
+  **is** the neutral type, not `Components.Schemas.PostView`.
+- All other members — identifiers (`PostID`, ...), enums (`SortType`,
+  `ListingType`, ...), aggregates (`PostAggregates`, ...), views without a
+  neutral equivalent (`SiteView`, `PersonMentionView`, `CommentReplyView`,
+  `CommunityFollowerView`, `ModRemoveCommentView`), models without a neutral
+  equivalent (`CommentReply`, `MyUserInfo`, `LocalSite`,
+  `LocalSiteRateLimit`, `LocalUser`), and every `*Response` — remain simple
+  aliases to `Components.Schemas.*`, unaffected by the retarget and still
+  used as vocabulary by the old v3 wrappers and by Spud.
+- When adding a new consumed type: if a neutral struct of the same name
+  exists under `Neutral/`, alias to `LemmyKit.X`; otherwise alias to
+  `Components.Schemas.X`. Either way, add a `.self ==` identity check in
+  `NeutralVocabularyTests` (a neutral-type assertion or a
+  `Components.Schemas.*` assertion, matching which target the member uses).
 
 ## Build / verify
 - `swift build` / `swift test` (the OpenAPI build-tool plugin regenerates sources).
