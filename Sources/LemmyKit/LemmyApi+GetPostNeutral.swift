@@ -39,7 +39,7 @@ private extension LemmyApi {
         let response: Operations.getPost.Output
         do {
             response = try await client.getPost(.init(query: .init(
-                id: Components.Schemas.PostID(id)
+                id: v3PostID(id)
             )))
         } catch {
             throw LemmyApiError(from: error)

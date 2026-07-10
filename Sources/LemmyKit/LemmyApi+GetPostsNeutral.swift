@@ -70,7 +70,7 @@ private extension LemmyApi {
         let response = try await getPosts(query: .init(
             type_: listingType,
             sort: v3SortType(fromNeutral: sort, timeRange: timeRange),
-            community_id: communityId.map(Components.Schemas.CommunityID.init),
+            community_id: communityId.map(v3CommunityID),
             page_cursor: pageCursor?.rawValue
         ))
 

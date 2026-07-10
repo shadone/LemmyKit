@@ -12,8 +12,9 @@ import LemmyKitV4Generated
 /// Mirrors `PostCommentCombinedViewError` (see `PostCommentCombinedV4Mapping.swift`'s doc) for
 /// v4's `NotificationData`, which the generator represents the same way — four independent
 /// optional payloads (`value1`...`value4`, one per notification kind that carries a payload:
-/// comment/post/private_message/mod_action — `.subscribed` carries no payload at all, see
-/// `NotificationData`'s doc). The generator's own `verifyAtLeastOneSchemaIsNotNil` guarantees at
+/// comment/post/private_message/mod_action). Every `NotificationKind` maps to one of these four —
+/// `.subscribed` carries a `PostView` via the `post` branch, not a payload-less fifth case; see
+/// `NotificationData`'s doc. The generator's own `verifyAtLeastOneSchemaIsNotNil` guarantees at
 /// least one decodes — seeing none here would mean that invariant was violated, which should
 /// never happen in practice.
 enum NotificationDataError: Error, Equatable {

@@ -55,7 +55,7 @@ private extension LemmyApi {
             type_: .All,
             sort: v3CommentSortType(fromNeutral: sort),
             community_id: nil,
-            post_id: Components.Schemas.PostID(postId)
+            post_id: v3PostID(postId)
         ))
 
         return neutralPage(fromV3: response.comments, nextPage: nil) {

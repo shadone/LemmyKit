@@ -25,11 +25,6 @@ enum V3IDConversionError: Error, Equatable {
 /// (see ``V3IDConversionError``), so it's surfaced as a catchable ``LemmyApiError/unknown(_:)``
 /// instead of crashing the process.
 ///
-/// - Note: ``LemmyApi/getPostNeutral(id:)``/``LemmyApi/getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)``
-///   predate this helper and still narrow inline with the trapping `Int32(_:)` init; migrating
-///   them onto this helper is a follow-up, left out here to keep this change scoped to the new
-///   mutation endpoints.
-///
 /// - Parameter id: the neutral post id to narrow.
 /// - Returns: the equivalent v3 `PostID`.
 /// - Throws: ``LemmyApiError/unknown(_:)`` wrapping ``V3IDConversionError/idOutOfRange(_:)`` if
