@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While pre-1.0, breaking changes bump the minor version.
 
+## [0.6.1] - 2026-07-11
+
+### Added
+
+- Four neutral account-feed endpoints on `LemmyApi`: `getSavedPostsNeutral`,
+  `getReadPostsNeutral`, `getHiddenPostsNeutral`, `getLikedPostsNeutral`,
+  each returning a cursor-paginated `Page<PostView>`. Closes a dual-version
+  gap where no neutral saved-posts endpoint existed. On v4, saved/liked
+  request the server-side posts-only filter over the combined post/comment
+  feed (`ListPersonSaved`/`ListPersonLiked`); read/hidden call `ListPersonRead`/
+  `ListPersonHidden` directly. On v3, saved/liked use `getPosts` with
+  `saved_only`/`liked_only`; read/hidden have no v3 equivalent (`getPosts`'s
+  `show_read`/`show_hidden` only *include* those posts alongside others, they
+  don't isolate them), so the v3 path always returns an empty page.
+
 ## [0.6.0] - 2026-07-10
 
 Version-neutral dual-version (Lemmy v3 / v4) client surface. LemmyKit can now
@@ -148,6 +163,7 @@ API that speaks v4 semantics, with a v3 backend that emulates upward.
 
 Earlier history (≤ 0.2.0) is available in the git log.
 
+[0.6.1]: https://github.com/shadone/LemmyKit/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/shadone/LemmyKit/compare/0.5.2...0.6.0
 [0.5.2]: https://github.com/shadone/LemmyKit/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/shadone/LemmyKit/compare/0.5.0...0.5.1
