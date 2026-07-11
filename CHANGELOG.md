@@ -10,6 +10,20 @@ While pre-1.0, breaking changes bump the minor version.
 
 ### Added
 
+- Neutral avatar/banner push: `setAvatarNeutral(imageData:fileName:contentType:)`,
+  `removeAvatarNeutral()`, `setBannerNeutral(imageData:fileName:contentType:)`,
+  and `removeBannerNeutral()`, which take the raw picked image so callers need
+  not know each backend's model. On v3 (no dedicated endpoint) a set uploads to
+  pict-rs then writes `saveUserSettings(avatar:/banner:)` with the resulting url,
+  and a remove clears the field with an empty string; on v4 the bytes go straight
+  to the dedicated `UploadUserAvatar`/`UploadUserBanner` endpoints and a remove
+  calls `DeleteUserAvatar`/`DeleteUserBanner`. The setters return the resulting
+  image url (the synthesized pict-rs url on v3, the upload response's url on v4;
+  nil only if a v4 response url fails to parse). `contentType` is used only on v3
+  — v4's generated multipart serializer fixes the part to
+  `application/octet-stream`. This closes the highest-risk deferred gap from the
+  v3/v4 dual-version work, where editing the avatar/banner was silently not pushed
+  on the neutral path.
 - `getPostNeutral(id:)` now returns a `PostDetail` (the requested post plus its
   cross-posts) instead of a bare `PostView`. Both backends' `GetPost` response
   carry a `cross_posts` list — other posts linking the same url — which was
