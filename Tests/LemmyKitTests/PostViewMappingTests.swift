@@ -100,12 +100,14 @@ final class PostViewMappingTests: XCTestCase {
         myVote: Int32? = nil,
         unreadComments: Int64 = 0,
         subscribed: LemmyKit.Components.Schemas.SubscribedType = .NotSubscribed,
-        counts: LemmyKit.Components.Schemas.PostAggregates? = nil
+        counts: LemmyKit.Components.Schemas.PostAggregates? = nil,
+        imageDetails: LemmyKit.Components.Schemas.ImageDetails? = nil
     ) -> LemmyKit.Components.Schemas.PostView {
         LemmyKit.Components.Schemas.PostView(
             post: makeV3Post(),
             creator: makeV3Person(),
             community: makeV3Community(),
+            image_details: imageDetails,
             creator_banned_from_community: false,
             banned_from_community: false,
             creator_is_moderator: false,
@@ -204,7 +206,8 @@ final class PostViewMappingTests: XCTestCase {
         post: LemmyKitV4Generated.Components.Schemas.Post? = nil,
         postActions: LemmyKitV4Generated.Components.Schemas.PostActions? = nil,
         communityActions: LemmyKitV4Generated.Components.Schemas.CommunityActions? = nil,
-        personActions: LemmyKitV4Generated.Components.Schemas.PersonActions? = nil
+        personActions: LemmyKitV4Generated.Components.Schemas.PersonActions? = nil,
+        imageDetails: LemmyKitV4Generated.Components.Schemas.ImageDetails? = nil
     ) -> LemmyKitV4Generated.Components.Schemas.PostView {
         LemmyKitV4Generated.Components.Schemas.PostView(
             creator_banned_from_community: false,
@@ -216,6 +219,7 @@ final class PostViewMappingTests: XCTestCase {
             post_actions: postActions,
             person_actions: personActions,
             community_actions: communityActions,
+            image_details: imageDetails,
             community: makeV4Community(),
             creator: makeV4Person(),
             post: post ?? makeV4Post()
@@ -296,6 +300,67 @@ final class PostViewMappingTests: XCTestCase {
     func testNeutralPostViewFromV3NoVoteYieldsNoneVote() {
         XCTAssertEqual(neutralPostView(fromV3: Self.makeV3PostView(myVote: nil)).myVote, .none)
         XCTAssertEqual(neutralPostView(fromV3: Self.makeV3PostView(myVote: 0)).myVote, .none)
+    }
+
+    // MARK: - image dimensions
+
+    /// v3 carries image pixel dimensions on `PostView.image_details`; the mapping threads them
+    /// onto the neutral `Post`.
+    func testNeutralPostViewFromV3MapsImageDimensions() {
+        let v3View = Self.makeV3PostView(imageDetails: .init(
+            link: "https://example.com/img.jpg",
+            width: 1280,
+            height: 720,
+            content_type: "image/jpeg"
+        ))
+
+        let neutral = neutralPostView(fromV3: v3View)
+
+        XCTAssertEqual(neutral.post.imageWidth, 1280)
+        XCTAssertEqual(neutral.post.imageHeight, 720)
+    }
+
+    /// No `image_details` (a text post, or an unresolved link) leaves the neutral dimensions nil.
+    func testNeutralPostViewFromV3WithoutImageDetailsYieldsNilDimensions() {
+        let neutral = neutralPostView(fromV3: Self.makeV3PostView())
+
+        XCTAssertNil(neutral.post.imageWidth)
+        XCTAssertNil(neutral.post.imageHeight)
+    }
+
+    /// v4 also carries image pixel dimensions on `PostView.image_details`; the mapping threads
+    /// them onto the neutral `Post` identically to v3.
+    func testNeutralPostViewFromV4MapsImageDimensions() {
+        let v4View = Self.makeV4PostView(imageDetails: .init(
+            content_type: "image/jpeg",
+            height: 720,
+            width: 1280,
+            link: "https://example.com/img.jpg"
+        ))
+
+        let neutral = neutralPostView(fromV4: v4View)
+
+        XCTAssertEqual(neutral.post.imageWidth, 1280)
+        XCTAssertEqual(neutral.post.imageHeight, 720)
+    }
+
+    /// A v3-backed and a v4-backed `Post` given equivalent image dimensions read identically.
+    func testV3AndV4BackendsProduceIdenticalImageDimensions() {
+        let fromV3 = neutralPostView(fromV3: Self.makeV3PostView(imageDetails: .init(
+            link: "https://example.com/img.jpg",
+            width: 1280,
+            height: 720,
+            content_type: "image/jpeg"
+        )))
+        let fromV4 = neutralPostView(fromV4: Self.makeV4PostView(imageDetails: .init(
+            content_type: "image/jpeg",
+            height: 720,
+            width: 1280,
+            link: "https://example.com/img.jpg"
+        )))
+
+        XCTAssertEqual(fromV3.post.imageWidth, fromV4.post.imageWidth)
+        XCTAssertEqual(fromV3.post.imageHeight, fromV4.post.imageHeight)
     }
 
     // MARK: - both backends agree

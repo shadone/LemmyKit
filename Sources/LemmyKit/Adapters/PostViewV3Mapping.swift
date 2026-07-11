@@ -17,7 +17,7 @@ import Foundation
 /// properties on the neutral action structs, never the raw dates, which is exactly what makes a
 /// v3- and a v4-backed `PostView` read identically at the call site.
 package func neutralPostView(fromV3 v3: Components.Schemas.PostView) -> PostView {
-    let post = neutralPost(fromV3: v3.post, counts: v3.counts)
+    let post = neutralPost(fromV3: v3.post, counts: v3.counts, imageDetails: v3.image_details)
 
     return PostView(
         post: post,

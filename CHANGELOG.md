@@ -17,6 +17,10 @@ While pre-1.0, breaking changes bump the minor version.
   the main post and exposed as `PostDetail.crossPosts` (empty when there are
   none). **Breaking:** the return type changed; read `detail.post` for the
   former return value.
+- The neutral `Post` now carries `imageWidth: Int?` and `imageHeight: Int?`,
+  the pixel dimensions of the post's thumbnail/linked image. Both backends
+  expose these on `PostView.image_details`; the value is nil when the server
+  reports no image dimensions (a text post, an unresolved link).
 
 ## [0.6.2] - 2026-07-11
 

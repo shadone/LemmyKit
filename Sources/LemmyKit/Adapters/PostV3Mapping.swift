@@ -7,13 +7,25 @@
 import Foundation
 
 /// Builds the neutral `Post` for a v3 `Components.Schemas.Post` plus its `PostAggregates`
-/// ("counts").
+/// ("counts") and, optionally, its `ImageDetails`.
 ///
 /// v3 keeps vote/comment tallies on a separate aggregates object; the neutral `Post` flattens
 /// them directly onto the post (matching v4's shape -- see `Neutral/Post.swift`'s header), so
 /// `score`/`upvotes`/`downvotes`/`comments` come from `counts` while every other field comes
-/// from `post` itself.
-func neutralPost(fromV3 post: Components.Schemas.Post, counts: Components.Schemas.PostAggregates) -> Post {
+/// from `post` itself. Image pixel dimensions live on the enclosing `PostView.image_details`
+/// (not on `Post`), so the caller passes them in; `imageDetails == nil` leaves `imageWidth`/
+/// `imageHeight` nil.
+///
+/// - Parameters:
+///   - post: the v3 `Post` carrying the non-aggregate fields.
+///   - counts: the v3 `PostAggregates` carrying the vote/comment tallies.
+///   - imageDetails: the enclosing `PostView`'s `image_details`, or nil when the post has no image
+///     dimensions.
+func neutralPost(
+    fromV3 post: Components.Schemas.Post,
+    counts: Components.Schemas.PostAggregates,
+    imageDetails: Components.Schemas.ImageDetails? = nil
+) -> Post {
     Post(
         id: Int64(post.id),
         name: post.name,
@@ -23,6 +35,8 @@ func neutralPost(fromV3 post: Components.Schemas.Post, counts: Components.Schema
         embedDescription: post.embed_description,
         thumbnailUrl: post.thumbnail_url,
         altText: post.alt_text,
+        imageWidth: imageDetails.map { Int($0.width) },
+        imageHeight: imageDetails.map { Int($0.height) },
         creatorId: Int64(post.creator_id),
         communityId: Int64(post.community_id),
         apId: post.ap_id,

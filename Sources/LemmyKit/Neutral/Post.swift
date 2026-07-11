@@ -40,6 +40,14 @@ public struct Post: Sendable, Equatable, Identifiable {
     /// Alt text for the post's image, when it has one.
     public let altText: String?
 
+    /// The pixel width of the post's thumbnail/linked image, or `nil` when the server reports no
+    /// image dimensions (a text post, an unresolved link, or a backend that doesn't carry them).
+    public let imageWidth: Int?
+
+    /// The pixel height of the post's thumbnail/linked image, or `nil` when the server reports no
+    /// image dimensions (a text post, an unresolved link, or a backend that doesn't carry them).
+    public let imageHeight: Int?
+
     /// The server id of the post's creator (`Person`).
     public let creatorId: Int64
 
@@ -103,6 +111,8 @@ public struct Post: Sendable, Equatable, Identifiable {
         embedDescription: String? = nil,
         thumbnailUrl: String? = nil,
         altText: String? = nil,
+        imageWidth: Int? = nil,
+        imageHeight: Int? = nil,
         creatorId: Int64,
         communityId: Int64,
         apId: String,
@@ -130,6 +140,8 @@ public struct Post: Sendable, Equatable, Identifiable {
         self.embedDescription = embedDescription
         self.thumbnailUrl = thumbnailUrl
         self.altText = altText
+        self.imageWidth = imageWidth
+        self.imageHeight = imageHeight
         self.creatorId = creatorId
         self.communityId = communityId
         self.apId = apId

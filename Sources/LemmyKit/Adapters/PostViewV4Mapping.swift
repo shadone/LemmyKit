@@ -18,7 +18,7 @@ import LemmyKitV4Generated
 /// part of the neutral `PostView` in this phase -- and is dropped.
 package func neutralPostView(fromV4 v4: LemmyKitV4Generated.Components.Schemas.PostView) -> PostView {
     PostView(
-        post: neutralPost(fromV4: v4.post),
+        post: neutralPost(fromV4: v4.post, imageDetails: v4.image_details),
         creator: neutralPerson(fromV4: v4.creator),
         community: neutralCommunity(fromV4: v4.community),
         creatorBannedFromCommunity: v4.creator_banned_from_community,
