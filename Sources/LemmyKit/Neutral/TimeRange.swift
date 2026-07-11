@@ -8,7 +8,7 @@
 /// listing.
 ///
 /// This mirrors v4's `time_range_seconds` query parameter, which takes an arbitrary integer
-/// rather than v3's fixed set of bucketed sort cases (`TopHour`, `TopDay`, `TopWeek`, ...). The
+/// rather than v3's fixed set of bucketed sort cases (`TopSixHour`, `TopDay`, `TopWeek`, ...). The
 /// named static constants below match v3's buckets exactly, so the V3 adapter can fold
 /// `PostSort.top` plus one of these `TimeRange` values back into the corresponding v3
 /// `SortType` case; an arbitrary (non-bucket) `TimeRange` has no exact v3 equivalent and is the

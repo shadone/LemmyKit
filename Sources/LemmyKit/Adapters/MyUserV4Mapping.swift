@@ -33,7 +33,9 @@ func neutralMyUser(fromV4 info: LemmyKitV4Generated.Components.Schemas.MyUserInf
         showAvatars: local.show_avatars,
         defaultListingType: neutralListingType(fromV4: local.default_listing_type),
         defaultSort: neutralPostSort(fromV4: local.default_post_sort_type),
-        defaultTimeRange: local.default_post_time_range_seconds.map { TimeRange(seconds: $0) },
+        // v4 encodes "no default window" as either null or 0 seconds; treat both as
+        // nil so a Top-of-all-time default round-trips to v3 as TopAll, not TopSixHour.
+        defaultTimeRange: local.default_post_time_range_seconds.flatMap { $0 > 0 ? TimeRange(seconds: $0) : nil },
         follows: info.follows.map { neutralCommunity(fromV4: $0.community) },
         moderates: info.moderates.map(\.community.id)
     )

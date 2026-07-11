@@ -54,8 +54,11 @@ private extension LemmyApi {
     /// neutral calls (already on the v4 branch, so each resolves to its v4 backend path), so any
     /// error from `GetMyUser` (e.g. a signed-out viewer) propagates out of the combined call.
     func getSiteAndMyUserNeutralV4() async throws -> SiteWithMyUser {
-        let site = try await getSiteNeutral()
-        let myUser = try await getMyUserNeutral()
-        return SiteWithMyUser(site: site, myUser: myUser)
+        // The two v4 endpoints are independent, so issue them concurrently -- their
+        // network round-trips overlap (each suspends the actor while awaiting I/O),
+        // which is the whole point of a combined call on v4.
+        async let site = getSiteNeutral()
+        async let myUser = getMyUserNeutral()
+        return try await SiteWithMyUser(site: site, myUser: myUser)
     }
 }
