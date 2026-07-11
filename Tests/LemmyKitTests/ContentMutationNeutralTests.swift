@@ -129,11 +129,12 @@ final class ContentMutationNeutralTests: XCTestCase {
             apiVersion: .v3
         )
 
-        let postView = try await api.editPostNeutral(id: 180, name: nil, url: nil, body: "Updated body")
+        let postView = try await api.editPostNeutral(id: 180, name: nil, url: nil, body: "Updated body", nsfw: true)
 
         let body = try await capturedJSONBody(transport)
         XCTAssertEqual(body["post_id"] as? Int, 180)
         XCTAssertEqual(body["body"] as? String, "Updated body")
+        XCTAssertEqual(body["nsfw"] as? Bool, true)
 
         XCTAssertEqual(postView.post.id, 180)
     }
@@ -147,11 +148,12 @@ final class ContentMutationNeutralTests: XCTestCase {
             apiVersion: .v4
         )
 
-        let postView = try await api.editPostNeutral(id: 180, name: nil, url: nil, body: "Updated body")
+        let postView = try await api.editPostNeutral(id: 180, name: nil, url: nil, body: "Updated body", nsfw: true)
 
         let body = try await capturedJSONBody(transport)
         XCTAssertEqual(body["post_id"] as? Int, 180)
         XCTAssertEqual(body["body"] as? String, "Updated body")
+        XCTAssertEqual(body["nsfw"] as? Bool, true)
 
         XCTAssertEqual(postView.post.id, 180)
     }

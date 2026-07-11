@@ -16,8 +16,8 @@ public extension LemmyApi {
     /// extract the returned `post_view` and map it via
     /// `neutralPostView(fromV3:)`/`neutralPostView(fromV4:)`.
     ///
-    /// Only the fields Spud plausibly needs to edit are exposed here (name, url, body); v3/v4's
-    /// other `EditPost` fields (`nsfw`, `alt_text`, `language_id`, `custom_thumbnail`, v4-only
+    /// Only the fields Spud plausibly needs to edit are exposed here (name, url, body, nsfw);
+    /// v3/v4's other `EditPost` fields (`alt_text`, `language_id`, `custom_thumbnail`, v4-only
     /// `tags`/`scheduled_publish_time_at`) are omitted as YAGNI and always sent as nil, leaving
     /// them unchanged.
     ///
@@ -26,19 +26,21 @@ public extension LemmyApi {
     ///   - name: new post title; nil leaves the existing title unchanged.
     ///   - url: new link url; nil leaves the existing url unchanged.
     ///   - body: new markdown body; nil leaves the existing body unchanged.
+    ///   - nsfw: true to mark the post NSFW, false to clear the flag; nil leaves it unchanged.
     /// - Returns: the neutral `PostView` reflecting the edit.
     /// - Note: requires authentication.
     func editPostNeutral(
         id: Int64,
         name: String?,
         url: String?,
-        body: String?
+        body: String?,
+        nsfw: Bool? = nil
     ) async throws -> PostView {
         switch apiVersion {
         case .v3:
-            try await editPostNeutralV3(id: id, name: name, url: url, body: body)
+            try await editPostNeutralV3(id: id, name: name, url: url, body: body, nsfw: nsfw)
         case .v4:
-            try await editPostNeutralV4(id: id, name: name, url: url, body: body)
+            try await editPostNeutralV4(id: id, name: name, url: url, body: body, nsfw: nsfw)
         }
     }
 }
@@ -51,7 +53,8 @@ private extension LemmyApi {
         id: Int64,
         name: String?,
         url: String?,
-        body: String?
+        body: String?,
+        nsfw: Bool?
     ) async throws -> PostView {
         let postID = try v3PostID(id)
 
@@ -61,7 +64,8 @@ private extension LemmyApi {
                 post_id: postID,
                 name: name,
                 url: url,
-                body: body
+                body: body,
+                nsfw: nsfw
             )))
         } catch {
             throw LemmyApiError(from: error)
@@ -102,11 +106,13 @@ private extension LemmyApi {
         id: Int64,
         name: String?,
         url: String?,
-        body: String?
+        body: String?,
+        nsfw: Bool?
     ) async throws -> PostView {
         let response: LemmyKitV4Generated.Operations.EditPost.Output
         do {
             response = try await v4Client.EditPost(body: .json(.init(
+                nsfw: nsfw,
                 body: body,
                 url: url,
                 name: name,

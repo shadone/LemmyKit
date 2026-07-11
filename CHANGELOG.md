@@ -21,6 +21,9 @@ While pre-1.0, breaking changes bump the minor version.
   the pixel dimensions of the post's thumbnail/linked image. Both backends
   expose these on `PostView.image_details`; the value is nil when the server
   reports no image dimensions (a text post, an unresolved link).
+- `editPostNeutral` gains an `nsfw: Bool?` parameter (defaulted to nil and
+  placed last, so existing callers are unaffected), forwarded to both
+  backends' `EditPost` request. nil leaves the flag unchanged.
 
 ## [0.6.2] - 2026-07-11
 
