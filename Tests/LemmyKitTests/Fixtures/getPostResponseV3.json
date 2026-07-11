@@ -102,5 +102,71 @@
     "banned_from_community": false
   },
   "moderators": [],
-  "cross_posts": []
+  "cross_posts": [
+    {
+      "post": {
+        "id": 181,
+        "name": "Cross-post: Live recording (thread 8)",
+        "url": "https://example.com/live",
+        "creator_id": 14,
+        "community_id": 29,
+        "removed": false,
+        "locked": false,
+        "published": "2026-06-12T23:40:00.000000Z",
+        "deleted": false,
+        "nsfw": false,
+        "ap_id": "https://test1.lemmy.ddenis.info/post/181",
+        "local": true,
+        "language_id": 0,
+        "featured_community": false,
+        "featured_local": false
+      },
+      "creator": {
+        "id": 14,
+        "name": "seed_mod1",
+        "display_name": "Mod One",
+        "banned": false,
+        "published": "2026-06-12T22:09:11.363420Z",
+        "actor_id": "https://test1.lemmy.ddenis.info/u/seed_mod1",
+        "local": true,
+        "deleted": false,
+        "bot_account": false,
+        "instance_id": 1
+      },
+      "community": {
+        "id": 29,
+        "name": "music",
+        "title": "Music",
+        "removed": false,
+        "published": "2026-06-12T23:37:21.928884Z",
+        "deleted": false,
+        "nsfw": false,
+        "actor_id": "https://test1.lemmy.ddenis.info/c/music",
+        "local": true,
+        "hidden": false,
+        "posting_restricted_to_mods": false,
+        "instance_id": 1,
+        "visibility": "Public"
+      },
+      "creator_banned_from_community": false,
+      "banned_from_community": false,
+      "creator_is_moderator": false,
+      "creator_is_admin": false,
+      "counts": {
+        "post_id": 181,
+        "comments": 0,
+        "score": 3,
+        "upvotes": 3,
+        "downvotes": 0,
+        "published": "2026-06-12T23:40:00.000000Z",
+        "newest_comment_time": "2026-06-12T23:40:00.000000Z"
+      },
+      "subscribed": "NotSubscribed",
+      "saved": false,
+      "read": false,
+      "hidden": false,
+      "creator_blocked": false,
+      "unread_comments": 0
+    }
+  ]
 }

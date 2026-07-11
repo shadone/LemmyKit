@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While pre-1.0, breaking changes bump the minor version.
 
+## [Unreleased]
+
+### Added
+
+- `getPostNeutral(id:)` now returns a `PostDetail` (the requested post plus its
+  cross-posts) instead of a bare `PostView`. Both backends' `GetPost` response
+  carry a `cross_posts` list — other posts linking the same url — which was
+  previously dropped; it is now mapped through the same `PostView` adapter as
+  the main post and exposed as `PostDetail.crossPosts` (empty when there are
+  none). **Breaking:** the return type changed; read `detail.post` for the
+  former return value.
+
 ## [0.6.2] - 2026-07-11
 
 ### Added

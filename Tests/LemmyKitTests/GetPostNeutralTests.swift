@@ -46,7 +46,7 @@ final class GetPostNeutralTests: XCTestCase {
         return try Data(contentsOf: url)
     }
 
-    func testGetPostNeutralV3ReturnsNeutralPostView() async throws {
+    func testGetPostNeutralV3ReturnsNeutralPostDetail() async throws {
         let transport = try StubTransport(responseBody: fixtureData("getPostResponseV3"))
         let api = LemmyApi(
             instanceUrl: URL(string: "https://example.invalid")!,
@@ -55,16 +55,20 @@ final class GetPostNeutralTests: XCTestCase {
             apiVersion: .v3
         )
 
-        let postView = try await api.getPostNeutral(id: 180)
+        let detail = try await api.getPostNeutral(id: 180)
 
-        XCTAssertEqual(postView.post.id, 180)
-        XCTAssertTrue(postView.isSaved)
-        XCTAssertEqual(postView.creator.name, "seed_mod1")
-        XCTAssertEqual(postView.community.name, "music")
-        XCTAssertEqual(postView.post.comments, 7)
+        XCTAssertEqual(detail.post.post.id, 180)
+        XCTAssertTrue(detail.post.isSaved)
+        XCTAssertEqual(detail.post.creator.name, "seed_mod1")
+        XCTAssertEqual(detail.post.community.name, "music")
+        XCTAssertEqual(detail.post.post.comments, 7)
+
+        // The response's cross_posts are mapped through the same PostView adapter as the main post.
+        XCTAssertEqual(detail.crossPosts.map(\.post.id), [181])
+        XCTAssertEqual(detail.crossPosts.first?.post.name, "Cross-post: Live recording (thread 8)")
     }
 
-    func testGetPostNeutralV4ReturnsNeutralPostView() async throws {
+    func testGetPostNeutralV4ReturnsNeutralPostDetail() async throws {
         let transport = try StubTransport(responseBody: fixtureData("getPostResponseV4"))
         let api = LemmyApi(
             instanceUrl: URL(string: "https://example.invalid")!,
@@ -73,18 +77,22 @@ final class GetPostNeutralTests: XCTestCase {
             apiVersion: .v4
         )
 
-        let postView = try await api.getPostNeutral(id: 180)
+        let detail = try await api.getPostNeutral(id: 180)
 
-        XCTAssertEqual(postView.post.id, 180)
-        XCTAssertTrue(postView.isSaved)
-        XCTAssertEqual(postView.creator.name, "seed_mod1")
-        XCTAssertEqual(postView.community.name, "music")
-        XCTAssertEqual(postView.post.comments, 7)
+        XCTAssertEqual(detail.post.post.id, 180)
+        XCTAssertTrue(detail.post.isSaved)
+        XCTAssertEqual(detail.post.creator.name, "seed_mod1")
+        XCTAssertEqual(detail.post.community.name, "music")
+        XCTAssertEqual(detail.post.post.comments, 7)
+
+        XCTAssertEqual(detail.crossPosts.map(\.post.id), [181])
+        XCTAssertEqual(detail.crossPosts.first?.post.name, "Cross-post: Live recording (thread 8)")
     }
 
     /// The whole point of the neutral surface: a v3-backed and a v4-backed `LemmyApi`, given
-    /// equivalent fixtures, must produce the same neutral `PostView` at the call site.
-    func testV3AndV4BackendsProduceEquivalentNeutralPostView() async throws {
+    /// equivalent fixtures, must produce the same neutral `PostDetail` at the call site --
+    /// including the cross-posts.
+    func testV3AndV4BackendsProduceEquivalentNeutralPostDetail() async throws {
         let v3Api = try LemmyApi(
             instanceUrl: URL(string: "https://example.invalid")!,
             credential: nil,
@@ -101,10 +109,11 @@ final class GetPostNeutralTests: XCTestCase {
         let fromV3 = try await v3Api.getPostNeutral(id: 180)
         let fromV4 = try await v4Api.getPostNeutral(id: 180)
 
-        XCTAssertEqual(fromV3.post.id, fromV4.post.id)
-        XCTAssertEqual(fromV3.isSaved, fromV4.isSaved)
-        XCTAssertEqual(fromV3.post.comments, fromV4.post.comments)
-        XCTAssertEqual(fromV3.creator.name, fromV4.creator.name)
-        XCTAssertEqual(fromV3.community.name, fromV4.community.name)
+        XCTAssertEqual(fromV3.post.post.id, fromV4.post.post.id)
+        XCTAssertEqual(fromV3.post.isSaved, fromV4.post.isSaved)
+        XCTAssertEqual(fromV3.post.post.comments, fromV4.post.post.comments)
+        XCTAssertEqual(fromV3.post.creator.name, fromV4.post.creator.name)
+        XCTAssertEqual(fromV3.post.community.name, fromV4.post.community.name)
+        XCTAssertEqual(fromV3.crossPosts.map(\.post.id), fromV4.crossPosts.map(\.post.id))
     }
 }
