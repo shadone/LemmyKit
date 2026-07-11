@@ -1,0 +1,65 @@
+{
+  "items": [
+    {
+      "notification": {
+        "id": 102,
+        "creator_id": 14,
+        "recipient_id": 20,
+        "private_message_id": 3,
+        "kind": "private_message",
+        "published_at": "2026-07-08T09:00:00.000000Z",
+        "read": false
+      },
+      "data": {
+        "type_": "private_message",
+        "private_message": {
+          "id": 3,
+          "creator_id": 14,
+          "recipient_id": 20,
+          "content": "Hey there!",
+          "deleted": false,
+          "deleted_by_recipient": false,
+          "removed": false,
+          "local": true,
+          "ap_id": "https://test1.lemmy.ddenis.info/private_message/3",
+          "published_at": "2026-07-08T09:00:00.000000Z"
+        },
+        "creator": {
+          "id": 14,
+          "name": "seed_mod1",
+          "display_name": "Mod One",
+          "avatar": "https://picsum.photos/seed/seed_mod1/400/400",
+          "published_at": "2026-06-12T22:09:11.363420Z",
+          "ap_id": "https://test1.lemmy.ddenis.info/u/seed_mod1",
+          "bio": "Community moderator.",
+          "local": true,
+          "banner": "https://picsum.photos/seed/seed_mod1-b/1200/300",
+          "deleted": false,
+          "bot_account": false,
+          "instance_id": 1,
+          "last_refreshed_at": "2026-06-12T22:09:11.363420Z",
+          "post_count": 0,
+          "comment_count": 0
+        },
+        "recipient": {
+          "id": 20,
+          "name": "seed_reader",
+          "display_name": "Seed Reader",
+          "avatar": "https://picsum.photos/seed/seed_reader/400/400",
+          "published_at": "2026-06-12T22:10:00.000000Z",
+          "ap_id": "https://test1.lemmy.ddenis.info/u/seed_reader",
+          "local": true,
+          "banner": "https://picsum.photos/seed/seed_reader-b/1200/300",
+          "deleted": false,
+          "bot_account": false,
+          "instance_id": 1,
+          "last_refreshed_at": "2026-06-12T22:10:00.000000Z",
+          "post_count": 0,
+          "comment_count": 0
+        }
+      }
+    }
+  ],
+  "next_page": "PcPM2",
+  "prev_page": null
+}

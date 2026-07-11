@@ -10,6 +10,20 @@ While pre-1.0, breaking changes bump the minor version.
 
 ### Added
 
+- `getPrivateMessagesNeutral(unreadOnly:pageCursor:)`, a paginated, version-neutral
+  private-message listing returning a `Page<PrivateMessageListItem>`. Each item
+  pairs the neutral `PrivateMessageView` with an `isRead` flag, because the view
+  itself carries no read field (v4 moved `read` off `PrivateMessage`); returning a
+  bare `Page<PrivateMessageView>` would drop read-state. On v3 the legacy
+  page/limit `getPrivateMessages` is requested at a fixed page size (50) and a
+  cursor is *synthesized* from the page number — a full page yields a `nextPage`
+  cursor for the next page, a short/empty page ends the listing, and `prevPage` is
+  always nil; `isRead` comes from `private_message.read`. On v4 the unified
+  `ListNotifications` endpoint is filtered to `type_: .private_message` with the
+  native `next_page`/`prev_page` cursors forwarded unchanged; `isRead` comes from
+  `notification.read`. This replaces the single-page `listNotificationsNeutral(kind:
+  .privateMessage)` path for fetching DM history (that fan-out leg is unchanged and
+  still serves `kind == nil` callers).
 - Neutral avatar/banner push: `setAvatarNeutral(imageData:fileName:contentType:)`,
   `removeAvatarNeutral()`, `setBannerNeutral(imageData:fileName:contentType:)`,
   and `removeBannerNeutral()`, which take the raw picked image so callers need
