@@ -333,4 +333,39 @@ final class AccountActionNeutralTests: XCTestCase {
         XCTAssertEqual(body["show_nsfw"] as? Bool, true)
         XCTAssertEqual(body["show_read_posts"] as? Bool, false)
     }
+
+    /// On v3, a `.top` default sort plus a `.week` window fuses into the single `TopWeek`
+    /// `SortType` case (rather than dropping the window and folding to `TopAll`).
+    func testSaveUserSettingsNeutralV3FusesDefaultSortAndTimeRange() async throws {
+        let transport = try CapturingStubTransport(responseBody: fixtureData("successResponseV3"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v3
+        )
+
+        try await api.saveUserSettingsNeutral(defaultSortType: .top, defaultTimeRange: .week)
+
+        let body = try await capturedJSONBody(transport)
+        XCTAssertEqual(body["default_sort_type"] as? String, "TopWeek")
+    }
+
+    /// On v4, the `.top` default sort and its `.week` window are sent independently:
+    /// `default_post_sort_type` = `Top`, `default_post_time_range_seconds` = the window in seconds.
+    func testSaveUserSettingsNeutralV4SendsDefaultSortAndTimeRangeSeconds() async throws {
+        let transport = try CapturingStubTransport(responseBody: fixtureData("successResponseV3"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v4
+        )
+
+        try await api.saveUserSettingsNeutral(defaultSortType: .top, defaultTimeRange: .week)
+
+        let body = try await capturedJSONBody(transport)
+        XCTAssertEqual(body["default_post_sort_type"] as? String, "top")
+        XCTAssertEqual(body["default_post_time_range_seconds"] as? Int, Int(TimeRange.week.seconds))
+    }
 }

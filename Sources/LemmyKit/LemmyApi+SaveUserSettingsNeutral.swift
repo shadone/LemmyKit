@@ -26,9 +26,14 @@ public extension LemmyApi {
     /// - Parameters:
     ///   - showNSFW: whether to display NSFW content.
     ///   - blurNSFW: whether to blur NSFW images instead of hiding them.
-    ///   - defaultSortType: the default sort order for post feeds. Sent with no accompanying
-    ///     `TimeRange`, so on a v3 backend a `.top` value folds to `TopAll` (see
-    ///     `v3SortType(fromNeutral:timeRange:)`).
+    ///   - defaultSortType: the default sort order for post feeds. Its time window (for a `.top`
+    ///     value) is carried separately in `defaultTimeRange`.
+    ///   - defaultTimeRange: the time window paired with a `.top` `defaultSortType`, or `nil` for
+    ///     no window. On a v3 backend it is fused into the sort case (`.top` + `.week` ->
+    ///     `TopWeek`; a nil window -> `TopAll`; an arbitrary window rounds to the nearest bucket --
+    ///     see `v3SortType(fromNeutral:timeRange:)`). On v4 it is sent as-is via
+    ///     `default_post_time_range_seconds`. Ignored when `defaultSortType` is nil or is not
+    ///     `.top`.
     ///   - defaultListingType: the default listing type (e.g. local, all, subscribed).
     ///   - displayName: the display name shown on the account's profile.
     ///   - bio: the profile bio text, in markdown.
@@ -41,6 +46,7 @@ public extension LemmyApi {
         showNSFW: Bool? = nil,
         blurNSFW: Bool? = nil,
         defaultSortType: PostSort? = nil,
+        defaultTimeRange: TimeRange? = nil,
         defaultListingType: Lemmy.ListingType? = nil,
         displayName: String? = nil,
         bio: String? = nil,
@@ -55,6 +61,7 @@ public extension LemmyApi {
                 showNSFW: showNSFW,
                 blurNSFW: blurNSFW,
                 defaultSortType: defaultSortType,
+                defaultTimeRange: defaultTimeRange,
                 defaultListingType: defaultListingType,
                 displayName: displayName,
                 bio: bio,
@@ -68,6 +75,7 @@ public extension LemmyApi {
                 showNSFW: showNSFW,
                 blurNSFW: blurNSFW,
                 defaultSortType: defaultSortType,
+                defaultTimeRange: defaultTimeRange,
                 defaultListingType: defaultListingType,
                 displayName: displayName,
                 bio: bio,
@@ -89,6 +97,7 @@ private extension LemmyApi {
         showNSFW: Bool?,
         blurNSFW: Bool?,
         defaultSortType: PostSort?,
+        defaultTimeRange: TimeRange?,
         defaultListingType: Lemmy.ListingType?,
         displayName: String?,
         bio: String?,
@@ -102,7 +111,7 @@ private extension LemmyApi {
             response = try await client.saveUserSettings(body: .json(.init(
                 show_nsfw: showNSFW,
                 blur_nsfw: blurNSFW,
-                default_sort_type: defaultSortType.map { v3SortType(fromNeutral: $0, timeRange: nil) },
+                default_sort_type: defaultSortType.map { v3SortType(fromNeutral: $0, timeRange: defaultTimeRange) },
                 default_listing_type: defaultListingType,
                 display_name: displayName,
                 bio: bio,
@@ -150,6 +159,7 @@ private extension LemmyApi {
         showNSFW: Bool?,
         blurNSFW: Bool?,
         defaultSortType: PostSort?,
+        defaultTimeRange: TimeRange?,
         defaultListingType: Lemmy.ListingType?,
         displayName: String?,
         bio: String?,
@@ -167,6 +177,7 @@ private extension LemmyApi {
                 show_avatars: showAvatars,
                 bio: bio,
                 display_name: displayName,
+                default_post_time_range_seconds: defaultTimeRange?.seconds,
                 default_post_sort_type: defaultSortType.map { v4PostSortType(fromNeutral: $0) },
                 default_listing_type: defaultListingType.map { v4ListingType(fromNeutral: $0) },
                 blur_nsfw: blurNSFW,
