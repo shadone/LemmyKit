@@ -122,6 +122,40 @@ final class AccountFeedsNeutralTests: XCTestCase {
         XCTAssertFalse(page.hasPrevPage)
     }
 
+    /// v3 folds the neutral `sort` into `getPosts`'s fused `SortType` and forwards it -- `.new`
+    /// becomes the `sort=New` query param.
+    func testGetSavedPostsNeutralV3ForwardsSort() async throws {
+        let transport = try CapturingStubTransport(responseBody: fixtureData("getPostsResponse"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v3
+        )
+
+        _ = try await api.getSavedPostsNeutral(sort: .new)
+
+        let path = await transport.capturedPath ?? ""
+        XCTAssertTrue(path.contains("sort=New"), "expected sort in path, got: \(path)")
+    }
+
+    /// v4's `ListPersonSaved` has no `sort` query parameter, so a requested sort is a documented
+    /// no-op -- no `sort=` appears in the outgoing request.
+    func testGetSavedPostsNeutralV4IgnoresSort() async throws {
+        let transport = try CapturingStubTransport(responseBody: fixtureData("getSavedPostsResponseV4"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v4
+        )
+
+        _ = try await api.getSavedPostsNeutral(sort: .new)
+
+        let path = await transport.capturedPath ?? ""
+        XCTAssertFalse(path.contains("sort="), "expected no sort param on v4, got: \(path)")
+    }
+
     // MARK: getLikedPostsNeutral
 
     func testGetLikedPostsNeutralV3SendsLikedOnlyAndReturnsItems() async throws {

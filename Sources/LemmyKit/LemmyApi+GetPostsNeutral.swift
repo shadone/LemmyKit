@@ -23,6 +23,9 @@ public extension LemmyApi {
     ///   - timeRange: the top-N time window to pair with `sort == .top`; ignored for every other
     ///     sort. On a v3 backend this folds to the nearest of v3's fixed time buckets (see
     ///     `v3SortType(fromNeutral:timeRange:)`); on v4 it is sent as-is via `time_range_seconds`.
+    ///   - showNsfw: true to include NSFW posts even when the account's setting hides them, false
+    ///     to force-hide them; nil defers to the account's `show_nsfw` preference. Sent server-side
+    ///     on both backends (v3 `getPosts`'s `show_nsfw`, v4 `GetPosts`'s `show_nsfw`).
     ///   - pageCursor: opaque cursor from a previous page's `nextPage`/`prevPage`; nil fetches the
     ///     first page.
     /// - Returns: a `Page` of the neutral `PostView`s matching the given scope and sort.
@@ -31,6 +34,7 @@ public extension LemmyApi {
         sort: PostSort,
         communityId: Int64? = nil,
         timeRange: TimeRange? = nil,
+        showNsfw: Bool? = nil,
         pageCursor: Cursor? = nil
     ) async throws -> Page<PostView> {
         switch apiVersion {
@@ -40,6 +44,7 @@ public extension LemmyApi {
                 sort: sort,
                 communityId: communityId,
                 timeRange: timeRange,
+                showNsfw: showNsfw,
                 pageCursor: pageCursor
             )
         case .v4:
@@ -48,6 +53,7 @@ public extension LemmyApi {
                 sort: sort,
                 communityId: communityId,
                 timeRange: timeRange,
+                showNsfw: showNsfw,
                 pageCursor: pageCursor
             )
         }
@@ -65,12 +71,14 @@ private extension LemmyApi {
         sort: PostSort,
         communityId: Int64?,
         timeRange: TimeRange?,
+        showNsfw: Bool?,
         pageCursor: Cursor?
     ) async throws -> Page<PostView> {
         let response = try await getPosts(query: .init(
             type_: listingType,
             sort: v3SortType(fromNeutral: sort, timeRange: timeRange),
             community_id: communityId.map(v3CommunityID),
+            show_nsfw: showNsfw,
             page_cursor: pageCursor?.rawValue
         ))
 
@@ -88,12 +96,14 @@ private extension LemmyApi {
         sort: PostSort,
         communityId: Int64?,
         timeRange: TimeRange?,
+        showNsfw: Bool?,
         pageCursor: Cursor?
     ) async throws -> Page<PostView> {
         let response: LemmyKitV4Generated.Operations.GetPosts.Output
         do {
             response = try await v4Client.GetPosts(query: .init(
                 page_cursor: pageCursor?.rawValue,
+                show_nsfw: showNsfw,
                 community_id: communityId,
                 time_range_seconds: timeRange?.seconds,
                 sort: v4PostSortType(fromNeutral: sort),

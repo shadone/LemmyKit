@@ -138,7 +138,7 @@ package func v4CommentSortType(
 /// equivalent; since a `Lemmy.ListingType` value can only ever be one of v3's four cases, this
 /// fold is total and never needs to produce it.
 ///
-/// Shared by ``LemmyApi/getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)`` and
+/// Shared by ``LemmyApi/getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)`` and
 /// ``LemmyApi/saveUserSettingsNeutral(showNSFW:blurNSFW:defaultSortType:defaultListingType:displayName:bio:showScores:showBotAccounts:showReadPosts:showAvatars:)``.
 package func v4ListingType(fromNeutral type: Lemmy.ListingType) -> LemmyKitV4Generated.Components.Schemas.ListingType {
     switch type {

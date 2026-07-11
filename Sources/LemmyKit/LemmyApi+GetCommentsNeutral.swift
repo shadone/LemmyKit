@@ -12,7 +12,7 @@ public extension LemmyApi {
     /// ``CommentView``.
     ///
     /// Dispatches to whichever generated backend this instance was configured with (see
-    /// ``ApiVersion``), following the same shape as ``getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)``:
+    /// ``ApiVersion``), following the same shape as ``getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)``:
     /// the v3 client's `getComments` mapped "up" via `neutralCommentView(fromV3:)`, or the v4
     /// client's `GetComments` mapped near-directly via `neutralCommentView(fromV4:)`.
     ///

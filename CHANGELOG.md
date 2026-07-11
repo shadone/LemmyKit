@@ -24,6 +24,15 @@ While pre-1.0, breaking changes bump the minor version.
 - `editPostNeutral` gains an `nsfw: Bool?` parameter (defaulted to nil and
   placed last, so existing callers are unaffected), forwarded to both
   backends' `EditPost` request. nil leaves the flag unchanged.
+- `getPostsNeutral` gains a `showNsfw: Bool?` parameter, forwarded to both
+  backends' `getPosts`/`GetPosts` as their `show_nsfw` query param (true to
+  include NSFW posts even when the account hides them, false to force-hide,
+  nil to defer to the account's setting).
+- `getSavedPostsNeutral` gains `sort: PostSort?` and `timeRange: TimeRange?`
+  parameters so the Saved feed can honor the user's chosen sort. On v3 these
+  fold into `getPosts`'s `sort` (reusing the shared `PostSort` fold). **v4's
+  `ListPersonSaved` has no sort parameter**, so on a v4 backend the sort is a
+  documented no-op and the server's default order is returned.
 
 ## [0.6.2] - 2026-07-11
 

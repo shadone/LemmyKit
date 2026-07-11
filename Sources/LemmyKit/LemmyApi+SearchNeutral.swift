@@ -12,7 +12,7 @@ public extension LemmyApi {
     ///
     /// Dispatches to whichever generated backend this instance was configured with (see
     /// ``ApiVersion``), following the same shape as
-    /// ``getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)``: the v3 client's
+    /// ``getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)``: the v3 client's
     /// `search` mapped "up" via `neutralSearchResults(fromV3:)`, or the v4 client's `Search`
     /// mapped near-directly via `neutralSearchResults(fromV4:)`.
     ///
@@ -24,7 +24,7 @@ public extension LemmyApi {
     ///     `v3SortType(fromNeutral:timeRange:)`, the same fold `getPostsNeutral` uses) but is
     ///     silently ignored on a v4 backend.
     ///   - timeRange: the top-N time window to pair with `sort == .top`, matching
-    ///     ``getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)``'s semantics: on
+    ///     ``getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)``'s semantics: on
     ///     v3 it folds into the fused `SortType` bucket (alongside `sort`, so it has no effect if
     ///     `sort` is ignored -- see `sort` above), on v4 it is sent as-is via
     ///     `time_range_seconds` regardless of `sort`.

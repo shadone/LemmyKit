@@ -13,7 +13,7 @@ public extension LemmyApi {
     ///
     /// Dispatches to whichever generated backend this instance was configured with (see
     /// ``ApiVersion``), following the same shape as
-    /// ``getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)``: the v3 client's
+    /// ``getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)``: the v3 client's
     /// `getPosts` (with `saved_only` set) mapped "up" via `neutralPostView(fromV3:)`, or the v4
     /// client's `ListPersonSaved` mapped via `expectedPostView(fromV4Combined:)`.
     ///
@@ -25,14 +25,26 @@ public extension LemmyApi {
     /// documents: omitting a listing type defaults the server to `Local` and silently drops
     /// federated content, and saved posts frequently live on remote instances.
     ///
-    /// - Parameter pageCursor: opaque cursor from a previous page's `nextPage`/`prevPage`; nil
-    ///   fetches the first page. `prevPage` is always nil on a v3 backend (no reverse-paging
-    ///   cursor, see `Page`'s doc).
+    /// - Parameters:
+    ///   - sort: the sort order to apply to the saved feed. On v3 this is forwarded to `getPosts`
+    ///     (the same fold ``getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)``
+    ///     uses). **v4's `ListPersonSaved` has no sort parameter**, so on a v4 backend this is a
+    ///     documented no-op and the server's default saved-feed order is returned. nil defers to
+    ///     each backend's default.
+    ///   - timeRange: the top-N time window to pair with `sort == .top`; ignored for every other
+    ///     sort, and ignored entirely on v4 (which has no saved-feed sort at all, see `sort`).
+    ///   - pageCursor: opaque cursor from a previous page's `nextPage`/`prevPage`; nil
+    ///     fetches the first page. `prevPage` is always nil on a v3 backend (no reverse-paging
+    ///     cursor, see `Page`'s doc).
     /// - Returns: a `Page` of the neutral `PostView`s the viewer has saved.
-    func getSavedPostsNeutral(pageCursor: Cursor? = nil) async throws -> Page<PostView> {
+    func getSavedPostsNeutral(
+        sort: PostSort? = nil,
+        timeRange: TimeRange? = nil,
+        pageCursor: Cursor? = nil
+    ) async throws -> Page<PostView> {
         switch apiVersion {
         case .v3:
-            try await getSavedPostsNeutralV3(pageCursor: pageCursor)
+            try await getSavedPostsNeutralV3(sort: sort, timeRange: timeRange, pageCursor: pageCursor)
         case .v4:
             try await getSavedPostsNeutralV4(pageCursor: pageCursor)
         }
@@ -92,10 +104,10 @@ public extension LemmyApi {
     /// the v4 client's `ListPersonLiked` mapped via `expectedPostView(fromV4Combined:)`.
     ///
     /// v4's `ListPersonLiked` also serves disliked content, so `like_type: .liked_only` is sent
-    /// explicitly to pin the direction; like `getSavedPostsNeutral(pageCursor:)`, it additionally
+    /// explicitly to pin the direction; like `getSavedPostsNeutral(sort:timeRange:pageCursor:)`, it additionally
     /// serves a combined post/comment feed, so `type_: .posts` restricts the server-side result
     /// to posts only. v3 sends ``Lemmy/ListingType/All`` explicitly, for the same federated-content
-    /// reason ``getSavedPostsNeutral(pageCursor:)`` documents.
+    /// reason ``getSavedPostsNeutral(sort:timeRange:pageCursor:)`` documents.
     ///
     /// - Parameter pageCursor: opaque cursor from a previous page's `nextPage`/`prevPage`; nil
     ///   fetches the first page. `prevPage` is always nil on a v3 backend (no reverse-paging
@@ -138,10 +150,17 @@ private extension LemmyApi {
     /// v3 path: reuses the shared `getPosts(query:)` transport/decoding helper with `saved_only`
     /// set, then maps the extracted v3 posts up to the neutral shape. `type_: .All` avoids the
     /// server silently narrowing to `Local` -- see
-    /// ``LemmyApi/getSavedPostsNeutral(pageCursor:)``'s doc.
-    func getSavedPostsNeutralV3(pageCursor: Cursor?) async throws -> Page<PostView> {
+    /// ``LemmyApi/getSavedPostsNeutral(sort:timeRange:pageCursor:)``'s doc. `sort` is folded to
+    /// v3's fused `SortType` via the shared `v3SortType(fromNeutral:timeRange:)`; nil sends no
+    /// sort (server default).
+    func getSavedPostsNeutralV3(
+        sort: PostSort?,
+        timeRange: TimeRange?,
+        pageCursor: Cursor?
+    ) async throws -> Page<PostView> {
         let response = try await getPosts(query: .init(
             type_: .All,
+            sort: sort.map { v3SortType(fromNeutral: $0, timeRange: timeRange) },
             saved_only: true,
             page_cursor: pageCursor?.rawValue
         ))
@@ -155,6 +174,10 @@ private extension LemmyApi {
     /// v4's combined post/comment feed), then maps each extracted item to the neutral shape via
     /// `expectedPostView(fromV4Combined:)`. Like `getPostsNeutral`'s v4 path, `ListPersonSaved`
     /// only documents the `ok` response, so anything else falls through to `.undocumented`.
+    ///
+    /// `ListPersonSaved` has no `sort` query parameter, so ``LemmyApi/getSavedPostsNeutral(sort:timeRange:pageCursor:)``'s
+    /// `sort`/`timeRange` cannot be honored here -- the server's default saved-feed order is
+    /// returned unchanged.
     func getSavedPostsNeutralV4(pageCursor: Cursor?) async throws -> Page<PostView> {
         let response: LemmyKitV4Generated.Operations.ListPersonSaved.Output
         do {

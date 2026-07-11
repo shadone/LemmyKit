@@ -13,7 +13,7 @@ public extension LemmyApi {
     ///
     /// Dispatches to whichever generated backend this instance was configured with (see
     /// ``ApiVersion``), following the same shape as
-    /// ``getPostsNeutral(listingType:sort:communityId:timeRange:pageCursor:)``: the v3 client's
+    /// ``getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)``: the v3 client's
     /// `listCommunities` mapped "up" via `neutralCommunityView(fromV3:)`, or the v4 client's
     /// `ListCommunities` mapped near-directly via `neutralCommunityView(fromV4:)`.
     ///
