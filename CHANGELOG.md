@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While pre-1.0, breaking changes bump the minor version.
 
+## [0.6.2] - 2026-07-11
+
+### Added
+
+- A `kind: NotificationKind?` filter on `listNotificationsNeutral`. On v4 this
+  maps to `ListNotifications`'s `type_` query filter, sent server-side. On v3
+  (no unified inbox) this narrows the fan-out to just the endpoint the
+  requested kind needs (`.reply` → `getReplies` only, `.mention` →
+  `getPersonMentions` only, `.privateMessage` → `getPrivateMessages` only,
+  nil → the original unfiltered three-way fan-out); `.subscribed` and
+  `.modAction` have no v3 source, so they call nothing and return an empty
+  page rather than throwing.
+- `markNotificationAsReadNeutral(id:read:)` and
+  `markAllNotificationsAsReadNeutral()` on `LemmyApi`. v4 calls
+  `MarkNotificationAsRead`/`MarkAllNotificationsAsRead` directly; v3's
+  `markAllNotificationsAsReadNeutral()` reuses the existing `markAllAsRead()`
+  wrapper (which does not affect private messages, unlike v4's unified
+  inbox), while `markNotificationAsReadNeutral(id:read:)` is a documented
+  no-op on v3, since v3 has no unified notification id to mark by.
+- `unreadCountsNeutral()` on `LemmyApi`, returning a new `UnreadCounts`
+  (`total`, plus optional `replies`/`mentions`/`privateMessages`). v4's
+  `GetUnreadCounts` supplies only a combined `notification_count` as
+  `total`, leaving the per-kind fields nil; v3's `getUnreadCount` supplies
+  the three per-kind counts directly, with `total` synthesized as their sum.
+
 ## [0.6.1] - 2026-07-11
 
 ### Added
@@ -163,6 +188,7 @@ API that speaks v4 semantics, with a v3 backend that emulates upward.
 
 Earlier history (≤ 0.2.0) is available in the git log.
 
+[0.6.2]: https://github.com/shadone/LemmyKit/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/shadone/LemmyKit/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/shadone/LemmyKit/compare/0.5.2...0.6.0
 [0.5.2]: https://github.com/shadone/LemmyKit/compare/0.5.1...0.5.2
