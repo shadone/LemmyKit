@@ -6,6 +6,7 @@
 
 import Foundation
 import HTTPTypes
+import LemmyKitV4Generated
 import OpenAPIRuntime
 import XCTest
 @testable import LemmyKit
@@ -217,5 +218,73 @@ final class GetListNeutralTests: XCTestCase {
     /// Non-`.top` sorts ignore `timeRange` entirely.
     func testV3SortTypeIgnoresTimeRangeForNonTopSorts() {
         XCTAssertEqual(v3SortType(fromNeutral: .hot, timeRange: .week), .Hot)
+    }
+
+    // MARK: Sort-unfold (v3/v4 `SortType` -> neutral, and the round-trip)
+
+    /// Un-fusing each of v3's bucketed `Top<Window>` cases yields `.top` plus the matching
+    /// `TimeRange`, and `TopAll` yields `.top` with no window -- and every one round-trips exactly
+    /// back through `v3SortType(fromNeutral:timeRange:)`.
+    func testNeutralPostSortUnfoldsV3TopBucketsAndRoundTrips() {
+        let cases: [(bucket: LemmyKit.Components.Schemas.SortType, range: TimeRange?)] = [
+            (.TopSixHour, .sixHours),
+            (.TopTwelveHour, .twelveHours),
+            (.TopDay, .day),
+            (.TopWeek, .week),
+            (.TopMonth, .month),
+            (.TopThreeMonths, .threeMonths),
+            (.TopSixMonths, .sixMonths),
+            (.TopNineMonths, .nineMonths),
+            (.TopYear, .year),
+            (.TopAll, nil),
+        ]
+        for expected in cases {
+            let (sort, range) = neutralPostSort(fromV3: expected.bucket)
+            XCTAssertEqual(sort, .top)
+            XCTAssertEqual(range, expected.range)
+            XCTAssertEqual(v3SortType(fromNeutral: sort, timeRange: range), expected.bucket)
+        }
+    }
+
+    /// Every non-top v3 `SortType` un-fuses to its 1:1 neutral `PostSort` with a nil `TimeRange`,
+    /// and round-trips back to the same v3 case.
+    func testNeutralPostSortUnfoldsV3NonTopSortsAndRoundTrips() {
+        let cases: [(v3: LemmyKit.Components.Schemas.SortType, neutral: PostSort)] = [
+            (.Active, .active),
+            (.Hot, .hot),
+            (.New, .new),
+            (.Old, .old),
+            (.MostComments, .mostComments),
+            (.NewComments, .newComments),
+            (.Controversial, .controversial),
+            (.Scaled, .scaled),
+        ]
+        for expected in cases {
+            let (sort, range) = neutralPostSort(fromV3: expected.v3)
+            XCTAssertEqual(sort, expected.neutral)
+            XCTAssertNil(range)
+            XCTAssertEqual(v3SortType(fromNeutral: sort, timeRange: range), expected.v3)
+        }
+    }
+
+    /// v4's `PostSortType` maps 1:1 to the neutral `PostSort` (v4 keeps the time window separate),
+    /// and round-trips through `v4PostSortType(fromNeutral:)`.
+    func testNeutralPostSortMapsV4SortTypeAndRoundTrips() {
+        let cases: [(v4: LemmyKitV4Generated.Components.Schemas.PostSortType, neutral: PostSort)] = [
+            (.active, .active),
+            (.hot, .hot),
+            (.new, .new),
+            (.old, .old),
+            (.top, .top),
+            (.most_comments, .mostComments),
+            (.new_comments, .newComments),
+            (.controversial, .controversial),
+            (.scaled, .scaled),
+        ]
+        for expected in cases {
+            let neutral = neutralPostSort(fromV4: expected.v4)
+            XCTAssertEqual(neutral, expected.neutral)
+            XCTAssertEqual(v4PostSortType(fromNeutral: neutral), expected.v4)
+        }
     }
 }

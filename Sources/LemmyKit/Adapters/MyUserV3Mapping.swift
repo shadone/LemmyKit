@@ -15,6 +15,9 @@ import Foundation
 /// `neutralCommunity(fromV3:)` community adapter.
 func neutralMyUser(fromV3 info: Components.Schemas.MyUserInfo) -> MyUser {
     let local = info.local_user_view.local_user
+    // v3 fuses the default sort and its top-N window into one `SortType`; un-fuse it back into the
+    // neutral `PostSort` + `TimeRange` pair (see `neutralPostSort(fromV3:)`).
+    let (defaultSort, defaultTimeRange) = neutralPostSort(fromV3: local.default_sort_type)
     return MyUser(
         person: neutralPerson(fromV3: info.local_user_view.person),
         localUserId: Int64(local.id),
@@ -29,6 +32,8 @@ func neutralMyUser(fromV3 info: Components.Schemas.MyUserInfo) -> MyUser {
         showReadPosts: local.show_read_posts,
         showAvatars: local.show_avatars,
         defaultListingType: local.default_listing_type,
+        defaultSort: defaultSort,
+        defaultTimeRange: defaultTimeRange,
         follows: info.follows.map { neutralCommunity(fromV3: $0.community) },
         moderates: info.moderates.map { Int64($0.community.id) }
     )

@@ -59,6 +59,41 @@ package func v3SortType(fromNeutral sort: PostSort, timeRange: TimeRange?) -> Co
     }
 }
 
+/// Un-fuses a v3 `SortType` back into the neutral `PostSort` plus a separate `TimeRange` -- the
+/// inverse of `v3SortType(fromNeutral:timeRange:)`.
+///
+/// v3 fuses a `.top` sort's time window into the enum case itself (`TopDay`, `TopWeek`, ...); this
+/// splits it back apart. Each bucketed `Top<Window>` case yields `(.top, <the matching
+/// TimeRange>)`; `TopAll` yields `(.top, nil)` (top-of-all-time, no window); every non-top case
+/// yields its 1:1 neutral sort with a nil `timeRange`, since those sorts carry no time window.
+/// This never rounds -- every v3 bucket has an exact `TimeRange` counterpart (the same set
+/// `v3TopBuckets` is built from), so the round-trip through `v3SortType(fromNeutral:timeRange:)`
+/// is lossless for all named buckets.
+package func neutralPostSort(
+    fromV3 sortType: Components.Schemas.SortType
+) -> (sort: PostSort, timeRange: TimeRange?) {
+    switch sortType {
+    case .Active: (.active, nil)
+    case .Hot: (.hot, nil)
+    case .New: (.new, nil)
+    case .Old: (.old, nil)
+    case .MostComments: (.mostComments, nil)
+    case .NewComments: (.newComments, nil)
+    case .Controversial: (.controversial, nil)
+    case .Scaled: (.scaled, nil)
+    case .TopAll: (.top, nil)
+    case .TopSixHour: (.top, .sixHours)
+    case .TopTwelveHour: (.top, .twelveHours)
+    case .TopDay: (.top, .day)
+    case .TopWeek: (.top, .week)
+    case .TopMonth: (.top, .month)
+    case .TopThreeMonths: (.top, .threeMonths)
+    case .TopSixMonths: (.top, .sixMonths)
+    case .TopNineMonths: (.top, .nineMonths)
+    case .TopYear: (.top, .year)
+    }
+}
+
 /// Direct, 1:1 mapping from neutral `PostSort` to v4's `PostSortType` -- v4 keeps a `.top` sort's
 /// time window as the separate `time_range_seconds` query parameter, so there is no bucket-folding
 /// to do here (see `v3SortType(fromNeutral:timeRange:)` for the v3 side).
@@ -71,6 +106,26 @@ package func v4PostSortType(fromNeutral sort: PostSort) -> LemmyKitV4Generated.C
     case .top: .top
     case .mostComments: .most_comments
     case .newComments: .new_comments
+    case .controversial: .controversial
+    case .scaled: .scaled
+    }
+}
+
+/// Direct, 1:1 mapping from v4's `PostSortType` back to the neutral `PostSort` -- the inverse of
+/// `v4PostSortType(fromNeutral:)`. v4 keeps a `.top` sort's time window in the separate
+/// `default_post_time_range_seconds`/`time_range_seconds` field, so there is no bucket to un-fuse
+/// here; the time window is mapped independently by the caller (see `MyUserV4Mapping.swift`).
+package func neutralPostSort(
+    fromV4 sortType: LemmyKitV4Generated.Components.Schemas.PostSortType
+) -> PostSort {
+    switch sortType {
+    case .active: .active
+    case .hot: .hot
+    case .new: .new
+    case .old: .old
+    case .top: .top
+    case .most_comments: .mostComments
+    case .new_comments: .newComments
     case .controversial: .controversial
     case .scaled: .scaled
     }

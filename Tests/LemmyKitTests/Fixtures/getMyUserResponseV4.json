@@ -139,7 +139,8 @@
       "show_avatars": true,
       "interface_language": "en",
       "default_listing_type": "subscribed",
-      "default_post_sort_type": "active",
+      "default_post_sort_type": "top",
+      "default_post_time_range_seconds": 604800,
       "theme": "browser",
       "show_nsfw": true
     }

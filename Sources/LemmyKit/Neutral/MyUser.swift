@@ -21,11 +21,12 @@ import Foundation
 /// notification timestamp, `open_links_in_new_tab`, `auto_expand`/`infinite_scroll_enabled`, and
 /// similar UI-only preferences.
 ///
-/// `defaultSortType` is ALSO omitted, for a sharper reason: v3's `default_sort_type` is the same
-/// time-bucket-fused `SortType` that `getPosts`' `sort` parameter uses (`TopDay`/`TopWeek`/...),
-/// and un-fusing it back into a neutral `PostSort` + `TimeRange` pair requires the mirror image of
-/// `v3SortType(fromNeutral:timeRange:)` (bucket -> sort+range), which doesn't exist yet. That's a
-/// follow-up, not something the my_user split itself needs.
+/// The account's server-side default post sort is carried as the separate `defaultSort` +
+/// `defaultTimeRange` pair below. v3 stores this as a single time-bucket-fused `SortType`
+/// (`TopDay`/`TopWeek`/...), the same shape `getPosts`' `sort` parameter uses; the V3 adapter
+/// un-fuses it via `neutralPostSort(fromV3:)` (the mirror image of `v3SortType(fromNeutral:
+/// timeRange:)`). v4 already keeps the sort and its time window apart, so the V4 adapter maps
+/// `default_post_sort_type` and `default_post_time_range_seconds` independently.
 public struct MyUser: Sendable, Equatable {
     /// The account's own person record.
     public let person: Person
@@ -67,6 +68,17 @@ public struct MyUser: Sendable, Equatable {
     /// The account's default feed scope for new post listings.
     public let defaultListingType: Lemmy.ListingType
 
+    /// The account's server-side default post sort, or `nil` if the server supplies none. On v3
+    /// this is un-fused from the account's single bucketed `SortType`; on v4 it comes from
+    /// `default_post_sort_type`. A `.top` default pairs with `defaultTimeRange` for its window.
+    public let defaultSort: PostSort?
+
+    /// The time window paired with a `.top` `defaultSort`, or `nil` when the default sort carries
+    /// no window (every non-`.top` sort, and v3's bucket-less `TopAll`) or the server supplies
+    /// none. On v3 this is the window fused into the account's bucketed `SortType`; on v4 it comes
+    /// from the separate `default_post_time_range_seconds` field.
+    public let defaultTimeRange: TimeRange?
+
     /// The communities this account follows, as full ``Community`` values rather than bare ids.
     /// Neither backend's `follows` schema (`CommunityFollowerView`) carries a per-follow state
     /// field -- unlike `CommunityActions` elsewhere in the neutral surface, there is no
@@ -92,6 +104,8 @@ public struct MyUser: Sendable, Equatable {
         showReadPosts: Bool,
         showAvatars: Bool,
         defaultListingType: Lemmy.ListingType,
+        defaultSort: PostSort? = nil,
+        defaultTimeRange: TimeRange? = nil,
         follows: [Community] = [],
         moderates: [Int64] = []
     ) {
@@ -108,6 +122,8 @@ public struct MyUser: Sendable, Equatable {
         self.showReadPosts = showReadPosts
         self.showAvatars = showAvatars
         self.defaultListingType = defaultListingType
+        self.defaultSort = defaultSort
+        self.defaultTimeRange = defaultTimeRange
         self.follows = follows
         self.moderates = moderates
     }

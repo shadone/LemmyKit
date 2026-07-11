@@ -101,7 +101,7 @@
         "email": "john@example.invalid",
         "show_nsfw": true,
         "theme": "browser",
-        "default_sort_type": "Active",
+        "default_sort_type": "TopWeek",
         "default_listing_type": "Subscribed",
         "interface_language": "en",
         "show_avatars": true,

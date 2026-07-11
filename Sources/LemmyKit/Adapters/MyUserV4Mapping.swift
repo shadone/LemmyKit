@@ -10,10 +10,12 @@ import LemmyKitV4Generated
 /// Builds the neutral `MyUser` for a v4 `Components.Schemas.MyUserInfo` (the `GetMyUser`/
 /// `GET /account` response body).
 ///
-/// v4 renames `show_scores` to `show_score` (singular) on `LocalUser`; every other consumed field
-/// name matches v3's. `follows`/`moderates` are v4's `CommunityFollowerView`/
-/// `CommunityModeratorView` lists, mapped through the existing `neutralCommunity(fromV4:)`
-/// community adapter.
+/// v4 renames `show_scores` to `show_score` (singular) on `LocalUser`, and splits the default post
+/// sort into `default_post_sort_type` (a `PostSortType`, mapped through `neutralPostSort(fromV4:)`)
+/// plus a separate `default_post_time_range_seconds` (nil when the account has no default window) --
+/// unlike v3's single fused `default_sort_type`. Every other consumed field name matches v3's.
+/// `follows`/`moderates` are v4's `CommunityFollowerView`/`CommunityModeratorView` lists, mapped
+/// through the existing `neutralCommunity(fromV4:)` community adapter.
 func neutralMyUser(fromV4 info: LemmyKitV4Generated.Components.Schemas.MyUserInfo) -> MyUser {
     let local = info.local_user_view.local_user
     return MyUser(
@@ -30,6 +32,8 @@ func neutralMyUser(fromV4 info: LemmyKitV4Generated.Components.Schemas.MyUserInf
         showReadPosts: local.show_read_posts,
         showAvatars: local.show_avatars,
         defaultListingType: neutralListingType(fromV4: local.default_listing_type),
+        defaultSort: neutralPostSort(fromV4: local.default_post_sort_type),
+        defaultTimeRange: local.default_post_time_range_seconds.map { TimeRange(seconds: $0) },
         follows: info.follows.map { neutralCommunity(fromV4: $0.community) },
         moderates: info.moderates.map(\.community.id)
     )
