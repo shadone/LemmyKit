@@ -40,9 +40,56 @@ from the in-repo spec `Sources/LemmyKit/openapi.yaml` (config:
   `NeutralVocabularyTests` (a neutral-type assertion or a
   `Components.Schemas.*` assertion, matching which target the member uses).
 
+## Version-neutral dual-version surface (`*Neutral`)
+LemmyKit speaks BOTH Lemmy 0.19 (API v3) and 1.0 (API v4) through one
+version-neutral API that presents **v4 semantics**, with a v3 backend that
+**emulates upward**. Consumers (Spud) call `*Neutral` methods and never branch on
+version themselves. (Status: code-complete but NOT yet validated against a real
+1.0 server — no release tag; see the Spud-side Lemmy-v4 initiative.)
+
+- **Two generated clients.** The v3 client is `Components.Schemas.*` (main target,
+  from `openapi.yaml`). The v4 client is a separate `LemmyKitV4Generated` target,
+  codegen'd from the envelope-stripped 1.0 spec, consumed only by the facade.
+- **`ApiVersion` dispatch.** `LemmyApi.init(apiVersion:)` (defaults `.v3`). Each
+  `*Neutral` endpoint switches on `apiVersion` to a private `…V3`/`…V4` helper.
+  `ApiVersionProbe` (probes `/api/v4/site`, 404 → `.v3` fail-safe) is available for
+  consumers without their own detection.
+- **Neutral DTOs** — `Sources/LemmyKit/Neutral/`: hand-written, v4-shaped value
+  types (flattened counts; nested `*Actions` with timestamp-presence booleans;
+  4/5-state `FollowState`; `VoteDirection`; opaque bidirectional `Page`/`Cursor`;
+  `PostSort`+`TimeRange`; `PostView`/`CommentView`/…; `NotificationView`;
+  `PrivateMessageListItem`; `MyUser`; `SiteWithMyUser`; `PostDetail`). The `Lemmy.*`
+  DTO members with a neutral counterpart alias these (see the namespace section).
+- **Adapters** — `Sources/LemmyKit/Adapters/`: map v3/v4 generated responses →
+  neutral DTOs (`PostViewV3Mapping`/`…V4`, `SortMapping` forward-fold **and**
+  inverse, `PageMapping`, …). The v3 adapter emulates v4: sentinel dates for
+  action booleans, `my_vote` → `votedAt`/`voteIsUpvote`, notifications 3-way
+  fan-out + k-way merge, person-content interleave, sort fold.
+- **Endpoints** — one file per `LemmyApi+<Name>Neutral.swift`. **v3 pagination is
+  offset-based**, so where v4 has a native cursor the v3 path SYNTHESIZES an opaque
+  `Cursor` — encode the next page number as the rawValue, `nextPage = items.count
+  == limit ? Cursor("\(page+1)") : nil`, short/empty page → `nil` (see
+  `getPrivateMessagesNeutral`, the account-feed endpoints). v4 forwards the native
+  `next_page`/`prev_page` via `neutralPage(fromV4:)`.
+- **Adding a neutral endpoint:** mirror an existing one (`getPostsNeutral` /
+  `getSavedPostsNeutral` for pagination); map through the existing per-view
+  adapters (don't duplicate a fold); add a request-inspecting stub-transport test
+  asserting BOTH the v3 and v4 outgoing request shape + the mapped output. If the
+  result must carry read-state or another field the neutral view lacks (PMs carry
+  `isRead` off the wrapper, not the view), pair the view with that field — do NOT
+  return a bare view that silently drops it.
+- **v4 gotchas confirmed this cycle:** v4 `GetPosts` DOES carry `show_nsfw` and
+  `PostView.image_details` (unlike an early assumption); `ListPersonSaved` has NO
+  sort param (v3-only); private messages have NO v4 list endpoint — they come only
+  via `ListNotifications(type_: .private_message)`, which is **incoming-only**.
+
 ## Build / verify
 - `swift build` / `swift test` (the OpenAPI build-tool plugin regenerates sources).
-- Format with SwiftFormat — `.swiftformat` is authoritative.
+  `swift test` uses XCTest here — look for `Test Suite 'All tests' passed` +
+  `Executed N tests`, not the Swift-Testing `✔ Test run` line.
+- Format with SwiftFormat — `.swiftformat` is authoritative. Run it via
+  `mint run swiftformat Sources Tests` (a bare `swiftformat` may be a dangling
+  Homebrew symlink on this machine; `mint` resolves the pinned version).
 - To confirm exact generated enum cases / query-param defaults, read
   `.build/plugins/outputs/lemmykit/LemmyKit/destination/OpenAPIGenerator/GeneratedSources/Types.swift`
   (e.g. `ListingType.All` is capitalized; getComments/getPosts query-init params all default to `nil`).
