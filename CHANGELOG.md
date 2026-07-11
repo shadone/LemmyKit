@@ -33,6 +33,23 @@ While pre-1.0, breaking changes bump the minor version.
   fold into `getPosts`'s `sort` (reusing the shared `PostSort` fold). **v4's
   `ListPersonSaved` has no sort parameter**, so on a v4 backend the sort is a
   documented no-op and the server's default order is returned.
+- `getSiteAndMyUserNeutral()` fetches the instance site info and the signed-in
+  account's own info together, returning the new `SiteWithMyUser` wrapper
+  (`site: SiteInfo`, `myUser: MyUser?`). On a v3 backend this makes a SINGLE
+  `getSite` round-trip and decodes both halves from the one `GetSiteResponse` —
+  where calling `getSiteNeutral()` then `getMyUserNeutral()` back to back would
+  issue TWO full `getSite` fetches (v3 has no standalone account endpoint, so
+  `getMyUserNeutral` re-fetches `getSite`). On v4 the two are distinct native
+  endpoints (`GetSite` + `GetMyUser`), so both are called. `myUser` is nil when
+  the site loaded but no account info accompanied it (a signed-out v3 viewer).
+  `getSiteNeutral()`/`getMyUserNeutral()` remain for callers needing only one.
+- The neutral `MyUser` now carries the account's server-side default post sort
+  as `defaultSort: PostSort?` and `defaultTimeRange: TimeRange?` (both nil when
+  the server supplies none). On v3 the single fused `default_sort_type` bucket
+  is un-fused into the sort + window pair via the new `neutralPostSort(fromV3:)`
+  (the inverse of `v3SortType(fromNeutral:timeRange:)`, added to `SortMapping`);
+  on v4 they come from the already-separate `default_post_sort_type` and
+  `default_post_time_range_seconds` fields.
 
 ## [0.6.2] - 2026-07-11
 
