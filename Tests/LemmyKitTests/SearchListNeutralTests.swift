@@ -36,6 +36,29 @@ private actor StubTransport: ClientTransport {
     }
 }
 
+/// A `ClientTransport` that additionally captures the outgoing request path (including its query
+/// string), so a test can assert which query params the neutral endpoint actually sent.
+private actor SearchPathCapturingTransport: ClientTransport {
+    private let responseBody: Data
+    private(set) var capturedPath: String?
+
+    init(responseBody: Data) {
+        self.responseBody = responseBody
+    }
+
+    func send(
+        _ request: HTTPRequest,
+        body _: HTTPBody?,
+        baseURL _: URL,
+        operationID _: String
+    ) async throws -> (HTTPResponse, HTTPBody?) {
+        capturedPath = request.path
+        var response = HTTPResponse(status: .init(code: 200))
+        response.headerFields[.contentType] = "application/json; charset=utf-8"
+        return (response, HTTPBody(responseBody))
+    }
+}
+
 /// Proves the read-only `searchNeutral`/`listCommunitiesNeutral` endpoints end-to-end, following
 /// the `GetPostNeutralTests.swift`/`GetListNeutralTests.swift` shape: facade dispatch on
 /// `ApiVersion`, generated client call, and neutral mapping -- both reusing the already-built
@@ -73,6 +96,34 @@ final class SearchListNeutralTests: XCTestCase {
         XCTAssertNil(results.prevPage)
         XCTAssertFalse(results.hasNextPage)
         XCTAssertFalse(results.hasPrevPage)
+    }
+
+    /// A nil `sort` (the default) omits the v3 `sort` query param so the server applies its own
+    /// default ordering (`Hot`), matching v4 (whose `Search` has no sort param at all); an explicit
+    /// sort is still forwarded. Lets search ordering be server-owned on both backends.
+    func testSearchNeutralV3OmitsSortWhenNil() async throws {
+        let transport = try SearchPathCapturingTransport(responseBody: fixtureData("searchResponseV3"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v3
+        )
+
+        _ = try await api.searchNeutral(query: "music", type: .all)
+        let nilSortPath = await transport.capturedPath
+        XCTAssertNotNil(nilSortPath)
+        XCTAssertFalse(
+            nilSortPath!.contains("sort="),
+            "nil sort must omit the sort query param, got: \(nilSortPath!)"
+        )
+
+        _ = try await api.searchNeutral(query: "music", type: .all, sort: .hot)
+        let hotSortPath = await transport.capturedPath
+        XCTAssertTrue(
+            hotSortPath?.contains("sort=Hot") ?? false,
+            "an explicit sort must still be forwarded, got: \(hotSortPath ?? "<nil>")"
+        )
     }
 
     func testSearchNeutralV4ReturnsPersonsWithNextPageCursor() async throws {

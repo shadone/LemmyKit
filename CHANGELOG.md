@@ -79,6 +79,14 @@ While pre-1.0, breaking changes bump the minor version.
   on v4 they come from the already-separate `default_post_sort_type` and
   `default_post_time_range_seconds` fields.
 
+### Changed
+
+- `searchNeutral`'s `sort` is now optional (`PostSort? = nil`, was required). Passing
+  `nil` (the new default) omits the `sort` query param on v3, so the server applies
+  its own default ordering (`Hot`) -- matching v4, whose `Search` has no sort
+  parameter at all. Search ordering is thus server-owned and consistent across the
+  v3->v4 upgrade; an explicit sort is still honored on v3.
+
 ## [0.6.2] - 2026-07-11
 
 ### Added

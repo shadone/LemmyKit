@@ -19,10 +19,12 @@ public extension LemmyApi {
     /// - Parameters:
     ///   - query: the search term; must be non-empty. Sent as v3's `q` / v4's `search_term`.
     ///   - type: which kind of result to return.
-    ///   - sort: result ordering. **v4's `Search` operation has no sort parameter at all** -- this
-    ///     is accepted for signature parity with v3 (whose `search` honors it via
-    ///     `v3SortType(fromNeutral:timeRange:)`, the same fold `getPostsNeutral` uses) but is
-    ///     silently ignored on a v4 backend.
+    ///   - sort: result ordering, or `nil` (the default) to let the server define the order. **v4's
+    ///     `Search` operation has no sort parameter at all**, so v4 always uses the server's default
+    ///     ordering. On v3, `nil` omits the `sort` query param (the server then applies its own
+    ///     default, which is `Hot`); a non-nil value is honored via `v3SortType(fromNeutral:timeRange:)`
+    ///     (the same fold `getPostsNeutral` uses). Passing `nil` therefore yields the same
+    ///     server-defined ordering on both backends -- prefer it unless a caller needs a specific v3 sort.
     ///   - timeRange: the top-N time window to pair with `sort == .top`, matching
     ///     ``getPostsNeutral(listingType:sort:communityId:timeRange:showNsfw:pageCursor:)``'s semantics: on
     ///     v3 it folds into the fused `SortType` bucket (alongside `sort`, so it has no effect if
@@ -37,7 +39,7 @@ public extension LemmyApi {
     func searchNeutral(
         query: String,
         type: SearchType,
-        sort: PostSort,
+        sort: PostSort? = nil,
         timeRange: TimeRange? = nil,
         pageCursor: Cursor? = nil
     ) async throws -> SearchResults {
@@ -90,7 +92,7 @@ private extension LemmyApi {
     func searchNeutralV3(
         query: String,
         type: SearchType,
-        sort: PostSort,
+        sort: PostSort?,
         timeRange: TimeRange?
     ) async throws -> SearchResults {
         let response: Operations.search.Output
@@ -98,7 +100,9 @@ private extension LemmyApi {
             response = try await client.search(query: .init(
                 q: query,
                 type_: v3SearchType(fromNeutral: type),
-                sort: v3SortType(fromNeutral: sort, timeRange: timeRange)
+                // nil sort omits the query param so the server applies its own default (Hot),
+                // matching v4 (whose Search has no sort param at all).
+                sort: sort.map { v3SortType(fromNeutral: $0, timeRange: timeRange) }
             ))
         } catch {
             throw LemmyApiError(from: error)
