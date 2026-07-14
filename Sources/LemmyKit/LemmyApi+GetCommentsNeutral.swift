@@ -42,6 +42,36 @@ public extension LemmyApi {
             try await getCommentsNeutralV4(postId: postId, sort: sort, pageCursor: pageCursor)
         }
     }
+
+    /// Fetches a comment SUBTREE -- a parent comment and its descendants -- and returns the
+    /// version-neutral, cursor-paginated ``Page`` of ``CommentView``. This is the "load more
+    /// replies" fetch: it mirrors ``getCommentsNeutral(postId:sort:pageCursor:)`` but scopes by
+    /// parent comment id instead of post id.
+    ///
+    /// Like the post-scoped fetch it sends v3's listing `type_` as `.All` (v4's as `.all`) so
+    /// replies on remote/federated communities are not dropped, and sends **no `max_depth`** -- the
+    /// server's page `limit` is the only bound. Any frontier the page cut off re-surfaces as a
+    /// fresh "load more" placeholder downstream (driven by each comment's `childCount`).
+    ///
+    /// - Parameters:
+    ///   - parentId: the parent comment whose descendant subtree to fetch.
+    ///   - sort: the sort order to apply.
+    ///   - pageCursor: opaque cursor from a previous page's `nextPage`; nil fetches the first page.
+    ///     **v3 has no comment cursor** -- on a v3-backed instance it is ignored and the returned
+    ///     `Page` always has `nextPage`/`prevPage` nil (the whole subtree comes in one response).
+    /// - Returns: a `Page` of neutral `CommentView`s in the subtree (may include the parent itself).
+    func getCommentsNeutral(
+        parentId: Int64,
+        sort: CommentSort,
+        pageCursor: Cursor? = nil
+    ) async throws -> Page<CommentView> {
+        switch apiVersion {
+        case .v3:
+            try await getCommentsNeutralV3(parentId: parentId, sort: sort)
+        case .v4:
+            try await getCommentsNeutralV4(parentId: parentId, sort: sort, pageCursor: pageCursor)
+        }
+    }
 }
 
 private extension LemmyApi {
@@ -76,6 +106,52 @@ private extension LemmyApi {
         do {
             response = try await v4Client.GetComments(query: .init(
                 post_id: postId,
+                page_cursor: pageCursor?.rawValue,
+                sort: v4CommentSortType(fromNeutral: sort),
+                type_: .all
+            ))
+        } catch {
+            throw LemmyApiError(from: error)
+        }
+
+        switch response {
+        case let .ok(response):
+            switch response.body {
+            case let .json(json):
+                return neutralPage(fromV4: json) { neutralCommentView(fromV4: $0) }
+            }
+
+        case let .undocumented(statusCode, _):
+            throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
+        }
+    }
+
+    /// v3 path for a parent-scoped fetch: reuses the shared `getComments(query:)` transport helper
+    /// with `parent_id` set, then maps up to the neutral shape. v3 has no comment cursor, so this
+    /// always returns a single, complete `Page` (`nextPage`/`prevPage` nil).
+    func getCommentsNeutralV3(parentId: Int64, sort: CommentSort) async throws -> Page<CommentView> {
+        let response = try await getComments(query: .init(
+            type_: .All,
+            sort: v3CommentSortType(fromNeutral: sort),
+            parent_id: v3CommentID(parentId)
+        ))
+
+        return neutralPage(fromV3: response.comments, nextPage: nil) {
+            neutralCommentView(fromV3: $0)
+        }
+    }
+
+    /// v4 path for a parent-scoped fetch: calls the v4 client's `GetComments` with `parent_id` and
+    /// the (optional) cursor, then maps near-directly to the neutral shape.
+    func getCommentsNeutralV4(
+        parentId: Int64,
+        sort: CommentSort,
+        pageCursor: Cursor?
+    ) async throws -> Page<CommentView> {
+        let response: LemmyKitV4Generated.Operations.GetComments.Output
+        do {
+            response = try await v4Client.GetComments(query: .init(
+                parent_id: parentId,
                 page_cursor: pageCursor?.rawValue,
                 sort: v4CommentSortType(fromNeutral: sort),
                 type_: .all

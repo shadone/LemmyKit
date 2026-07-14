@@ -195,6 +195,43 @@ final class GetListNeutralTests: XCTestCase {
         XCTAssertFalse(page.hasPrevPage)
     }
 
+    // MARK: getCommentsNeutral(parentId:)
+
+    func testGetCommentsNeutralByParentV4ForwardsParentId() async throws {
+        let transport = try PathCapturingStubTransport(responseBody: fixtureData("getCommentsResponseV4"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v4
+        )
+
+        let page = try await api.getCommentsNeutral(parentId: 42, sort: .hot)
+
+        let path = await transport.capturedPath ?? ""
+        XCTAssertTrue(path.contains("parent_id=42"), "expected parent_id in path, got: \(path)")
+        // Decodes and maps the same v4 fixture the post-scoped test uses.
+        XCTAssertEqual(page.items.map(\.comment.id), [501])
+    }
+
+    func testGetCommentsNeutralByParentV3ForwardsParentIdAndHasNoCursor() async throws {
+        let transport = try PathCapturingStubTransport(responseBody: fixtureData("getCommentsResponseV3"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v3
+        )
+
+        let page = try await api.getCommentsNeutral(parentId: 42, sort: .hot)
+
+        let path = await transport.capturedPath ?? ""
+        XCTAssertTrue(path.contains("parent_id=42"), "expected parent_id in path, got: \(path)")
+        // v3 comment listings carry no cursor at all.
+        XCTAssertNil(page.nextPage)
+        XCTAssertNil(page.prevPage)
+    }
+
     // MARK: Sort-fold (v3's fused `SortType`)
 
     /// `PostSort.top` paired with `TimeRange.week` must fold to v3's `TopWeek` -- one of v3's
