@@ -1,0 +1,41 @@
+{
+  "community_view": {
+    "activity_alert": false,
+    "blocked": false,
+    "community": {
+      "actor_id": "https://piefed1.lemmy.ddenis.info/c/piefedtest",
+      "ai_generated": false,
+      "ap_domain": "piefed1.lemmy.ddenis.info",
+      "banned": false,
+      "deleted": false,
+      "hidden": false,
+      "id": 1,
+      "instance_id": 1,
+      "local": true,
+      "name": "piefedtest",
+      "nsfw": false,
+      "posting_warning": null,
+      "published": "2026-07-15T12:43:17.598423Z",
+      "question_answer": false,
+      "removed": false,
+      "restricted_to_mods": false,
+      "title": "PieFed Test Community",
+      "updated": "2026-07-15T12:43:17.598423Z"
+    },
+    "counts": {
+      "active_6monthly": 0,
+      "active_daily": 0,
+      "active_monthly": 0,
+      "active_weekly": 0,
+      "id": 1,
+      "post_count": 3,
+      "post_reply_count": 2,
+      "published": "2026-07-15T12:43:17.598423Z",
+      "subscriptions_count": 3,
+      "total_subscriptions_count": 3
+    },
+    "flair_list": [],
+    "subscribed": "Subscribed"
+  },
+  "discussion_languages": []
+}

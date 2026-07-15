@@ -1,0 +1,41 @@
+{
+  "private_message": {
+    "id": 1,
+    "creator_id": 1,
+    "recipient_id": 10,
+    "content": "Synthetic DM body for fixture decoding",
+    "deleted": false,
+    "read": false,
+    "published": "2026-07-15T16:45:44.846100Z",
+    "ap_id": "https://piefed1.lemmy.ddenis.info/private_message/1",
+    "local": true
+  },
+  "creator": {
+    "actor_id": "https://piefed1.lemmy.ddenis.info/u/admin",
+    "banned": false,
+    "bot": false,
+    "deleted": false,
+    "extra_fields": [],
+    "id": 1,
+    "instance_id": 1,
+    "local": true,
+    "published": "2026-07-15T12:24:47.656409Z",
+    "title": "admin",
+    "user_name": "admin"
+  },
+  "recipient": {
+    "actor_id": "https://piefed1.lemmy.ddenis.info/u/mark",
+    "banned": false,
+    "bot": false,
+    "deleted": false,
+    "id": 10,
+    "instance_id": 1,
+    "local": true,
+    "user_name": "mark",
+    "avatar": null,
+    "banner": null,
+    "published": "2026-07-15T14:23:19.272657Z",
+    "title": "mark"
+  },
+  "conversation_id": 1
+}

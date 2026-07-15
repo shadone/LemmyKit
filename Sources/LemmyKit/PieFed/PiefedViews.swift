@@ -144,10 +144,20 @@ public struct PiefedModeratorView: Codable, Sendable {
 // MARK: - Response envelopes
 
 /// `GET /api/alpha/site`.
+///
+/// When the request carries an `Authorization` bearer token, PieFed adds a `my_user` embed whose
+/// shape is byte-for-byte the `GET /api/alpha/user/me` response (`PiefedUserMeResponse`); it is
+/// absent (decodes to nil) for a signed-out request. This is the identity source
+/// `getSiteAndMyUserNeutral` reads for `.piefed` (a single authed `/site` call). Note the embed's
+/// `follows` list reflects the account's live subscriptions, unlike the dedicated `user/me` route
+/// whose `follows` is observed empty.
 public struct PiefedGetSiteResponse: Codable, Sendable {
     public let site: PiefedSiteView
     public let admins: [PiefedPersonView]
     public let version: String
+    /// The authenticated account's my-user embed, present only on an authed request; nil when
+    /// signed out.
+    public let my_user: PiefedUserMeResponse?
 }
 
 /// `GET /api/alpha/post/list`.

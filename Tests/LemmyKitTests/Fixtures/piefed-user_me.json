@@ -1,0 +1,56 @@
+{
+  "community_blocks": [],
+  "discussion_languages": [],
+  "follows": [],
+  "instance_blocks": [],
+  "local_user_view": {
+    "counts": {
+      "comment_count": 0,
+      "person_id": 10,
+      "post_count": 0
+    },
+    "local_user": {
+      "accept_private_messages": "All",
+      "bot_visibility": "Transparent",
+      "ai_visibility": "Transparent",
+      "community_keyword_filter": [],
+      "default_comment_sort_type": "Hot",
+      "default_listing_type": "Subscribed",
+      "default_sort_type": "Hot",
+      "email_unread": true,
+      "federate_votes": true,
+      "feed_auto_follow": true,
+      "feed_auto_leave": true,
+      "hide_low_quality": false,
+      "indexable": true,
+      "newsletter": false,
+      "nsfl_visibility": "Hide",
+      "nsfw_visibility": "Hide",
+      "reply_collapse_threshold": -10,
+      "reply_hide_threshold": -20,
+      "searchable": true,
+      "show_bot_accounts": true,
+      "show_nsfl": false,
+      "show_nsfw": false,
+      "show_read_posts": true,
+      "show_scores": true,
+      "manually_approves_followers": false
+    },
+    "person": {
+      "actor_id": "https://piefed1.lemmy.ddenis.info/u/mark",
+      "banned": false,
+      "bot": false,
+      "deleted": false,
+      "id": 10,
+      "instance_id": 1,
+      "local": true,
+      "user_name": "mark",
+      "avatar": null,
+      "banner": null,
+      "published": "2026-07-15T14:23:19.272657Z",
+      "title": "mark"
+    }
+  },
+  "moderates": [],
+  "person_blocks": []
+}
