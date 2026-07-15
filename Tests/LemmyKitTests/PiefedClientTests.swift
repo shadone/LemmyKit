@@ -132,6 +132,8 @@ struct PiefedClientTests {
 
     @Test
     func nonTwoHundredResponseThrowsServerErrorWithMappedFields() async throws {
+        // Precedence is message ?? error ?? status ?? code -- `message` wins here, matching a
+        // real captured PieFed login failure (`{code,message,status}`).
         let errorBody = Data(#"{"code":400,"message":"incorrect_login","status":"Bad Request"}"#.utf8)
         let transport = RecordingStubTransport(status: 400, responseBody: errorBody)
         let client = makeClient(transport: transport)
@@ -140,8 +142,41 @@ struct PiefedClientTests {
             _ = try await client.getPosts()
             Issue.record("expected getPosts to throw")
         } catch let LemmyApiError.serverError(errorResponse) {
-            #expect(errorResponse.error == "400")
+            #expect(errorResponse.error == "incorrect_login")
             #expect(errorResponse.message == "incorrect_login")
+        }
+    }
+
+    @Test
+    func messageOnlyEnvelopeThrowsServerErrorWithMessageAsToken() async throws {
+        // The spec's declared `DefaultError` shape -- `{message}` only, no `code`/`status`/`error`.
+        let errorBody = Data(#"{"message":"Something went wrong"}"#.utf8)
+        let transport = RecordingStubTransport(status: 400, responseBody: errorBody)
+        let client = makeClient(transport: transport)
+
+        do {
+            _ = try await client.getPosts()
+            Issue.record("expected getPosts to throw")
+        } catch let LemmyApiError.serverError(errorResponse) {
+            #expect(errorResponse.error == "Something went wrong")
+            #expect(errorResponse.message == "Something went wrong")
+        }
+    }
+
+    @Test
+    func errorOnlyStubEnvelopeThrowsServerErrorWithErrorAsToken() async throws {
+        // A registered-but-unimplemented stub route (e.g. `password_reset`): `{"error":"..."}`,
+        // no `message`/`code`/`status`.
+        let errorBody = Data(#"{"error":"not_yet_implemented"}"#.utf8)
+        let transport = RecordingStubTransport(status: 400, responseBody: errorBody)
+        let client = makeClient(transport: transport)
+
+        do {
+            _ = try await client.getPosts()
+            Issue.record("expected getPosts to throw")
+        } catch let LemmyApiError.serverError(errorResponse) {
+            #expect(errorResponse.error == "not_yet_implemented")
+            #expect(errorResponse.message == nil)
         }
     }
 
