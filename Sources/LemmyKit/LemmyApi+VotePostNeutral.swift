@@ -29,7 +29,7 @@ public extension LemmyApi {
         case .v4:
             try await votePostNeutralV4(id: id, direction: direction)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "votePost")
+            try await votePostNeutralPiefed(id: id, direction: direction)
         }
     }
 }
@@ -104,5 +104,15 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.likePost(postId:score:)`, writing `direction.v3Score` --
+    /// PieFed's `score` field uses the exact same signed -1/0/1 convention v3's `score` does, so
+    /// this reuses ``VoteDirection/v3Score`` rather than duplicating the conversion -- then maps
+    /// the extracted `post_view` up to the neutral shape via `neutralPostView(fromPiefed:)`.
+    func votePostNeutralPiefed(id: Int64, direction: VoteDirection) async throws -> PostView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "votePost") }
+        let response = try await piefedClient.likePost(postId: id, score: direction.v3Score)
+        return neutralPostView(fromPiefed: response.post_view)
     }
 }

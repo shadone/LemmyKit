@@ -46,7 +46,12 @@ public extension LemmyApi {
                 languageId: languageId
             )
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "createComment")
+            try await createCommentNeutralPiefed(
+                content: content,
+                postId: postId,
+                parentId: parentId,
+                languageId: languageId
+            )
         }
     }
 }
@@ -139,5 +144,25 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.createComment(body:postId:parentId:languageId:)`, passing
+    /// `content` through as PieFed's `body` wire field (PieFed renames Lemmy's `content` to
+    /// `body`; see `PiefedClient+Comments.swift`'s doc comment), then maps the extracted
+    /// `comment_view` up to the neutral shape via `neutralCommentView(fromPiefed:)`.
+    func createCommentNeutralPiefed(
+        content: String,
+        postId: Int64,
+        parentId: Int64?,
+        languageId: Int64?
+    ) async throws -> CommentView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "createComment") }
+        let response = try await piefedClient.createComment(
+            body: content,
+            postId: postId,
+            parentId: parentId,
+            languageId: languageId
+        )
+        return neutralCommentView(fromPiefed: response.comment_view)
     }
 }

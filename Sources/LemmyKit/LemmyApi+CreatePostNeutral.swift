@@ -58,7 +58,14 @@ public extension LemmyApi {
                 languageId: languageId
             )
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "createPost")
+            try await createPostNeutralPiefed(
+                name: name,
+                communityId: communityId,
+                url: url,
+                body: body,
+                nsfw: nsfw,
+                languageId: languageId
+            )
         }
     }
 }
@@ -157,5 +164,29 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.createPost(communityId:title:body:url:nsfw:languageId:)`,
+    /// passing `name` through as PieFed's `title` wire field (PieFed renames Lemmy's `name` to
+    /// `title`; see `PostPiefedMapping.swift`'s doc comment), then maps the extracted `post_view`
+    /// up to the neutral shape via `neutralPostView(fromPiefed:)`.
+    func createPostNeutralPiefed(
+        name: String,
+        communityId: Int64,
+        url: String?,
+        body: String?,
+        nsfw: Bool?,
+        languageId: Int64?
+    ) async throws -> PostView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "createPost") }
+        let response = try await piefedClient.createPost(
+            communityId: communityId,
+            title: name,
+            body: body,
+            url: url,
+            nsfw: nsfw,
+            languageId: languageId
+        )
+        return neutralPostView(fromPiefed: response.post_view)
     }
 }

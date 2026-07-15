@@ -42,7 +42,7 @@ public extension LemmyApi {
         case .v4:
             try await editPostNeutralV4(id: id, name: name, url: url, body: body, nsfw: nsfw)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "editPost")
+            try await editPostNeutralPiefed(id: id, name: name, url: url, body: body, nsfw: nsfw)
         }
     }
 }
@@ -134,5 +134,26 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.editPost(postId:title:body:url:nsfw:)`, passing `name`
+    /// through as PieFed's `title` wire field (same rename as
+    /// ``createPostNeutralPiefed(name:communityId:url:body:nsfw:languageId:)``). Only `id` is
+    /// required on the wire; every other parameter left `nil` here is simply omitted from the
+    /// request body (the client's request struct relies on `Encodable`'s `encodeIfPresent`, so a
+    /// `nil` optional is never sent as JSON `null`) -- PieFed keeps the existing value for any
+    /// field the request omits, matching the neutral contract that a `nil` parameter leaves that
+    /// field unchanged. Then maps the extracted `post_view` up to the neutral shape via
+    /// `neutralPostView(fromPiefed:)`.
+    func editPostNeutralPiefed(
+        id: Int64,
+        name: String?,
+        url: String?,
+        body: String?,
+        nsfw: Bool?
+    ) async throws -> PostView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "editPost") }
+        let response = try await piefedClient.editPost(postId: id, title: name, body: body, url: url, nsfw: nsfw)
+        return neutralPostView(fromPiefed: response.post_view)
     }
 }

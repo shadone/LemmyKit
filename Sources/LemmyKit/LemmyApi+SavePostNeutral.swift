@@ -28,7 +28,7 @@ public extension LemmyApi {
         case .v4:
             try await savePostNeutralV4(id: id, saved: saved)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "savePost")
+            try await savePostNeutralPiefed(id: id, saved: saved)
         }
     }
 }
@@ -102,5 +102,13 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.savePost(postId:save:)` (a **PUT**, unlike vote's `POST`),
+    /// then maps the extracted `post_view` up to the neutral shape via `neutralPostView(fromPiefed:)`.
+    func savePostNeutralPiefed(id: Int64, saved: Bool) async throws -> PostView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "savePost") }
+        let response = try await piefedClient.savePost(postId: id, save: saved)
+        return neutralPostView(fromPiefed: response.post_view)
     }
 }

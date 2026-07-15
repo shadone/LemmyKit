@@ -46,7 +46,7 @@ public extension LemmyApi {
         case .v4:
             try await loginNeutralV4(usernameOrEmail: usernameOrEmail, password: password, totp: totp)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "login")
+            try await loginNeutralPiefed(usernameOrEmail: usernameOrEmail, password: password, totp: totp)
         }
     }
 }
@@ -133,5 +133,17 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.login(username:password:)`, passing `usernameOrEmail`
+    /// straight through as PieFed's `username` wire field -- PieFed logs in by username only, with
+    /// no email-login option (unlike v3/v4's `username_or_email`). `totp` is silently ignored: the
+    /// PieFed login route has no wire field for a TOTP code at all, so a PieFed test/validation
+    /// account must have two-factor authentication disabled -- there is nowhere on the wire to
+    /// carry the code even if one is supplied.
+    func loginNeutralPiefed(usernameOrEmail: String, password: String, totp _: String?) async throws -> String {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "login") }
+        let response = try await piefedClient.login(username: usernameOrEmail, password: password)
+        return response.jwt
     }
 }

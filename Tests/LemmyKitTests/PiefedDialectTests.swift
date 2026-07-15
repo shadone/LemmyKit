@@ -50,15 +50,21 @@ private actor FixtureStubTransport: ClientTransport {
     }
 }
 
-/// Proves Task 3's gating of the neutral facade for the `.piefed` dialect: every neutral endpoint
-/// not yet ported to PieFed -- every write/auth endpoint -- throws
-/// `LemmyApiError.unsupportedByDialect(operation:)` the moment `LemmyApi.apiVersion == .piefed`,
-/// carrying the neutral method's own name (minus its `Neutral` suffix) as `operation` so a
-/// caller/log can tell which endpoint was attempted. Also confirms `LemmyApi` builds a
-/// `PiefedClient` only for `.piefed`, leaving it nil for `.v3`/`.v4` (see `LemmyApi.swift`'s two
-/// inits). The eight read endpoints are no longer gated as of Task 5 (real coverage of those now
-/// lives in `PiefedNeutralEndpointTests.swift`) -- the two smoke tests below just confirm they no
-/// longer throw `unsupportedByDialect`.
+/// Proves the gating of the neutral facade for the `.piefed` dialect: every neutral endpoint not
+/// yet ported to PieFed throws `LemmyApiError.unsupportedByDialect(operation:)` the moment
+/// `LemmyApi.apiVersion == .piefed`, carrying the neutral method's own name (minus its `Neutral`
+/// suffix) as `operation` so a caller/log can tell which endpoint was attempted. Also confirms
+/// `LemmyApi` builds a `PiefedClient` only for `.piefed`, leaving it nil for `.v3`/`.v4` (see
+/// `LemmyApi.swift`'s two inits).
+///
+/// The eight read endpoints (Task 3) and the fourteen write/auth endpoints this file originally
+/// sampled (Task 4: `votePostNeutral`/`createCommentNeutral`/`followCommunityNeutral`/
+/// `hidePostNeutral`/`loginNeutral`, plus their siblings) are no longer gated -- real coverage of
+/// those now lives in `PiefedNeutralEndpointTests.swift`/`PiefedWriteEndpointTests.swift`. This
+/// file now samples the endpoints that REMAIN gated: `registerNeutral`, `blockPersonNeutral`,
+/// `uploadImageNeutral`, `saveUserSettingsNeutral` (account-management/moderation surface not yet
+/// ported to PieFed). The two smoke tests at the bottom confirm a couple of the now-implemented
+/// read endpoints no longer throw `unsupportedByDialect`, same as before.
 struct PiefedDialectTests {
     private func fixtureData(_ name: String) throws -> Data {
         let url = try #require(
@@ -99,60 +105,49 @@ struct PiefedDialectTests {
         #expect(client == nil)
     }
 
-    // MARK: - Write/auth endpoints throw unsupportedByDialect
+    // MARK: - Endpoints not yet ported to PieFed still throw unsupportedByDialect
 
     @Test
-    func votePostNeutralThrowsUnsupportedByDialect() async throws {
+    func registerNeutralThrowsUnsupportedByDialect() async throws {
         let api = makeApi()
         do {
-            _ = try await api.votePostNeutral(id: 1, direction: .up)
-            Issue.record("expected votePostNeutral to throw on .piefed")
+            _ = try await api.registerNeutral(username: "alice", password: "hunter2", passwordVerify: "hunter2")
+            Issue.record("expected registerNeutral to throw on .piefed")
         } catch let LemmyApiError.unsupportedByDialect(operation) {
-            #expect(operation == "votePost")
+            #expect(operation == "register")
         }
     }
 
     @Test
-    func createCommentNeutralThrowsUnsupportedByDialect() async throws {
+    func blockPersonNeutralThrowsUnsupportedByDialect() async throws {
         let api = makeApi()
         do {
-            _ = try await api.createCommentNeutral(content: "hi", postId: 1, parentId: nil, languageId: nil)
-            Issue.record("expected createCommentNeutral to throw on .piefed")
+            _ = try await api.blockPersonNeutral(id: 1, block: true)
+            Issue.record("expected blockPersonNeutral to throw on .piefed")
         } catch let LemmyApiError.unsupportedByDialect(operation) {
-            #expect(operation == "createComment")
+            #expect(operation == "blockPerson")
         }
     }
 
     @Test
-    func followCommunityNeutralThrowsUnsupportedByDialect() async throws {
+    func uploadImageNeutralThrowsUnsupportedByDialect() async throws {
         let api = makeApi()
         do {
-            _ = try await api.followCommunityNeutral(id: 1, follow: true)
-            Issue.record("expected followCommunityNeutral to throw on .piefed")
+            _ = try await api.uploadImageNeutral(imageData: Data(), fileName: "upload.jpg")
+            Issue.record("expected uploadImageNeutral to throw on .piefed")
         } catch let LemmyApiError.unsupportedByDialect(operation) {
-            #expect(operation == "followCommunity")
+            #expect(operation == "uploadImage")
         }
     }
 
     @Test
-    func hidePostNeutralThrowsUnsupportedByDialect() async throws {
+    func saveUserSettingsNeutralThrowsUnsupportedByDialect() async throws {
         let api = makeApi()
         do {
-            try await api.hidePostNeutral(id: 1, hidden: true)
-            Issue.record("expected hidePostNeutral to throw on .piefed")
+            try await api.saveUserSettingsNeutral(showNSFW: true)
+            Issue.record("expected saveUserSettingsNeutral to throw on .piefed")
         } catch let LemmyApiError.unsupportedByDialect(operation) {
-            #expect(operation == "hidePost")
-        }
-    }
-
-    @Test
-    func loginNeutralThrowsUnsupportedByDialect() async throws {
-        let api = makeApi()
-        do {
-            _ = try await api.loginNeutral(usernameOrEmail: "alice", password: "hunter2")
-            Issue.record("expected loginNeutral to throw on .piefed")
-        } catch let LemmyApiError.unsupportedByDialect(operation) {
-            #expect(operation == "login")
+            #expect(operation == "saveUserSettings")
         }
     }
 
