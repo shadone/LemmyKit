@@ -38,6 +38,20 @@ public struct PiefedClient: Sendable {
     /// constrain a real listing page.
     private static let maxResponseBytes = 10 * 1024 * 1024
 
+    /// The RFC-3986 unreserved character set (`A-Z a-z 0-9 - . _ ~`) -- the ONLY characters left
+    /// raw when percent-encoding a query parameter value (see ``percentEncodeQueryValue(_:)``).
+    private static let unreservedQueryValueCharacters = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+    )
+
+    /// Percent-encodes a single query parameter value against the unreserved-only character set,
+    /// so `+`, space, and every RFC-3986 sub-delimiter (`; , ' / ? & = # `) are escaped -- unlike
+    /// `URLComponents`/`URLQueryItem`, which leaves those raw and lets PieFed's Flask/Werkzeug
+    /// query parser misinterpret them (most importantly `+`, which it decodes as a space).
+    private static func percentEncodeQueryValue(_ value: String) -> String {
+        value.addingPercentEncoding(withAllowedCharacters: unreservedQueryValueCharacters) ?? value
+    }
+
     /// Creates a client for a single PieFed instance.
     ///
     /// - Parameters:
@@ -219,14 +233,17 @@ public struct PiefedClient: Sendable {
         query: [(String, String?)],
         operationID: String
     ) async throws -> Response {
-        var components = URLComponents()
-        components.path = path
-        let queryItems = query.compactMap { name, value in value.map { URLQueryItem(name: name, value: $0) } }
-        components.queryItems = queryItems.isEmpty ? nil : queryItems
-        // `.string` percent-encodes the query safely; `URLComponents` with only a path and no
-        // scheme/host still renders a valid relative path+query string (verified: no `?` appears
-        // when `queryItems` is nil, unlike an empty-but-non-nil array, which trails a stray `?`).
-        let requestPath = components.string ?? path
+        // Deliberately NOT `URLComponents`/`URLQueryItem`: its query-value percent-encoding
+        // leaves several RFC-3986 sub-delimiters raw -- critically `+`, which PieFed's
+        // Flask/Werkzeug backend (`parse_qsl`) decodes as a literal space, silently corrupting
+        // free-text values like `search`'s `q` (`"c++"` would arrive server-side as `"c  "`).
+        // Encoding against the unreserved-only set below guarantees `+`, space, and every
+        // sub-delim are escaped, matching the generated client's `OpenAPIRuntime.isUnreserved`.
+        let pairs = query.compactMap { name, value -> String? in
+            guard let value else { return nil }
+            return "\(name)=\(Self.percentEncodeQueryValue(value))"
+        }
+        let requestPath = pairs.isEmpty ? path : "\(path)?\(pairs.joined(separator: "&"))"
 
         var headerFields: HTTPFields = [:]
         headerFields[.userAgent] = userAgent

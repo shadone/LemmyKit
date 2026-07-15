@@ -68,12 +68,16 @@ struct PiefedClientTests {
         let transport = try RecordingStubTransport(responseBody: fixture("piefed-post_list"))
         let client = makeClient(transport: transport)
 
-        let response = try await client.getPosts(type_: "Local", sort: "Hot", limit: 3, page: 2)
+        let response = try await client.getPosts(
+            type_: "Local", sort: "Hot", communityId: 123, showNsfw: true, limit: 3, page: 2
+        )
 
         let path = await transport.capturedPath ?? ""
         #expect(path.hasPrefix("/api/alpha/post/list"))
         #expect(path.contains("type_=Local"))
         #expect(path.contains("sort=Hot"))
+        #expect(path.contains("community_id=123"))
+        #expect(path.contains("show_nsfw=true"))
         #expect(path.contains("limit=3"))
         #expect(path.contains("page=2"))
 
@@ -228,6 +232,25 @@ struct PiefedClientTests {
     }
 
     @Test
+    func searchEscapesPlusAndSubDelimsInQueryValue() async throws {
+        // Regression test: `URLComponents`/`URLQueryItem` leave `+` and several RFC-3986
+        // sub-delimiters raw in a query value. PieFed's Flask/Werkzeug backend (`parse_qsl`)
+        // decodes a raw `+` as a literal space, so `search(q: "c++")` would silently corrupt
+        // the query server-side to `"c  "`. The query builder must percent-encode against an
+        // unreserved-only set so `+` -> `%2B`, space -> `%20`, and `&` -> `%26`.
+        let transport = try RecordingStubTransport(responseBody: fixture("piefed-search"))
+        let client = makeClient(transport: transport)
+
+        _ = try await client.search(q: "c++ & tags", type_: "Posts")
+
+        let path = await transport.capturedPath ?? ""
+        #expect(path.contains("q=c%2B%2B%20%26%20tags"))
+        #expect(!path.contains("q=c++"))
+        #expect(!path.contains("c++ "))
+        #expect(!path.contains("c++&"))
+    }
+
+    @Test
     func resolveObjectIssuesQAndDecodesResponse() async throws {
         // resolve_object returns a bare `{"community": <CommunityView>}` (exactly one of its four
         // fields non-nil, per `PiefedResolveObjectResponse`'s doc comment); reuse a community_list
@@ -241,8 +264,10 @@ struct PiefedClientTests {
 
         let response = try await client.resolveObject(q: "https://piefed.social/c/movies")
 
+        // The `q` value is percent-encoded against the unreserved-only set (see
+        // `percentEncodeQueryValueEscapesSubDelimsAndPlus` below), so `:` and `/` are escaped too.
         let path = await transport.capturedPath
-        #expect(path == "/api/alpha/resolve_object?q=https://piefed.social/c/movies")
+        #expect(path == "/api/alpha/resolve_object?q=https%3A%2F%2Fpiefed.social%2Fc%2Fmovies")
         #expect(response.community != nil)
         #expect(response.post == nil)
     }
