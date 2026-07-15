@@ -109,3 +109,26 @@ package func neutralPage<Item>(
         prevPage: neutralCursor(fromV4: response.prev_page)
     )
 }
+
+/// Wraps a PieFed backend's bare `next_page` string in the neutral ``Cursor``, or nil if PieFed
+/// returned no cursor (there is no next page from here). PieFed's `/api/alpha` listings carry a
+/// bare `String?` rather than v3/v4's typed `PaginationCursor` schema type, so this takes the
+/// wire value directly rather than going through `neutralCursor(fromV3:)`/`neutralCursor(fromV4:)`.
+package func neutralCursor(fromPiefed cursor: String?) -> Cursor? {
+    cursor.map { Cursor(rawValue: $0) }
+}
+
+/// Builds a neutral, forward-only `Page` (`prevPage` always nil -- PieFed has no reverse-paging
+/// cursor, matching v3) from a PieFed listing's already-extracted items and optional `next_page`
+/// string, mapping each item with `mapItem`.
+package func neutralPage<PiefedItem, Item>(
+    fromPiefed items: [PiefedItem],
+    nextPage: String?,
+    mapItem: (PiefedItem) -> Item
+) -> Page<Item> {
+    Page(
+        items: items.map(mapItem),
+        nextPage: neutralCursor(fromPiefed: nextPage),
+        prevPage: nil
+    )
+}
