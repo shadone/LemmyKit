@@ -33,13 +33,16 @@ package func neutralPersonDetails(fromPiefed response: PiefedPersonDetailsRespon
 /// `publishedAt` **descending**, so the result reads like a single recency-ordered feed -- the same
 /// interleave rule `personContentNeutralV3` applies to v3's equivalent `posts`/`comments` arrays.
 ///
-/// PieFed's `GET /api/alpha/user` does document `page` (default 1) and `limit` (default 20) query
-/// params, same as v3's `getPersonDetails` -- but the current `PiefedClient` wrapper doesn't send
-/// them yet (a client-wiring gap left for the endpoint task, which will mirror
-/// `LemmyApi+ListPersonContentNeutral.swift`'s v3 emulation: send explicit `page`/`limit` and
-/// synthesize a `nextPage` cursor whenever a returned count equals the limit). Until that lands,
-/// this adapter only ever sees a single, unpaginated response with no cursor of any kind, so it
-/// always returns a single, complete page (`nextPage`/`prevPage` both nil).
+/// PieFed's `GET /api/alpha/user` documents `page` (default 1) and `limit` (default 20) query
+/// params, same as v3's `getPersonDetails` -- `PiefedClient.getPersonDetails(personId:
+/// includeContent:page:limit:)` sends them explicitly now, mirroring
+/// `LemmyApi+ListPersonContentNeutral.swift`'s v3 emulation. This adapter itself, though, only
+/// ever sees ONE already-fetched response and has no `page`/`limit` of its own to compare a
+/// returned count against, so it always returns `nextPage`/`prevPage` nil here -- cursor synthesis
+/// (comparing `posts.count`/`comments.count` against the requested limit) happens one layer up, in
+/// `personContentNeutralPiefed` (`LemmyApi+ListPersonContentNeutral.swift`), which reuses this
+/// adapter for the interleave and then rebuilds the returned `Page` with the synthesized cursor --
+/// the same "prefer the endpoint helper" split `personContentNeutralV3`'s sibling helpers use.
 package func neutralPersonContentPage(fromPiefed response: PiefedPersonDetailsResponse) -> Page<PostOrComment> {
     let combined: [PostOrComment] =
         response.posts.map { .post(neutralPostView(fromPiefed: $0)) }

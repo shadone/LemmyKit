@@ -35,7 +35,7 @@ public extension LemmyApi {
         case .v4:
             try await personDetailsNeutralV4(personId: personId)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "personDetails")
+            try await personDetailsNeutralPiefed(personId: personId)
         }
     }
 }
@@ -112,5 +112,17 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.getPersonDetails(personId:includeContent:)` with
+    /// `includeContent: false` -- unlike v3/v4, PieFed's route genuinely supports omitting the
+    /// posts/comments payload, so this skips fetching content this method doesn't return anyway
+    /// (`personContentNeutral(personId:pageCursor:)` fetches it separately, with
+    /// `includeContent: true`) -- then maps the extracted `person_view` + `moderates` to the
+    /// neutral shape via `neutralPersonDetails(fromPiefed:)`.
+    func personDetailsNeutralPiefed(personId: Int64) async throws -> PersonDetails {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "personDetails") }
+        let response = try await piefedClient.getPersonDetails(personId: personId, includeContent: false)
+        return neutralPersonDetails(fromPiefed: response)
     }
 }

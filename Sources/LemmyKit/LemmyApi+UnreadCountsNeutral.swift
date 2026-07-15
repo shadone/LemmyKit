@@ -24,7 +24,7 @@ public extension LemmyApi {
         case .v4:
             try await unreadCountsNeutralV4()
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "unreadCounts")
+            try await unreadCountsNeutralPiefed()
         }
     }
 }
@@ -70,5 +70,15 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.unreadCount()`, then maps the extracted response to the
+    /// neutral shape via `neutralUnreadCounts(fromPiefed:)`, which additionally folds PieFed's
+    /// `other` extra (activity alerts, reports, ...) into ``UnreadCounts/total`` -- see that
+    /// adapter's doc.
+    func unreadCountsNeutralPiefed() async throws -> UnreadCounts {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "unreadCounts") }
+        let response = try await piefedClient.unreadCount()
+        return neutralUnreadCounts(fromPiefed: response)
     }
 }

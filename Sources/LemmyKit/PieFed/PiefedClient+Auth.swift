@@ -57,15 +57,23 @@ public extension PiefedClient {
     ///   - personId: the person id to fetch.
     ///   - includeContent: true to include the person's posts/comments, or nil for the server
     ///     default (`false`).
+    ///   - page: the 1-based page number for the included posts/comments, or nil for the server
+    ///     default (1). Meaningless when `includeContent` is not true.
+    ///   - limit: the page size for the included posts/comments, or nil for the server default
+    ///     (20). Meaningless when `includeContent` is not true.
     func getPersonDetails(
         personId: Int64,
-        includeContent: Bool? = nil
+        includeContent: Bool? = nil,
+        page: Int? = nil,
+        limit: Int? = nil
     ) async throws -> PiefedPersonDetailsResponse {
         try await get(
             "/api/alpha/user",
             query: [
                 ("person_id", String(personId)),
                 ("include_content", includeContent.map(String.init)),
+                ("page", page.map(String.init)),
+                ("limit", limit.map(String.init)),
             ],
             operationID: "getPersonDetails"
         )

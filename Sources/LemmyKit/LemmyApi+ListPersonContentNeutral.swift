@@ -62,7 +62,7 @@ public extension LemmyApi {
         case .v4:
             try await personContentNeutralV4(personId: personId, pageCursor: pageCursor)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "personContent")
+            try await personContentNeutralPiefed(personId: personId, pageCursor: pageCursor)
         }
     }
 }
@@ -85,6 +85,29 @@ private func v3PersonContentPage(fromCursor cursor: Cursor?) -> Int64 {
 /// have more even if the other has run out), nil otherwise.
 private func v3PersonContentNextPageCursor(page: Int64, postsCount: Int, commentsCount: Int) -> Cursor? {
     guard Int64(postsCount) == v3PersonContentPageLimit || Int64(commentsCount) == v3PersonContentPageLimit else {
+        return nil
+    }
+    return Cursor(rawValue: String(page + 1))
+}
+
+/// The PieFed page/limit this emulation requests when synthesizing its own opaque cursor -- the
+/// PieFed analogue of `v3PersonContentPageLimit` above, same value and same reasoning (sent
+/// explicitly so `nextPage` synthesis can reliably compare a returned list's count against it).
+private let piefedPersonContentPageLimit = 10
+
+/// Decodes the PieFed-emulation's synthesized page-number cursor -- the PieFed analogue of
+/// `v3PersonContentPage(fromCursor:)` above, defaulting to the first page when `cursor` is nil or
+/// unparseable.
+private func piefedPersonContentPage(fromCursor cursor: Cursor?) -> Int {
+    cursor.flatMap { Int($0.rawValue) } ?? 1
+}
+
+/// Synthesizes the PieFed-emulation's next-page cursor -- the PieFed analogue of
+/// `v3PersonContentNextPageCursor(page:postsCount:commentsCount:)` above: present whenever
+/// `postsCount` or `commentsCount` came back a full `piefedPersonContentPageLimit`-sized page
+/// (either list may still have more even if the other has run out), nil otherwise.
+private func piefedPersonContentNextPageCursor(page: Int, postsCount: Int, commentsCount: Int) -> Cursor? {
+    guard postsCount == piefedPersonContentPageLimit || commentsCount == piefedPersonContentPageLimit else {
         return nil
     }
     return Cursor(rawValue: String(page + 1))
@@ -178,5 +201,38 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: the same emulation ``personContentNeutralV3(personId:pageCursor:)`` applies to
+    /// v3, since PieFed likewise has no dedicated combined post/comment feed endpoint -- its only
+    /// source is the `posts[]`/`comments[]` arrays inline in `GET /api/alpha/user`'s response
+    /// (`PiefedClient.getPersonDetails(personId:includeContent:page:limit:)`, called here with
+    /// `includeContent: true`). Sends explicit `page`/`limit` (`piefedPersonContentPageLimit`) so
+    /// `nextPage` synthesis can compare a returned count against them, reuses
+    /// `neutralPersonContentPage(fromPiefed:)` for the interleave (mapping + recency sort -- see
+    /// that adapter's doc for why cursor synthesis is NOT baked into it), then rebuilds the
+    /// returned `Page` with the synthesized cursor from `piefedPersonContentNextPageCursor`.
+    func personContentNeutralPiefed(personId: Int64, pageCursor: Cursor?) async throws -> Page<PostOrComment> {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "personContent") }
+
+        let page = piefedPersonContentPage(fromCursor: pageCursor)
+        let response = try await piefedClient.getPersonDetails(
+            personId: personId,
+            includeContent: true,
+            page: page,
+            limit: piefedPersonContentPageLimit
+        )
+
+        let interleaved = neutralPersonContentPage(fromPiefed: response)
+        return Page(
+            items: interleaved.items,
+            nextPage: piefedPersonContentNextPageCursor(
+                page: page,
+                postsCount: response.posts.count,
+                commentsCount: response.comments.count
+            ),
+            // PieFed has no reverse-paging cursor -- see `Page`'s doc.
+            prevPage: nil
+        )
     }
 }

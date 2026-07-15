@@ -68,6 +68,47 @@ package func neutralMyUser(fromPiefed response: PiefedUserMeResponse) -> MyUser 
     )
 }
 
+/// Builds the neutral `MyUser` for a PieFed authed-site response's `my_user` embed, additionally
+/// deriving `isAdmin` from the enclosing site response's own `admins` list.
+///
+/// `neutralMyUser(fromPiefed:)` above always defaults `isAdmin` to `false` because a bare
+/// `PiefedUserMeResponse` carries no admin flag of its own -- PieFed's admin standing instead
+/// rides `PiefedPersonView.is_admin` on `PiefedGetSiteResponse.admins`, keyed by matching person
+/// id. This overload is for callers that have that enclosing site response in hand (the
+/// `getMyUserNeutral`/`getSiteAndMyUserNeutral` PieFed endpoints, which both source `MyUser` from
+/// the authed `/site` embed per its doc) -- it builds the base mapping then overrides `isAdmin`
+/// with the derived value.
+///
+/// - Parameters:
+///   - response: the authed site response's `my_user` embed (`PiefedGetSiteResponse.my_user`,
+///     already unwrapped by the caller).
+///   - admins: the enclosing site response's `admins` list, searched for the signed-in account's
+///     person id.
+package func neutralMyUser(fromPiefed response: PiefedUserMeResponse, admins: [PiefedPersonView]) -> MyUser {
+    let myUser = neutralMyUser(fromPiefed: response)
+    let isAdmin = admins.contains { $0.person.id == response.local_user_view.person.id }
+
+    return MyUser(
+        person: myUser.person,
+        localUserId: myUser.localUserId,
+        email: myUser.email,
+        emailVerified: myUser.emailVerified,
+        acceptedApplication: myUser.acceptedApplication,
+        isAdmin: isAdmin,
+        showNsfw: myUser.showNsfw,
+        blurNsfw: myUser.blurNsfw,
+        showScores: myUser.showScores,
+        showBotAccounts: myUser.showBotAccounts,
+        showReadPosts: myUser.showReadPosts,
+        showAvatars: myUser.showAvatars,
+        defaultListingType: myUser.defaultListingType,
+        defaultSort: myUser.defaultSort,
+        defaultTimeRange: myUser.defaultTimeRange,
+        follows: myUser.follows,
+        moderates: myUser.moderates
+    )
+}
+
 /// Folds PieFed's bare `default_listing_type` string onto `Lemmy.ListingType` (a v3-shaped alias --
 /// see `NeutralVocabulary.swift`).
 ///
