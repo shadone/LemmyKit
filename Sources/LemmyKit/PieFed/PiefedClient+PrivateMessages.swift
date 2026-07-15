@@ -14,15 +14,22 @@ public extension PiefedClient {
     /// - Parameters:
     ///   - unreadOnly: true to return only unread messages, or nil for the server default.
     ///   - page: the 1-based page number, or nil for the first page.
+    ///   - limit: the page size, or nil for the server default. The vendored alpha spec gives no
+    ///     documented default for this route (unlike `getReplies`/`getMentions`, which default to
+    ///     10) -- ``LemmyApi/getPrivateMessagesNeutral(unreadOnly:pageCursor:)``'s PieFed path sends
+    ///     this explicitly so its `nextPage` synthesis (full-page heuristic, this response carries
+    ///     no native cursor) can reliably compare a returned count against a known value.
     func getPrivateMessages(
         unreadOnly: Bool? = nil,
-        page: Int? = nil
+        page: Int? = nil,
+        limit: Int? = nil
     ) async throws -> PiefedPrivateMessageListResponse {
         try await get(
             "/api/alpha/private_message/list",
             query: [
                 ("unread_only", unreadOnly.map(String.init)),
                 ("page", page.map(String.init)),
+                ("limit", limit.map(String.init)),
             ],
             operationID: "getPrivateMessages"
         )

@@ -12,6 +12,12 @@ import LemmyKitV4Generated
 /// `getPrivateMessagesNeutralV3`). A short page (fewer than this many items) means the last page.
 private let privateMessagesNeutralV3PageSize: Int64 = 50
 
+/// The fixed page size the PieFed path requests from `PiefedClient.getPrivateMessages` -- the
+/// PieFed analogue of `privateMessagesNeutralV3PageSize` above, same reasoning (see
+/// `getPrivateMessagesNeutralPiefed`'s doc): PieFed's private-message list carries no cursor of
+/// any kind, so this asks for a constant slice and synthesizes a cursor from the returned count.
+private let privateMessagesNeutralPiefedPageSize = 20
+
 public extension LemmyApi {
     /// Fetches a page of the viewer's private messages and returns the version-neutral,
     /// cursor-paginated ``Page`` of ``PrivateMessageListItem``.
@@ -41,7 +47,8 @@ public extension LemmyApi {
     ///     `getPrivateMessages` and to v4's `ListNotifications` `unread_only` filter.
     ///   - pageCursor: opaque cursor from a previous page's `nextPage`/`prevPage`; nil fetches the
     ///     first page. On v3 this is an internally-synthesized page-number cursor (see above); on v4
-    ///     it is the server's native cursor.
+    ///     it is the server's native cursor. PieFed follows the same page-number-cursor synthesis as
+    ///     v3 -- see `getPrivateMessagesNeutralPiefed`'s doc.
     /// - Returns: a `Page` of ``PrivateMessageListItem``s, each a message view plus its read state.
     func getPrivateMessagesNeutral(
         unreadOnly: Bool = false,
@@ -53,7 +60,7 @@ public extension LemmyApi {
         case .v4:
             try await getPrivateMessagesNeutralV4(unreadOnly: unreadOnly, pageCursor: pageCursor)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "getPrivateMessages")
+            try await getPrivateMessagesNeutralPiefed(unreadOnly: unreadOnly, pageCursor: pageCursor)
         }
     }
 }
@@ -141,5 +148,41 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.getPrivateMessages(unreadOnly:page:limit:)` with a fixed
+    /// page size (see `privateMessagesNeutralPiefedPageSize`) and a page number decoded from
+    /// `pageCursor` (nil or unparseable → page 1), maps each `PiefedPrivateMessageView` via
+    /// `neutralPrivateMessageListItem(fromPiefed:)` (which already pairs the view with its
+    /// `private_message.read` for `isRead` -- see that adapter's doc), and synthesizes `nextPage`
+    /// only when the page came back full. `prevPage` is always nil.
+    ///
+    /// **Why synthesis, not a native cursor:** unlike `listNotificationsNeutralPiefed`'s
+    /// `getReplies`/`getMentions` (whose `PiefedRepliesResponse` carries a real `next_page` string
+    /// cursor), PieFed's private-message list response (`PiefedPrivateMessageListResponse`,
+    /// matching the spec's `ListPrivateMessagesResponse`) carries no cursor of any kind at all --
+    /// just the bare `private_messages` array. This mirrors `getPrivateMessagesNeutralV3`'s exact
+    /// emulation for the same reason.
+    func getPrivateMessagesNeutralPiefed(
+        unreadOnly: Bool,
+        pageCursor: Cursor?
+    ) async throws -> Page<PrivateMessageListItem> {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getPrivateMessages") }
+
+        let page = pageCursor.flatMap { Int($0.rawValue) } ?? 1
+
+        let response = try await piefedClient.getPrivateMessages(
+            unreadOnly: unreadOnly,
+            page: page,
+            limit: privateMessagesNeutralPiefedPageSize
+        )
+
+        let items = response.private_messages.map { neutralPrivateMessageListItem(fromPiefed: $0) }
+
+        let nextPage = items.count == privateMessagesNeutralPiefedPageSize
+            ? Cursor(rawValue: "\(page + 1)")
+            : nil
+
+        return Page(items: items, nextPage: nextPage, prevPage: nil)
     }
 }
