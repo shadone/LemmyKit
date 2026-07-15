@@ -61,6 +61,8 @@ public extension LemmyApi {
             try await personContentNeutralV3(personId: personId, pageCursor: pageCursor)
         case .v4:
             try await personContentNeutralV4(personId: personId, pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "personContent")
         }
     }
 }

@@ -41,6 +41,8 @@ public extension LemmyApi {
             try await editPostNeutralV3(id: id, name: name, url: url, body: body, nsfw: nsfw)
         case .v4:
             try await editPostNeutralV4(id: id, name: name, url: url, body: body, nsfw: nsfw)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "editPost")
         }
     }
 }

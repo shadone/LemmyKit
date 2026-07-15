@@ -28,6 +28,8 @@ public extension LemmyApi {
             try await deletePostNeutralV3(id: id, deleted: deleted)
         case .v4:
             try await deletePostNeutralV4(id: id, deleted: deleted)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "deletePost")
         }
     }
 }

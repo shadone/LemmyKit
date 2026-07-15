@@ -56,6 +56,8 @@ public extension LemmyApi {
                 showNsfw: showNsfw,
                 pageCursor: pageCursor
             )
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getPosts")
         }
     }
 }

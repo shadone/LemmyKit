@@ -17,6 +17,13 @@ import OpenAPIURLSession
 public actor LemmyApi {
     let client: Client
     let v4Client: LemmyKitV4Generated.Client
+    /// The PieFed `/api/alpha` client, built only when ``apiVersion`` is `.piefed`; nil otherwise.
+    /// Unlike `client`/`v4Client` (always built, unused unless dispatched to), this is optional
+    /// because `PiefedClient` isn't a swift-openapi-generated `Client` with a cheap no-op
+    /// construction -- it carries the same `instanceUrl`/credential/transport/userAgent this
+    /// instance was configured with, so building it unconditionally would be redundant state, not
+    /// just dead code. See ``ApiVersion/piefed``.
+    let piefedClient: PiefedClient?
     let authorizationMiddleware: AuthorizationMiddleware
 
     /// `User-Agent` sent on every request (generated client calls and the
@@ -35,8 +42,8 @@ public actor LemmyApi {
     /// can build absolute urls without going through the generated client.
     let instanceUrl: URL
 
-    /// Which generated backend (v3's `client` or v4's `v4Client`) the version-neutral
-    /// `LemmyApi+*Neutral` methods dispatch to. See ``ApiVersion``.
+    /// Which backend (v3's `client`, v4's `v4Client`, or PieFed's `piefedClient`) the
+    /// version-neutral `LemmyApi+*Neutral` methods dispatch to. See ``ApiVersion``.
     public let apiVersion: ApiVersion
 
     // MARK: Functions
@@ -82,6 +89,9 @@ public actor LemmyApi {
             transport: transport,
             middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
         )
+        piefedClient = apiVersion == .piefed
+            ? PiefedClient(baseURL: instanceUrl, token: credential?.jwt, transport: transport, userAgent: userAgent)
+            : nil
     }
 
     /// Creates an api client backed by a caller-supplied transport.
@@ -130,5 +140,8 @@ public actor LemmyApi {
             transport: transport,
             middlewares: [authorizationMiddleware, UserAgentMiddleware(userAgent: userAgent)]
         )
+        piefedClient = apiVersion == .piefed
+            ? PiefedClient(baseURL: instanceUrl, token: credential?.jwt, transport: transport, userAgent: userAgent)
+            : nil
     }
 }

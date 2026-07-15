@@ -38,6 +38,8 @@ public extension LemmyApi {
             try await listNotificationsNeutralV3(unreadOnly: unreadOnly, kind: kind)
         case .v4:
             try await listNotificationsNeutralV4(unreadOnly: unreadOnly, pageCursor: pageCursor, kind: kind)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "listNotifications")
         }
     }
 }

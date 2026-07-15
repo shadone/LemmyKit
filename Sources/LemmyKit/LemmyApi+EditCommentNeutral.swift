@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await editCommentNeutralV3(id: id, content: content)
         case .v4:
             try await editCommentNeutralV4(id: id, content: content)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "editComment")
         }
     }
 }

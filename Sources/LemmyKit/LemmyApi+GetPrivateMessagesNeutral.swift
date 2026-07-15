@@ -52,6 +52,8 @@ public extension LemmyApi {
             try await getPrivateMessagesNeutralV3(unreadOnly: unreadOnly, pageCursor: pageCursor)
         case .v4:
             try await getPrivateMessagesNeutralV4(unreadOnly: unreadOnly, pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getPrivateMessages")
         }
     }
 }

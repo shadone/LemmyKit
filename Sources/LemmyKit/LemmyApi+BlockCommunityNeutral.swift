@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await blockCommunityNeutralV3(id: id, block: block)
         case .v4:
             try await blockCommunityNeutralV4(id: id, block: block)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "blockCommunity")
         }
     }
 }

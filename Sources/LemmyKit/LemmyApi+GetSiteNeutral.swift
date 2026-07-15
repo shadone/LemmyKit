@@ -26,6 +26,8 @@ public extension LemmyApi {
             try await getSiteNeutralV3()
         case .v4:
             try await getSiteNeutralV4()
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getSite")
         }
     }
 }

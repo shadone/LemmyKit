@@ -40,6 +40,8 @@ public extension LemmyApi {
             try await getCommentsNeutralV3(postId: postId, sort: sort)
         case .v4:
             try await getCommentsNeutralV4(postId: postId, sort: sort, pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getComments")
         }
     }
 
@@ -70,6 +72,8 @@ public extension LemmyApi {
             try await getCommentsNeutralV3(parentId: parentId, sort: sort)
         case .v4:
             try await getCommentsNeutralV4(parentId: parentId, sort: sort, pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getComments")
         }
     }
 }

@@ -47,6 +47,8 @@ public extension LemmyApi {
             try await getSavedPostsNeutralV3(sort: sort, timeRange: timeRange, pageCursor: pageCursor)
         case .v4:
             try await getSavedPostsNeutralV4(pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getSavedPosts")
         }
     }
 
@@ -70,6 +72,8 @@ public extension LemmyApi {
             Page(items: [], nextPage: nil, prevPage: nil)
         case .v4:
             try await getReadPostsNeutralV4(pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getReadPosts")
         }
     }
 
@@ -93,6 +97,8 @@ public extension LemmyApi {
             Page(items: [], nextPage: nil, prevPage: nil)
         case .v4:
             try await getHiddenPostsNeutralV4(pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getHiddenPosts")
         }
     }
 
@@ -119,6 +125,8 @@ public extension LemmyApi {
             try await getLikedPostsNeutralV3(pageCursor: pageCursor)
         case .v4:
             try await getLikedPostsNeutralV4(pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getLikedPosts")
         }
     }
 }

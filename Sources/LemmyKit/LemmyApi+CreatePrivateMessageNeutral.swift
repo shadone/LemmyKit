@@ -31,6 +31,8 @@ public extension LemmyApi {
             try await createPrivateMessageNeutralV3(content: content, recipientId: recipientId)
         case .v4:
             try await createPrivateMessageNeutralV4(content: content, recipientId: recipientId)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "createPrivateMessage")
         }
     }
 }

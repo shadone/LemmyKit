@@ -27,6 +27,8 @@ public extension LemmyApi {
             try await saveCommentNeutralV3(id: id, saved: saved)
         case .v4:
             try await saveCommentNeutralV4(id: id, saved: saved)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "saveComment")
         }
     }
 }

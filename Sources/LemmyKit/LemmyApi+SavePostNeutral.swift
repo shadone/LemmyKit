@@ -27,6 +27,8 @@ public extension LemmyApi {
             try await savePostNeutralV3(id: id, saved: saved)
         case .v4:
             try await savePostNeutralV4(id: id, saved: saved)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "savePost")
         }
     }
 }

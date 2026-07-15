@@ -57,6 +57,8 @@ public extension LemmyApi {
                 nsfw: nsfw,
                 languageId: languageId
             )
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "createPost")
         }
     }
 }

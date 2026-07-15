@@ -23,6 +23,8 @@ public extension LemmyApi {
             try await unreadCountsNeutralV3()
         case .v4:
             try await unreadCountsNeutralV4()
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "unreadCounts")
         }
     }
 }

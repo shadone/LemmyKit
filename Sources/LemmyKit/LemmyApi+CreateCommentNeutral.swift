@@ -45,6 +45,8 @@ public extension LemmyApi {
                 parentId: parentId,
                 languageId: languageId
             )
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "createComment")
         }
     }
 }

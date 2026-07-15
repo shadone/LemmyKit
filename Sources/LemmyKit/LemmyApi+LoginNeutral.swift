@@ -45,6 +45,8 @@ public extension LemmyApi {
             try await loginNeutralV3(usernameOrEmail: usernameOrEmail, password: password, totp: totp)
         case .v4:
             try await loginNeutralV4(usernameOrEmail: usernameOrEmail, password: password, totp: totp)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "login")
         }
     }
 }

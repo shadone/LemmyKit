@@ -27,6 +27,8 @@ public extension LemmyApi {
             try await resolveObjectNeutralV3(query: query)
         case .v4:
             try await resolveObjectNeutralV4(query: query)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "resolveObject")
         }
     }
 }

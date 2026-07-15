@@ -48,6 +48,8 @@ public extension LemmyApi {
             try await searchNeutralV3(query: query, type: type, sort: sort, timeRange: timeRange)
         case .v4:
             try await searchNeutralV4(query: query, type: type, timeRange: timeRange, pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "search")
         }
     }
 }

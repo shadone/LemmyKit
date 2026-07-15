@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await markPostAsReadNeutralV3(id: id, read: read)
         case .v4:
             try await markPostAsReadNeutralV4(id: id, read: read)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "markPostAsRead")
         }
     }
 }

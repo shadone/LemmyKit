@@ -33,4 +33,15 @@ public enum LemmyApiError: Error, @unchecked Sendable {
     ///
     /// This is a catch-all case that should never happen, if it does we need to catch and handle errors better.
     case unknown(Error)
+
+    /// The current dialect (see ``ApiVersion``) does not implement this neutral endpoint.
+    ///
+    /// Thrown by a `LemmyApi+*Neutral` endpoint when ``LemmyApi/apiVersion`` is `.piefed` and
+    /// that endpoint has no PieFed implementation yet -- either because it's a write/auth
+    /// endpoint PieFed support hasn't reached (Phase 2), or a read endpoint outside Phase 1's
+    /// scope. Never thrown for `.v3`/`.v4`.
+    ///
+    /// - Parameter operation: the neutral method's own name, e.g. `"votePost"`, so callers/logs
+    ///   can identify which endpoint was attempted.
+    case unsupportedByDialect(operation: String)
 }

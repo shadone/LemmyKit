@@ -36,6 +36,8 @@ public extension LemmyApi {
             return
         case .v4:
             try await markNotificationAsReadNeutralV4(id: id, read: read)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "markNotificationAsRead")
         }
     }
 
@@ -56,6 +58,8 @@ public extension LemmyApi {
             try await markAllAsRead()
         case .v4:
             try await markAllNotificationsAsReadNeutralV4()
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "markAllNotificationsAsRead")
         }
     }
 }

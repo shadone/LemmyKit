@@ -45,6 +45,8 @@ public extension LemmyApi {
             try await listCommunitiesNeutralV3(sort: sort)
         case .v4:
             try await listCommunitiesNeutralV4(sort: sort, pageCursor: pageCursor)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "listCommunities")
         }
     }
 }

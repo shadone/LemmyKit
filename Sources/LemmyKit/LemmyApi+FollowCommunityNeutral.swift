@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await followCommunityNeutralV3(id: id, follow: follow)
         case .v4:
             try await followCommunityNeutralV4(id: id, follow: follow)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "followCommunity")
         }
     }
 }

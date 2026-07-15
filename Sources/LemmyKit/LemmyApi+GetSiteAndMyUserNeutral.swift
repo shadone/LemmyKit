@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await getSiteAndMyUserNeutralV3()
         case .v4:
             try await getSiteAndMyUserNeutralV4()
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getSiteAndMyUser")
         }
     }
 }

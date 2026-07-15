@@ -29,6 +29,8 @@ public extension LemmyApi {
             try await hidePostNeutralV3(id: id, hidden: hidden)
         case .v4:
             try await hidePostNeutralV4(id: id, hidden: hidden)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "hidePost")
         }
     }
 }

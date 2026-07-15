@@ -33,6 +33,8 @@ public extension LemmyApi {
             try await getPostNeutralV3(id: id)
         case .v4:
             try await getPostNeutralV4(id: id)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getPost")
         }
     }
 }

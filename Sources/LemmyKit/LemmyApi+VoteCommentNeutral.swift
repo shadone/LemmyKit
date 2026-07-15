@@ -29,6 +29,8 @@ public extension LemmyApi {
             try await voteCommentNeutralV3(id: id, direction: direction)
         case .v4:
             try await voteCommentNeutralV4(id: id, direction: direction)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "voteComment")
         }
     }
 }

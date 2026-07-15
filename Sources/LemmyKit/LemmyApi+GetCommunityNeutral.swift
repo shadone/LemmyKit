@@ -27,6 +27,8 @@ public extension LemmyApi {
             try await getCommunityNeutralV3(id: id)
         case .v4:
             try await getCommunityNeutralV4(id: id)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "getCommunity")
         }
     }
 }

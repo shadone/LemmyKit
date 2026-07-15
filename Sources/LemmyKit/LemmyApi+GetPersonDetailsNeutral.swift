@@ -34,6 +34,8 @@ public extension LemmyApi {
             try await personDetailsNeutralV3(personId: personId)
         case .v4:
             try await personDetailsNeutralV4(personId: personId)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "personDetails")
         }
     }
 }
