@@ -120,9 +120,9 @@ struct PiefedDecodingTests {
         #expect(resp.community_view.community.banner != nil) // rich shape: banner present here
         #expect(resp.community_view.community.description != nil)
 
-        #expect(resp.moderators.count == 4)
-        #expect(resp.moderators.first?.moderator.user_name == "atomicpoet")
-        #expect(resp.moderators.first?.community.name == "movies")
+        #expect(resp.moderators?.count == 4)
+        #expect(resp.moderators?.first?.moderator.user_name == "atomicpoet")
+        #expect(resp.moderators?.first?.community.name == "movies")
 
         #expect(resp.cross_posts.count == 1)
         #expect(resp.cross_posts.first?.community.name == "dcstudios")
@@ -135,7 +135,7 @@ struct PiefedDecodingTests {
         #expect(resp.version == "1.7.5")
         #expect(resp.site.name == "PieFed")
         #expect(resp.site.registration_mode == "RequireApplication")
-        #expect(resp.site.all_languages.count == 193)
+        #expect(resp.site.all_languages?.count == 193)
         #expect(resp.admins.count == 6)
 
         let firstAdmin = try #require(resp.admins.first)

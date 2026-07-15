@@ -183,7 +183,7 @@ struct PiefedClientTests {
         let path = await transport.capturedPath
         #expect(path == "/api/alpha/post?id=2210778")
         #expect(response.post_view.post.id == 2_210_778)
-        #expect(response.moderators.count == 4)
+        #expect(response.moderators?.count == 4)
     }
 
     @Test

@@ -40,9 +40,13 @@ public struct PiefedPostView: Codable, Sendable {
     /// Absent when the viewer is signed out; present (and observed always `false` so far) when
     /// signed in.
     public let creator_blocked: Bool?
-    public let activity_alert: Bool
-    public let can_auth_user_moderate: Bool
-    public let flair_list: [PiefedFlair]
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let activity_alert: Bool?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `activity_alert`.
+    public let can_auth_user_moderate: Bool?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `activity_alert`.
+    public let flair_list: [PiefedFlair]?
     /// Absent from `post/list` responses. Present only on some shapes (e.g. NSFW-blur state).
     public let blurred: Bool?
     /// Absent from a single-post fetch (`post/detail`'s `post_view`); present on `post/list`.
@@ -62,11 +66,14 @@ public struct PiefedCommentView: Codable, Sendable {
     public let saved: Bool
     public let creator_blocked: Bool?
     public let my_vote: Int
-    public let activity_alert: Bool
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let activity_alert: Bool?
     public let creator_banned_from_community: Bool
     public let creator_is_moderator: Bool
     public let creator_is_admin: Bool
-    public let can_auth_user_moderate: Bool
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `activity_alert`.
+    public let can_auth_user_moderate: Bool?
 }
 
 /// A community as seen by a particular viewer, as returned verbatim by PieFed's `/api/alpha`
@@ -81,8 +88,11 @@ public struct PiefedCommunityView: Codable, Sendable {
     /// `"NotSubscribed"` | `"Subscribed"` | `"Pending"`.
     public let subscribed: String
     public let blocked: Bool
-    public let flair_list: [PiefedFlair]
-    public let activity_alert: Bool
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let flair_list: [PiefedFlair]?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `flair_list`.
+    public let activity_alert: Bool?
     public let banned_from_community: Bool?
 }
 
@@ -91,19 +101,25 @@ public struct PiefedSiteView: Codable, Sendable {
     public let actor_id: String
     public let name: String
     public let description: String?
-    public let enable_downvotes: Bool
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let enable_downvotes: Bool?
     public let icon: String?
-    public let registration_mode: String
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `enable_downvotes`.
+    public let registration_mode: String?
     public let sidebar: String?
     public let sidebar_md: String?
     public let user_count: Int64
-    public let all_languages: [PiefedLanguage]
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `enable_downvotes`.
+    public let all_languages: [PiefedLanguage]?
 }
 
 /// A person paired with their site-wide post/comment aggregates and admin standing -- the
 /// shape PieFed uses both for `PiefedGetSiteResponse.admins` and `PiefedSearchResponse.users`.
 public struct PiefedPersonView: Codable, Sendable {
-    public let activity_alert: Bool
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let activity_alert: Bool?
     public let counts: PiefedPersonCounts
     public let is_admin: Bool
     public let person: PiefedPerson
@@ -112,7 +128,9 @@ public struct PiefedPersonView: Codable, Sendable {
 /// A person's site-wide post/comment aggregates, as returned in `PiefedPersonView.counts`.
 public struct PiefedPersonCounts: Codable, Sendable {
     public let comment_count: Int64
-    public let person_id: Int64
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let person_id: Int64?
     public let post_count: Int64
 }
 
@@ -145,7 +163,10 @@ public struct PiefedGetPostResponse: Codable, Sendable {
     /// (the lightweight per-post summary array).
     public let cross_posts: [PiefedPostView]
     public let community_view: PiefedCommunityView
-    public let moderators: [PiefedModeratorView]
+    /// Not read by any neutral adapter (`getPostNeutralPiefed` only reads `post_view`/
+    /// `cross_posts`) -- kept `Optional` so a future PieFed drop of this key doesn't break
+    /// decoding.
+    public let moderators: [PiefedModeratorView]?
 }
 
 /// `GET /api/alpha/comment/list`.
@@ -162,15 +183,15 @@ public struct PiefedListCommunitiesResponse: Codable, Sendable {
 
 /// `GET /api/alpha/community`.
 ///
-/// NOTE: not covered by a captured fixture in this task (only spot-checked live against
-/// `piefed.social` during model design) -- `community_view`/`moderators` match the shapes
-/// already verified via `PiefedGetPostResponse`; `discussion_languages` (an array of language
-/// ids) was observed empty on the instance probed. Re-verify with a fixture before Task 5
-/// wires the `getCommunityNeutral` dispatch to this type.
+/// Covered by the captured fixture `piefed-community.json` (Task 5) and consumed by
+/// `PiefedNeutralEndpointTests`; `getCommunityNeutralPiefed` only reads `community_view`.
 public struct PiefedGetCommunityResponse: Codable, Sendable {
     public let community_view: PiefedCommunityView
-    public let moderators: [PiefedModeratorView]
-    public let discussion_languages: [Int64]
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let moderators: [PiefedModeratorView]?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `moderators`.
+    public let discussion_languages: [Int64]?
 }
 
 /// `GET /api/alpha/search`.
@@ -179,8 +200,10 @@ public struct PiefedSearchResponse: Codable, Sendable {
     public let comments: [PiefedCommentView]
     public let communities: [PiefedCommunityView]
     public let users: [PiefedPersonView]
-    /// Echoes the request's `type_` filter (e.g. `"Communities"`, `"Posts"`, `"All"`).
-    public let type_: String
+    /// Echoes the request's `type_` filter (e.g. `"Communities"`, `"Posts"`, `"All"`). Not read
+    /// by any neutral adapter -- kept `Optional` so a future PieFed drop of this key doesn't
+    /// break decoding.
+    public let type_: String?
 }
 
 /// `GET /api/alpha/resolve_object`.

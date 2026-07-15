@@ -68,16 +68,21 @@ public struct PiefedPost: Codable, Sendable {
 
 /// A post's vote/comment aggregates, as returned in `PiefedPostView.counts`.
 public struct PiefedPostCounts: Codable, Sendable {
-    public let post_id: Int64
+    /// Not read by any neutral adapter (the enclosing `PiefedPostView.post.id` is used instead)
+    /// -- kept `Optional` so a future PieFed drop of this key doesn't break decoding.
+    public let post_id: Int64?
     public let comments: Int64
     public let score: Int64
     public let upvotes: Int64
     public let downvotes: Int64
-    public let published: String
+    /// Not read by any neutral adapter (the enclosing post's own `published` is used for
+    /// `publishedAt` instead) -- kept `Optional`, same reasoning as `post_id`.
+    public let published: String?
     public let newest_comment_time: String
     /// The number of posts cross-posted from/to this one -- a count, unlike
-    /// `PiefedPost.cross_posts` (the array of summaries).
-    public let cross_posts: Int64
+    /// `PiefedPost.cross_posts` (the array of summaries). Not read by any neutral adapter -- kept
+    /// `Optional`, same reasoning as `post_id`.
+    public let cross_posts: Int64?
 }
 
 /// A person (user account), as returned verbatim by PieFed's `/api/alpha` endpoints.
@@ -89,13 +94,17 @@ public struct PiefedPerson: Codable, Sendable {
     public let user_name: String
     /// The person's display name. Always present (defaults to `user_name` server-side).
     public let title: String
+    /// Read by `neutralPersonView(fromPiefed:)` (`isBanned`) -- required, not swept to `Optional`
+    /// like the other unread fields below.
     public let banned: Bool
     public let deleted: Bool
     public let bot: Bool
     public let published: String
     public let actor_id: String
     public let local: Bool
-    public let instance_id: Int64
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let instance_id: Int64?
     public let avatar: String?
     public let banner: String?
     /// Markdown bio. Only present on the richer profile shape (e.g. site admins), absent on
@@ -103,7 +112,8 @@ public struct PiefedPerson: Codable, Sendable {
     public let about: String?
     /// HTML-rendered `about`, same presence rules.
     public let about_html: String?
-    public let extra_fields: [PiefedExtraField]
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `instance_id`.
+    public let extra_fields: [PiefedExtraField]?
     /// The person's flair in the current community context, when applicable.
     public let flair: String?
 }
@@ -125,9 +135,13 @@ public struct PiefedCommunity: Codable, Sendable {
     public let name: String
     public let title: String
     public let nsfw: Bool
-    public let ai_generated: Bool
-    public let question_answer: Bool
-    public let banned: Bool
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let ai_generated: Bool?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `ai_generated`.
+    public let question_answer: Bool?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `ai_generated`.
+    public let banned: Bool?
     public let restricted_to_mods: Bool
     public let published: String
     /// Absent on the lightweight shape embedded in a post/comment's `community`.
@@ -137,8 +151,11 @@ public struct PiefedCommunity: Codable, Sendable {
     public let actor_id: String
     public let local: Bool
     public let hidden: Bool
-    public let instance_id: Int64
-    public let ap_domain: String
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `ai_generated`.
+    public let instance_id: Int64?
+    /// Not read by any neutral adapter (`apId` reads `actor_id` instead) -- kept `Optional`, same
+    /// reasoning as `ai_generated`.
+    public let ap_domain: String?
     /// Absent when the community has not set an icon.
     public let icon: String?
     /// Only present on the richer profile shape (`PiefedCommunityView`), absent on the
@@ -154,16 +171,25 @@ public struct PiefedCommunity: Codable, Sendable {
 /// A community's activity/subscription aggregates, as returned in `PiefedCommunityView.counts`.
 /// Distinct shape from `PiefedPostCounts` (posts) and `PiefedCommentCounts` (comments).
 public struct PiefedCommunityCounts: Codable, Sendable {
-    public let id: Int64
+    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
+    /// doesn't break decoding.
+    public let id: Int64?
     public let post_count: Int64
     public let post_reply_count: Int64
-    public let subscriptions_count: Int64
+    /// PieFed's local-only subscriber count. Not read by any neutral adapter (`subscribers`
+    /// reads `total_subscriptions_count` instead) -- kept `Optional`, same reasoning as `id`.
+    public let subscriptions_count: Int64?
     public let total_subscriptions_count: Int64
-    public let active_daily: Int64
-    public let active_weekly: Int64
-    public let active_monthly: Int64
-    public let active_6monthly: Int64
-    public let published: String
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `id`.
+    public let active_daily: Int64?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `id`.
+    public let active_weekly: Int64?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `id`.
+    public let active_monthly: Int64?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `id`.
+    public let active_6monthly: Int64?
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `id`.
+    public let published: String?
 }
 
 /// A single assignable community flair (tag), part of a `flair_list`.
@@ -188,8 +214,10 @@ public struct PiefedComment: Codable, Sendable {
     public let post_id: Int64
     public let body: String
     public let deleted: Bool
-    /// Whether this comment is marked as the answer to a "question and answer" post.
-    public let answer: Bool
+    /// Whether this comment is marked as the answer to a "question and answer" post. Not read by
+    /// any neutral adapter -- kept `Optional` so a future PieFed drop of this key doesn't break
+    /// decoding.
+    public let answer: Bool?
     public let published: String
     public let ap_id: String
     public let local: Bool
@@ -197,7 +225,8 @@ public struct PiefedComment: Codable, Sendable {
     public let distinguished: Bool
     public let locked: Bool
     public let removed: Bool
-    public let repliesEnabled: Bool
+    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `answer`.
+    public let repliesEnabled: Bool?
     /// Dot-separated ancestor comment id chain (Lemmy-style materialized path), e.g.
     /// `"0.123.456"`.
     public let path: String
@@ -207,11 +236,15 @@ public struct PiefedComment: Codable, Sendable {
 
 /// A comment's vote/reply aggregates, as returned in `PiefedCommentView.counts`.
 public struct PiefedCommentCounts: Codable, Sendable {
-    public let comment_id: Int64
+    /// Not read by any neutral adapter (the enclosing `PiefedCommentView.comment.id` is used
+    /// instead) -- kept `Optional` so a future PieFed drop of this key doesn't break decoding.
+    public let comment_id: Int64?
     public let score: Int64
     public let upvotes: Int64
     public let downvotes: Int64
-    public let published: String
+    /// Not read by any neutral adapter (the enclosing comment's own `published` is used for
+    /// `publishedAt` instead) -- kept `Optional`, same reasoning as `comment_id`.
+    public let published: String?
     public let child_count: Int64
 }
 

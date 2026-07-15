@@ -85,8 +85,10 @@ version themselves. (Status: code-complete but NOT yet validated against a real
 
 ## Build / verify
 - `swift build` / `swift test` (the OpenAPI build-tool plugin regenerates sources).
-  `swift test` uses XCTest here — look for `Test Suite 'All tests' passed` +
-  `Executed N tests`, not the Swift-Testing `✔ Test run` line.
+  `swift test` output is now MIXED: most suites are XCTest — look for
+  `Test Suite 'All tests' passed` + `Executed N tests` — but the PieFed suites
+  (`Piefed*Tests.swift`) are Swift Testing, reported separately as
+  `✔ Test run with N tests … passed`. Both lines must show zero failures.
 - Format with SwiftFormat — `.swiftformat` is authoritative. Run it via
   `mint run swiftformat Sources Tests` (a bare `swiftformat` may be a dangling
   Homebrew symlink on this machine; `mint` resolves the pinned version).
