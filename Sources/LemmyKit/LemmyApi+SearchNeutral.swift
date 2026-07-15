@@ -49,7 +49,7 @@ public extension LemmyApi {
         case .v4:
             try await searchNeutralV4(query: query, type: type, timeRange: timeRange, pageCursor: pageCursor)
         case .piefed:
-            throw LemmyApiError.unsupportedByDialect(operation: "search")
+            try await searchNeutralPiefed(query: query, type: type, sort: sort, timeRange: timeRange, pageCursor: pageCursor)
         }
     }
 }
@@ -81,6 +81,21 @@ private func v4SearchType(
     case .posts: .posts
     case .communities: .communities
     case .persons: .users
+    }
+}
+
+/// Maps the neutral `SearchType` to PieFed's `type_` wire string, or nil for `.all` -- PieFed has
+/// no "every kind of result" value (confirmed live against `piefed.social`: an explicit
+/// `type_=All` 400s with `"Must be one of: Communities, Posts, Users, Url, Comments."`, unlike
+/// v3's `.All`/v4's `.all`). See `searchNeutralPiefed(query:type:sort:timeRange:pageCursor:)`,
+/// which fans out into one request per concrete type for that case instead of calling this.
+private func piefedSearchType(fromNeutral type: SearchType) -> String? {
+    switch type {
+    case .all: nil
+    case .comments: "Comments"
+    case .posts: "Posts"
+    case .communities: "Communities"
+    case .persons: "Users"
     }
 }
 
@@ -170,5 +185,51 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: maps the neutral search type/sort to PieFed's wire vocabulary and calls
+    /// `PiefedClient.search`, then adapts the response via `neutralSearchResults(fromPiefed:)`.
+    ///
+    /// `type == .all` has no single-request PieFed equivalent (`piefedSearchType(fromNeutral:)`
+    /// returns nil only for `.all`) -- so that case fans out into one concurrent request per
+    /// concrete PieFed type (`Posts`/`Comments`/`Communities`/`Users`) and merges the four neutral
+    /// results into one `SearchResults`. `pageCursor` is applied identically to every sub-request
+    /// when fanning out -- there is no well-defined single "page N" across four independently
+    /// paginated listings, so a caller paging an `.all` search past its first page on a PieFed
+    /// backend should page each `SearchType` individually instead. `sort` is optional on both
+    /// paths, matching v3 (nil omits the query param so the server applies its own default).
+    func searchNeutralPiefed(
+        query: String,
+        type: SearchType,
+        sort: PostSort?,
+        timeRange: TimeRange?,
+        pageCursor: Cursor?
+    ) async throws -> SearchResults {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "search") }
+
+        let page = pageCursor.flatMap { Int($0.rawValue) }
+        let sortString = sort.map { piefedSort($0, timeRange: timeRange) }
+
+        guard let wireType = piefedSearchType(fromNeutral: type) else {
+            async let postsResponse = piefedClient.search(q: query, type_: "Posts", sort: sortString, page: page)
+            async let commentsResponse = piefedClient.search(q: query, type_: "Comments", sort: sortString, page: page)
+            async let communitiesResponse = piefedClient.search(
+                q: query, type_: "Communities", sort: sortString, page: page
+            )
+            async let usersResponse = piefedClient.search(q: query, type_: "Users", sort: sortString, page: page)
+
+            let (posts, comments, communities, users) = try await (
+                postsResponse, commentsResponse, communitiesResponse, usersResponse
+            )
+            return SearchResults(
+                posts: posts.posts.map { neutralPostView(fromPiefed: $0) },
+                comments: comments.comments.map { neutralCommentView(fromPiefed: $0) },
+                communities: communities.communities.map { neutralCommunityView(fromPiefed: $0) },
+                persons: users.users.map { neutralPersonView(fromPiefed: $0) }
+            )
+        }
+
+        let response = try await piefedClient.search(q: query, type_: wireType, sort: sortString, page: page)
+        return neutralSearchResults(fromPiefed: response)
     }
 }

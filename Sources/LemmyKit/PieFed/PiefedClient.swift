@@ -125,11 +125,15 @@ public struct PiefedClient: Sendable {
     ///   - sort: the comment sort order (e.g. `"Hot"`, `"New"`, `"Old"`), or nil for the server
     ///     default.
     ///   - maxDepth: the maximum reply nesting depth to return, or nil for the server default.
+    ///   - page: the 1-based page number, or nil for the first page. PieFed accepts `page=N`
+    ///     directly (confirmed live against `piefed.social`) and echoes the next page number as
+    ///     `next_page` on the response, matching `getPosts(type_:sort:communityId:showNsfw:limit:page:)`.
     public func getComments(
         postId: Int64? = nil,
         parentId: Int64? = nil,
         sort: String? = nil,
-        maxDepth: Int? = nil
+        maxDepth: Int? = nil,
+        page: Int? = nil
     ) async throws -> PiefedGetCommentsResponse {
         try await get(
             "/api/alpha/comment/list",
@@ -138,6 +142,7 @@ public struct PiefedClient: Sendable {
                 ("parent_id", parentId.map(String.init)),
                 ("sort", sort),
                 ("max_depth", maxDepth.map(String.init)),
+                ("page", page.map(String.init)),
             ],
             operationID: "getComments"
         )

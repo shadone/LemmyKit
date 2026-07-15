@@ -27,14 +27,46 @@ private struct NeverCalledTransport: ClientTransport {
     }
 }
 
+/// A `ClientTransport` that returns a canned response for every request, regardless of what was
+/// sent -- used by the two read-endpoint tests below, which (unlike every other test in this
+/// file) now dispatch to `PiefedClient` and need a real fixture body rather than
+/// `NeverCalledTransport`'s always-fail stub. Matches `GetPostNeutralTests.swift`'s `StubTransport`.
+private actor FixtureStubTransport: ClientTransport {
+    private let responseBody: Data
+
+    init(responseBody: Data) {
+        self.responseBody = responseBody
+    }
+
+    func send(
+        _: HTTPRequest,
+        body _: HTTPBody?,
+        baseURL _: URL,
+        operationID _: String
+    ) async throws -> (HTTPResponse, HTTPBody?) {
+        var response = HTTPResponse(status: .init(code: 200))
+        response.headerFields[.contentType] = "application/json; charset=utf-8"
+        return (response, HTTPBody(responseBody))
+    }
+}
+
 /// Proves Task 3's gating of the neutral facade for the `.piefed` dialect: every neutral endpoint
-/// not yet ported to PieFed -- every write/auth endpoint, plus (until Task 5 lands) every read
-/// endpoint too -- throws `LemmyApiError.unsupportedByDialect(operation:)` the moment
-/// `LemmyApi.apiVersion == .piefed`, carrying the neutral method's own name (minus its `Neutral`
-/// suffix) as `operation` so a caller/log can tell which endpoint was attempted. Also confirms
-/// `LemmyApi` builds a `PiefedClient` only for `.piefed`, leaving it nil for `.v3`/`.v4` (see
-/// `LemmyApi.swift`'s two inits).
+/// not yet ported to PieFed -- every write/auth endpoint -- throws
+/// `LemmyApiError.unsupportedByDialect(operation:)` the moment `LemmyApi.apiVersion == .piefed`,
+/// carrying the neutral method's own name (minus its `Neutral` suffix) as `operation` so a
+/// caller/log can tell which endpoint was attempted. Also confirms `LemmyApi` builds a
+/// `PiefedClient` only for `.piefed`, leaving it nil for `.v3`/`.v4` (see `LemmyApi.swift`'s two
+/// inits). The eight read endpoints are no longer gated as of Task 5 (real coverage of those now
+/// lives in `PiefedNeutralEndpointTests.swift`) -- the two smoke tests below just confirm they no
+/// longer throw `unsupportedByDialect`.
 struct PiefedDialectTests {
+    private func fixtureData(_ name: String) throws -> Data {
+        let url = try #require(
+            Bundle.module.url(forResource: name, withExtension: "json", subdirectory: "Fixtures")
+        )
+        return try Data(contentsOf: url)
+    }
+
     private func makeApi(apiVersion: ApiVersion = .piefed, credential: LemmyCredential? = nil) -> LemmyApi {
         LemmyApi(
             instanceUrl: URL(string: "https://piefed.social")!,
@@ -124,27 +156,31 @@ struct PiefedDialectTests {
         }
     }
 
-    // MARK: - Read endpoints also throw for now (Task 5 replaces these eight with real calls)
+    // MARK: - Read endpoints no longer throw as of Task 5
 
     @Test
-    func getSiteNeutralThrowsUnsupportedByDialectUntilTask5() async throws {
-        let api = makeApi()
-        do {
-            _ = try await api.getSiteNeutral()
-            Issue.record("expected getSiteNeutral to throw on .piefed pre-Task-5")
-        } catch let LemmyApiError.unsupportedByDialect(operation) {
-            #expect(operation == "getSite")
-        }
+    func getSiteNeutralNoLongerThrowsUnsupportedByDialect() async throws {
+        let api = try LemmyApi(
+            instanceUrl: URL(string: "https://piefed.social")!,
+            credential: nil,
+            transport: FixtureStubTransport(responseBody: fixtureData("piefed-site")),
+            apiVersion: .piefed
+        )
+
+        let site = try await api.getSiteNeutral()
+        #expect(site.version == "1.7.5")
     }
 
     @Test
-    func getCommentsNeutralThrowsUnsupportedByDialectUntilTask5() async throws {
-        let api = makeApi()
-        do {
-            _ = try await api.getCommentsNeutral(postId: 1, sort: .hot)
-            Issue.record("expected getCommentsNeutral to throw on .piefed pre-Task-5")
-        } catch let LemmyApiError.unsupportedByDialect(operation) {
-            #expect(operation == "getComments")
-        }
+    func getCommentsNeutralNoLongerThrowsUnsupportedByDialect() async throws {
+        let api = try LemmyApi(
+            instanceUrl: URL(string: "https://piefed.social")!,
+            credential: nil,
+            transport: FixtureStubTransport(responseBody: fixtureData("piefed-comment_list")),
+            apiVersion: .piefed
+        )
+
+        let page = try await api.getCommentsNeutral(postId: 1, sort: .hot)
+        #expect(page.items.isEmpty == false)
     }
 }
