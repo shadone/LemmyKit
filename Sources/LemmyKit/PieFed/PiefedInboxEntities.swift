@@ -39,8 +39,10 @@ public struct PiefedPrivateMessage: Codable, Sendable {
     /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
     /// doesn't break decoding.
     public let deleted: Bool?
-    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `deleted`.
-    public let ap_id: String?
+    /// Read by `neutralPrivateMessageView(fromPiefed:)`, which feeds it directly onto the neutral
+    /// `PrivateMessage.apId` -- required, matching the spec's `PrivateMessage.ap_id` (in `required`)
+    /// and every sibling PieFed entity's non-optional `ap_id`/`actor_id`.
+    public let ap_id: String
     /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `deleted`.
     public let local: Bool?
 }
@@ -101,15 +103,20 @@ public struct PiefedReplyItem: Codable, Sendable {
     public let saved: Bool?
     /// `"NotSubscribed"` | `"Subscribed"` | `"Pending"`. Kept `Optional`; the adapter defaults it.
     public let subscribed: String?
-    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `recipient`.
+    /// Read by `NotificationPiefedMapping.swift`, which forwards it onto the rebuilt
+    /// `PiefedCommentView` -- kept `Optional` since the adapter passes it through as-is (no default).
     public let activity_alert: Bool?
-    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `recipient`.
+    /// Read by `NotificationPiefedMapping.swift`, which forwards it onto the rebuilt
+    /// `PiefedCommentView` -- kept `Optional` since the adapter defaults it (to `false`) when absent.
     public let creator_banned_from_community: Bool?
-    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `recipient`.
+    /// Read by `NotificationPiefedMapping.swift`, which forwards it onto the rebuilt
+    /// `PiefedCommentView` -- kept `Optional` since the adapter passes it through as-is (no default).
     public let creator_blocked: Bool?
-    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `recipient`.
+    /// Read by `NotificationPiefedMapping.swift`, which forwards it onto the rebuilt
+    /// `PiefedCommentView` -- kept `Optional` since the adapter defaults it (to `false`) when absent.
     public let creator_is_admin: Bool?
-    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `recipient`.
+    /// Read by `NotificationPiefedMapping.swift`, which forwards it onto the rebuilt
+    /// `PiefedCommentView` -- kept `Optional` since the adapter defaults it (to `false`) when absent.
     public let creator_is_moderator: Bool?
     /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `recipient`.
     public let distinguished: Bool?

@@ -16,11 +16,12 @@ import Foundation
 /// `deletedByRecipient`/`removed` have no PieFed source and default to `false`, the same "no v3
 /// source" pattern `PrivateMessageViewV3Mapping.swift` uses for the identical v4-only fields.
 ///
-/// `deleted`/`local`/`ap_id` are `Optional` on `PiefedPrivateMessage` purely for decode-safety
-/// (Task 1's doc on that type calls them "not read by any neutral adapter" -- this function is
-/// that adapter now); every captured PieFed response populates all three, so this only falls back
-/// -- `deleted`/`local` to `false`, `apId` to `""` -- if a future PieFed drop of one of these keys
-/// is ever actually observed, matching the Phase-1 "no signal -> false" boolean convention.
+/// `deleted`/`local` are `Optional` on `PiefedPrivateMessage` purely for decode-safety (kept "not
+/// read by any neutral adapter" other than this fallback); every captured PieFed response populates
+/// both, so this only falls back to `false` if a future PieFed drop of one of these keys is ever
+/// actually observed, matching the Phase-1 "no signal -> false" boolean convention. `ap_id` is
+/// required on `PiefedPrivateMessage` (matching the spec and every sibling PieFed entity), so it's
+/// read straight through with no fallback.
 package func neutralPrivateMessageView(fromPiefed view: PiefedPrivateMessageView) -> PrivateMessageView {
     PrivateMessageView(
         privateMessage: PrivateMessage(
@@ -32,7 +33,7 @@ package func neutralPrivateMessageView(fromPiefed view: PiefedPrivateMessageView
             deletedByRecipient: false,
             removed: false,
             local: view.private_message.local ?? false,
-            apId: view.private_message.ap_id ?? "",
+            apId: view.private_message.ap_id,
             publishedAt: piefedDate(view.private_message.published) ?? Date(timeIntervalSince1970: 0),
             updatedAt: nil
         ),

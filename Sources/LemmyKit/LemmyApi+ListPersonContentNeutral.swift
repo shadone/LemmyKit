@@ -90,17 +90,6 @@ private func v3PersonContentNextPageCursor(page: Int64, postsCount: Int, comment
     return Cursor(rawValue: String(page + 1))
 }
 
-private extension PostOrComment {
-    /// The item's publish date, used only to interleave the v3 emulation's combined feed by
-    /// recency -- not public API; callers read `.post`/`.comment` and their own `publishedAt`.
-    var v3InterleavePublishedAt: Date {
-        switch self {
-        case let .post(view): view.post.publishedAt
-        case let .comment(view): view.comment.publishedAt
-        }
-    }
-}
-
 private extension LemmyApi {
     /// v3 path: the emulation described in ``LemmyApi/personContentNeutral(personId:pageCursor:)``'s
     /// doc -- fetch one v3 `getPersonDetails` page, map its inline `posts[]`/`comments[]` to
@@ -128,7 +117,7 @@ private extension LemmyApi {
                     json.posts.map { .post(neutralPostView(fromV3: $0)) }
                         + json.comments.map { .comment(neutralCommentView(fromV3: $0)) }
                 let interleaved = combined.sorted {
-                    $0.v3InterleavePublishedAt > $1.v3InterleavePublishedAt
+                    $0.publishedAt > $1.publishedAt
                 }
 
                 return Page(

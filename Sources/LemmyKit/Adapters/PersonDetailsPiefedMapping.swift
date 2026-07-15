@@ -33,30 +33,21 @@ package func neutralPersonDetails(fromPiefed response: PiefedPersonDetailsRespon
 /// `publishedAt` **descending**, so the result reads like a single recency-ordered feed -- the same
 /// interleave rule `personContentNeutralV3` applies to v3's equivalent `posts`/`comments` arrays.
 ///
-/// Unlike v3 (whose `getPersonDetails` takes `page`/`limit` and can synthesize a next-page cursor
-/// from whether a full page came back), PieFed's `GET /api/alpha/user` accepts no
-/// pagination parameters at all and its response carries no cursor of any kind -- so this always
-/// returns a single, complete page (`nextPage`/`prevPage` both nil), the same "no cursor support at
-/// all" convention `Page`'s own doc describes for a listing like `getComments`.
+/// PieFed's `GET /api/alpha/user` does document `page` (default 1) and `limit` (default 20) query
+/// params, same as v3's `getPersonDetails` -- but the current `PiefedClient` wrapper doesn't send
+/// them yet (a client-wiring gap left for the endpoint task, which will mirror
+/// `LemmyApi+ListPersonContentNeutral.swift`'s v3 emulation: send explicit `page`/`limit` and
+/// synthesize a `nextPage` cursor whenever a returned count equals the limit). Until that lands,
+/// this adapter only ever sees a single, unpaginated response with no cursor of any kind, so it
+/// always returns a single, complete page (`nextPage`/`prevPage` both nil).
 package func neutralPersonContentPage(fromPiefed response: PiefedPersonDetailsResponse) -> Page<PostOrComment> {
     let combined: [PostOrComment] =
         response.posts.map { .post(neutralPostView(fromPiefed: $0)) }
             + response.comments.map { .comment(neutralCommentView(fromPiefed: $0)) }
 
     let interleaved = combined.sorted { lhs, rhs in
-        lhs.piefedInterleavePublishedAt > rhs.piefedInterleavePublishedAt
+        lhs.publishedAt > rhs.publishedAt
     }
 
     return Page(items: interleaved, nextPage: nil, prevPage: nil)
-}
-
-private extension PostOrComment {
-    /// The item's publish date, used only to interleave PieFed's combined feed by recency -- not
-    /// public API; callers read `.post`/`.comment` and their own `publishedAt`.
-    var piefedInterleavePublishedAt: Date {
-        switch self {
-        case let .post(view): view.post.publishedAt
-        case let .comment(view): view.comment.publishedAt
-        }
-    }
 }
