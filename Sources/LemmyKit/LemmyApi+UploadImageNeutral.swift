@@ -39,6 +39,8 @@ public extension LemmyApi {
             try await uploadImageNeutralV3(imageData: imageData, fileName: fileName)
         case .v4:
             try await uploadImageNeutralV4(imageData: imageData, fileName: fileName)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "uploadImage")
         }
     }
 }

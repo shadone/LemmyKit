@@ -68,6 +68,8 @@ public extension LemmyApi {
                 answer: answer,
                 honeypot: honeypot
             )
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "register")
         }
     }
 }

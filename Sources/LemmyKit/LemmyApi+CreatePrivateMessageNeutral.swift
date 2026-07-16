@@ -31,6 +31,8 @@ public extension LemmyApi {
             try await createPrivateMessageNeutralV3(content: content, recipientId: recipientId)
         case .v4:
             try await createPrivateMessageNeutralV4(content: content, recipientId: recipientId)
+        case .piefed:
+            try await createPrivateMessageNeutralPiefed(content: content, recipientId: recipientId)
         }
     }
 }
@@ -105,5 +107,15 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.createPrivateMessage(content:recipientId:)` -- `POST
+    /// /api/alpha/private_message`, `{content, recipient_id}`, matching the spec's
+    /// `CreatePrivateMessageRequest` -- then maps the extracted `private_message_view` up to the
+    /// neutral shape via `neutralPrivateMessageView(fromPiefed:)`.
+    func createPrivateMessageNeutralPiefed(content: String, recipientId: Int64) async throws -> PrivateMessageView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "createPrivateMessage") }
+        let response = try await piefedClient.createPrivateMessage(content: content, recipientId: recipientId)
+        return neutralPrivateMessageView(fromPiefed: response.private_message_view)
     }
 }

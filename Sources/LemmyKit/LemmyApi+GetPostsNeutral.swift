@@ -56,6 +56,15 @@ public extension LemmyApi {
                 showNsfw: showNsfw,
                 pageCursor: pageCursor
             )
+        case .piefed:
+            try await getPostsNeutralPiefed(
+                listingType: listingType,
+                sort: sort,
+                communityId: communityId,
+                timeRange: timeRange,
+                showNsfw: showNsfw,
+                pageCursor: pageCursor
+            )
         }
     }
 }
@@ -122,6 +131,36 @@ private extension LemmyApi {
 
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
+        }
+    }
+
+    /// PieFed path: maps the neutral listing type/sort to PieFed's `type_`/`sort` wire strings
+    /// (`Lemmy.ListingType`'s `rawValue` passes straight through -- PieFed's `type_` accepts the
+    /// same case names as v3's `ListingType`; `piefedSort(_:timeRange:)` folds `sort`/`timeRange`
+    /// the same way the v3 path does), then maps the extracted items up to the neutral shape.
+    /// PieFed's `page` is a plain 1-based integer (unlike v4's opaque cursor) that PieFed echoes
+    /// back as `next_page` -- `pageCursor`'s `rawValue` round-trips through that integer via
+    /// `neutralPage(fromPiefed:nextPage:mapItem:)`/`neutralCursor(fromPiefed:)`.
+    func getPostsNeutralPiefed(
+        listingType: Lemmy.ListingType,
+        sort: PostSort,
+        communityId: Int64?,
+        timeRange: TimeRange?,
+        showNsfw: Bool?,
+        pageCursor: Cursor?
+    ) async throws -> Page<PostView> {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getPosts") }
+
+        let response = try await piefedClient.getPosts(
+            type_: listingType.rawValue,
+            sort: piefedSort(sort, timeRange: timeRange),
+            communityId: communityId,
+            showNsfw: showNsfw,
+            page: pageCursor.flatMap { Int($0.rawValue) }
+        )
+
+        return neutralPage(fromPiefed: response.posts, nextPage: response.next_page) {
+            neutralPostView(fromPiefed: $0)
         }
     }
 }

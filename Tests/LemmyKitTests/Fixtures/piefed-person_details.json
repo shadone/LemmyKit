@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "activity_alert": true,
+      "banned_from_community": false,
+      "comment": {
+        "ap_id": "https://piefed1.lemmy.ddenis.info/comment/6",
+        "body": "",
+        "deleted": true,
+        "id": 6,
+        "language_id": 2,
+        "local": true,
+        "path": "0.6",
+        "post_id": 13,
+        "published": "2026-07-15T15:58:10.086836Z",
+        "removed": false,
+        "user_id": 10,
+        "distinguished": false,
+        "updated": "2026-07-15T15:58:10.633688Z",
+        "locked": false,
+        "answer": false,
+        "emoji_reactions": null,
+        "repliesEnabled": true
+      },
+      "community": {
+        "actor_id": "https://piefed1.lemmy.ddenis.info/c/piefedtest",
+        "ap_domain": "piefed1.lemmy.ddenis.info",
+        "deleted": false,
+        "hidden": false,
+        "id": 1,
+        "instance_id": 1,
+        "local": true,
+        "name": "piefedtest",
+        "nsfw": false,
+        "ai_generated": false,
+        "published": "2026-07-15T12:43:17.598423Z",
+        "removed": false,
+        "restricted_to_mods": false,
+        "title": "PieFed Test Community",
+        "banned": false,
+        "question_answer": false,
+        "updated": "2026-07-15T12:43:17.598423Z"
+      },
+      "counts": {
+        "child_count": 0,
+        "comment_id": 6,
+        "downvotes": 0,
+        "published": "2026-07-15T15:58:10.086836Z",
+        "score": 0,
+        "upvotes": 0
+      },
+      "creator": {
+        "actor_id": "https://piefed1.lemmy.ddenis.info/u/mark",
+        "banned": false,
+        "bot": false,
+        "deleted": false,
+        "id": 10,
+        "instance_id": 1,
+        "local": true,
+        "user_name": "mark",
+        "extra_fields": [],
+        "published": "2026-07-15T14:23:19.272657Z",
+        "title": "mark"
+      },
+      "creator_banned_from_community": false,
+      "creator_blocked": false,
+      "creator_is_admin": false,
+      "creator_is_moderator": false,
+      "post": {
+        "ap_id": "https://piefed1.lemmy.ddenis.info/c/piefedtest@piefed1.lemmy.ddenis.info/p/13/pushfix-verification-post",
+        "community_id": 1,
+        "deleted": false,
+        "id": 13,
+        "language_id": 2,
+        "local": true,
+        "locked": false,
+        "nsfw": false,
+        "ai_generated": false,
+        "published": "2026-07-15T13:10:14.768001Z",
+        "removed": false,
+        "sticky": false,
+        "instance_sticky": false,
+        "title": "Pushfix verification post",
+        "user_id": 1,
+        "body": "Created after re-follow to confirm push federation works post-fix.",
+        "cross_posts": [],
+        "post_type": "Discussion",
+        "tags": "",
+        "flair": "",
+        "emoji_reactions": null
+      },
+      "saved": false,
+      "subscribed": "Subscribed",
+      "my_vote": 0,
+      "can_auth_user_moderate": false
+    }
+  ],
+  "moderates": [
+    {
+      "community": {
+        "actor_id": "https://piefed1.lemmy.ddenis.info/c/spudprobe_tmp",
+        "ap_domain": "piefed1.lemmy.ddenis.info",
+        "deleted": true,
+        "hidden": false,
+        "id": 4,
+        "instance_id": 1,
+        "local": true,
+        "name": "spudprobe_tmp",
+        "nsfw": false,
+        "ai_generated": false,
+        "published": "2026-07-15T15:59:32.781460Z",
+        "removed": false,
+        "restricted_to_mods": false,
+        "title": "Spud Probe Temp",
+        "banned": true,
+        "question_answer": false,
+        "updated": "2026-07-15T15:59:32.781460Z"
+      },
+      "moderator": {
+        "actor_id": "https://piefed1.lemmy.ddenis.info/u/mark",
+        "banned": false,
+        "bot": false,
+        "deleted": false,
+        "id": 10,
+        "instance_id": 1,
+        "local": true,
+        "user_name": "mark",
+        "extra_fields": [],
+        "published": "2026-07-15T14:23:19.272657Z",
+        "title": "mark"
+      }
+    }
+  ],
+  "person_view": {
+    "activity_alert": false,
+    "counts": {
+      "comment_count": 0,
+      "person_id": 10,
+      "post_count": 0
+    },
+    "is_admin": false,
+    "person": {
+      "actor_id": "https://piefed1.lemmy.ddenis.info/u/mark",
+      "banned": false,
+      "bot": false,
+      "deleted": false,
+      "id": 10,
+      "instance_id": 1,
+      "local": true,
+      "user_name": "mark",
+      "extra_fields": [],
+      "published": "2026-07-15T14:23:19.272657Z",
+      "title": "mark"
+    }
+  },
+  "posts": []
+}

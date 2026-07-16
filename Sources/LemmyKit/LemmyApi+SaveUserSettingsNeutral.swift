@@ -84,6 +84,8 @@ public extension LemmyApi {
                 showReadPosts: showReadPosts,
                 showAvatars: showAvatars
             )
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "saveUserSettings")
         }
     }
 }

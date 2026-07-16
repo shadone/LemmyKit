@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await getSiteAndMyUserNeutralV3()
         case .v4:
             try await getSiteAndMyUserNeutralV4()
+        case .piefed:
+            try await getSiteAndMyUserNeutralPiefed()
         }
     }
 }
@@ -60,5 +62,25 @@ private extension LemmyApi {
         async let site = getSiteNeutral()
         async let myUser = getMyUserNeutral()
         return try await SiteWithMyUser(site: site, myUser: myUser)
+    }
+
+    /// PieFed path: a SINGLE authed `getSite()` round-trip (via `PiefedClient.getSiteAuthed()`),
+    /// decoding both the neutral `SiteInfo` and the neutral `MyUser` from that one
+    /// `PiefedGetSiteResponse` -- mirrors the v3 path's one-round-trip shape, and for the same
+    /// reason ``getMyUserNeutral()``'s PieFed path prefers this embed over `userMe()`: the
+    /// dedicated `user/me` route's `follows` is observed empty. `myUser` is `nil` when the
+    /// response carries no `my_user` embed (a signed-out viewer) rather than throwing -- the site
+    /// half is still valid, so the combined call succeeds with `myUser == nil`, same as the v3
+    /// path. `isAdmin` is derived from the response's own `admins` list via
+    /// `neutralMyUser(fromPiefed:admins:)`, same as ``getMyUserNeutral()``'s PieFed path.
+    func getSiteAndMyUserNeutralPiefed() async throws -> SiteWithMyUser {
+        guard let piefedClient else {
+            throw LemmyApiError.unsupportedByDialect(operation: "getSiteAndMyUser")
+        }
+        let response = try await piefedClient.getSiteAuthed()
+        return SiteWithMyUser(
+            site: neutralSiteInfo(fromPiefed: response),
+            myUser: response.my_user.map { neutralMyUser(fromPiefed: $0, admins: response.admins) }
+        )
     }
 }

@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await markPostAsReadNeutralV3(id: id, read: read)
         case .v4:
             try await markPostAsReadNeutralV4(id: id, read: read)
+        case .piefed:
+            try await markPostAsReadNeutralPiefed(id: id, read: read)
         }
     }
 }
@@ -99,5 +101,14 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.markPostAsRead(postId:read:)`, whose route returns a bare
+    /// `{success}` (`PiefedSuccessResponse`) rather than a post view -- like the v3/v4 paths, this
+    /// method reports success by not throwing, so the payload is discarded once the call returns
+    /// without error.
+    func markPostAsReadNeutralPiefed(id: Int64, read: Bool) async throws {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "markPostAsRead") }
+        _ = try await piefedClient.markPostAsRead(postId: id, read: read)
     }
 }

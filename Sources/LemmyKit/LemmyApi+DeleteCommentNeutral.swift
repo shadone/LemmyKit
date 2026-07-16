@@ -28,6 +28,8 @@ public extension LemmyApi {
             try await deleteCommentNeutralV3(id: id, deleted: deleted)
         case .v4:
             try await deleteCommentNeutralV4(id: id, deleted: deleted)
+        case .piefed:
+            try await deleteCommentNeutralPiefed(id: id, deleted: deleted)
         }
     }
 }
@@ -101,5 +103,15 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.deleteComment(commentId:deleted:)` -- PieFed's
+    /// `/api/alpha` write surface has no hard-delete, so this soft-deletes (tombstones) the same
+    /// as v3/v4 -- then maps the extracted `comment_view` up to the neutral shape via
+    /// `neutralCommentView(fromPiefed:)`.
+    func deleteCommentNeutralPiefed(id: Int64, deleted: Bool) async throws -> CommentView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "deleteComment") }
+        let response = try await piefedClient.deleteComment(commentId: id, deleted: deleted)
+        return neutralCommentView(fromPiefed: response.comment_view)
     }
 }

@@ -33,6 +33,8 @@ public extension LemmyApi {
             try await getPostNeutralV3(id: id)
         case .v4:
             try await getPostNeutralV4(id: id)
+        case .piefed:
+            try await getPostNeutralPiefed(id: id)
         }
     }
 }
@@ -108,5 +110,16 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.getPost(id:)`, then maps the extracted `post_view` and its
+    /// `cross_posts` to the neutral shape, same pairing as the v3/v4 paths.
+    func getPostNeutralPiefed(id: Int64) async throws -> PostDetail {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getPost") }
+        let response = try await piefedClient.getPost(id: id)
+        return PostDetail(
+            post: neutralPostView(fromPiefed: response.post_view),
+            crossPosts: response.cross_posts.map { neutralPostView(fromPiefed: $0) }
+        )
     }
 }

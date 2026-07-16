@@ -41,3 +41,21 @@ func neutralFollowState(
         .denied
     }
 }
+
+/// Maps PieFed's bare `subscribed` string (`"NotSubscribed"` | `"Subscribed"` | `"Pending"`) to
+/// the neutral `FollowState`. Shared by the PieFed `PostView`/`CommentView`/`CommunityView`
+/// adapters -- all three views carry this same three-case string (PieFed keeps Lemmy v3's
+/// `SubscribedType` shape here, unlike v4's richer 4-state `community_actions.follow_state`).
+/// `.approvalRequired`/`.denied` are therefore unreachable from PieFed today, same as v3 -- an
+/// unrecognized string (there should be none) falls back to `.notFollowing` rather than
+/// crashing, since this reads a bare `String`, not a decoded enum.
+func neutralFollowState(fromPiefedSubscribed subscribed: String) -> FollowState {
+    switch subscribed {
+    case "Subscribed":
+        .accepted
+    case "Pending":
+        .pending
+    default:
+        .notFollowing
+    }
+}

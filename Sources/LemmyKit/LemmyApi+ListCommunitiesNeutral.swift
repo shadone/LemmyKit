@@ -45,6 +45,8 @@ public extension LemmyApi {
             try await listCommunitiesNeutralV3(sort: sort)
         case .v4:
             try await listCommunitiesNeutralV4(sort: sort, pageCursor: pageCursor)
+        case .piefed:
+            try await listCommunitiesNeutralPiefed(sort: sort, pageCursor: pageCursor)
         }
     }
 }
@@ -120,6 +122,27 @@ private extension LemmyApi {
 
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
+        }
+    }
+
+    /// PieFed path: calls `PiefedClient.listCommunities`, always listing every community the
+    /// instance knows of (PieFed's `type_ = "All"`), matching the "no per-neutral listing-type
+    /// parameter" contract documented above (same as the v3/v4 paths, which send `.All`/`.all`).
+    /// `sort` folds via `piefedSort(_:)` (PieFed accepts the same wire vocabulary as v3's post
+    /// listings for community listings too -- confirmed live). PieFed's `page` is a plain 1-based
+    /// integer that PieFed echoes back as `next_page` -- see `getPostsNeutralPiefed`'s doc for the
+    /// same `pageCursor` round-trip.
+    func listCommunitiesNeutralPiefed(sort: PostSort, pageCursor: Cursor?) async throws -> Page<CommunityView> {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "listCommunities") }
+
+        let response = try await piefedClient.listCommunities(
+            type_: "All",
+            sort: piefedSort(sort),
+            page: pageCursor.flatMap { Int($0.rawValue) }
+        )
+
+        return neutralPage(fromPiefed: response.communities, nextPage: response.next_page) {
+            neutralCommunityView(fromPiefed: $0)
         }
     }
 }

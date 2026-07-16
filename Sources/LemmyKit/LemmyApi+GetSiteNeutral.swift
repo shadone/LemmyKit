@@ -26,6 +26,8 @@ public extension LemmyApi {
             try await getSiteNeutralV3()
         case .v4:
             try await getSiteNeutralV4()
+        case .piefed:
+            try await getSiteNeutralPiefed()
         }
     }
 }
@@ -91,5 +93,14 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.getSite()`, then maps the extracted response to the
+    /// neutral shape via `neutralSiteInfo(fromPiefed:)`. `piefedClient` is guaranteed non-nil when
+    /// `apiVersion == .piefed` (see `LemmyApi.init`); the guard is defensive, not expected to fire.
+    func getSiteNeutralPiefed() async throws -> SiteInfo {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getSite") }
+        let response = try await piefedClient.getSite()
+        return neutralSiteInfo(fromPiefed: response)
     }
 }

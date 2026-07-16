@@ -26,7 +26,8 @@ public extension LemmyApi {
     ///     this maps to `ListNotifications`'s `type_` filter, sent server-side. On v3 this
     ///     narrows which of the three fan-out endpoints are called at all — see
     ///     `listNotificationsNeutralV3`'s doc for the per-kind mapping, including the two kinds
-    ///     with no v3 source.
+    ///     with no v3 source. On PieFed, `kind` is REQUIRED to be `.reply` or `.mention` — see
+    ///     `listNotificationsNeutralPiefed`'s doc.
     /// - Returns: a `Page` of the neutral `NotificationView`s, newest first.
     func listNotificationsNeutral(
         unreadOnly: Bool = false,
@@ -38,6 +39,8 @@ public extension LemmyApi {
             try await listNotificationsNeutralV3(unreadOnly: unreadOnly, kind: kind)
         case .v4:
             try await listNotificationsNeutralV4(unreadOnly: unreadOnly, pageCursor: pageCursor, kind: kind)
+        case .piefed:
+            try await listNotificationsNeutralPiefed(unreadOnly: unreadOnly, pageCursor: pageCursor, kind: kind)
         }
     }
 }
@@ -155,6 +158,72 @@ private extension LemmyApi {
         }
 
         return Page(items: sorted, nextPage: nil, prevPage: nil)
+    }
+
+    /// PieFed path: unlike v3 (which fans out across three separate endpoints and merges),
+    /// PieFed's Lemmy-compat inbox only has TWO relevant routes -- `GET /api/alpha/user/replies`
+    /// and `GET /api/alpha/user/mentions` -- and both return the identically-shaped
+    /// `PiefedReplyItem` under the same `replies` wrapper key (see `PiefedReplyItem`'s doc), so
+    /// `kind` alone selects which single route is called; there is no fan-out or merge here.
+    ///
+    /// `kind` is therefore **required** to be `.reply` or `.mention`:
+    /// - `.reply` calls `getReplies`; `.mention` calls `getMentions`. Each maps its items via
+    ///   `neutralNotificationView(fromPiefedReply:kind:)`, tagging the result with the `kind` that
+    ///   selected the route (the wire item itself carries no signal distinguishing the two).
+    /// - `nil` (no kind specified) throws `unsupportedByDialect(operation: "listNotifications(kind:nil)")`
+    ///   rather than silently fanning out across both routes and merging (the way the v3 path
+    ///   does for its three sources) -- Spud's inbox only ever calls this with an explicit
+    ///   `.reply`/`.mention` `kind` (see `LemmyService+Inbox.swift:135,179`), so a real merge
+    ///   fan-out has no current caller and would be unverified/unvalidated behavior; failing loudly
+    ///   is safer than adding an untested code path silently.
+    /// - `.subscribed`/`.modAction` have no PieFed source at all (mirroring their absence on v3 --
+    ///   see ``NotificationKind``'s doc) and `.privateMessage` has its own dedicated
+    ///   ``getPrivateMessagesNeutral(unreadOnly:pageCursor:)`` instead of flowing through here --
+    ///   all three throw `unsupportedByDialect`, naming the specific kind, rather than returning an
+    ///   empty page (unlike v3's `.subscribed`/`.modAction` case, which returns empty because it's
+    ///   reached only from the `nil`-kind fan-out that already tolerates partial sources -- there
+    ///   is no equivalent tolerant fan-out on PieFed to fall back to).
+    ///
+    /// Both `getReplies` and `getMentions` return a real, native `next_page` string cursor
+    /// (`PiefedRepliesResponse.next_page`, confirmed live), so this forwards it via
+    /// `neutralPage(fromPiefed:nextPage:)` exactly like `getPostsNeutral`/`getCommentsNeutral`'s
+    /// PieFed paths -- unlike PieFed's private-message listing, which has no cursor of any kind
+    /// (see `getPrivateMessagesNeutralPiefed`'s doc).
+    func listNotificationsNeutralPiefed(
+        unreadOnly: Bool,
+        pageCursor: Cursor?,
+        kind: NotificationKind?
+    ) async throws -> Page<NotificationView> {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "listNotifications") }
+
+        switch kind {
+        case .reply:
+            let response = try await piefedClient.getReplies(
+                unreadOnly: unreadOnly,
+                page: pageCursor.flatMap { Int($0.rawValue) }
+            )
+            return neutralPage(fromPiefed: response.replies, nextPage: response.next_page) {
+                neutralNotificationView(fromPiefedReply: $0, kind: .reply)
+            }
+
+        case .mention:
+            let response = try await piefedClient.getMentions(
+                unreadOnly: unreadOnly,
+                page: pageCursor.flatMap { Int($0.rawValue) }
+            )
+            return neutralPage(fromPiefed: response.replies, nextPage: response.next_page) {
+                neutralNotificationView(fromPiefedReply: $0, kind: .mention)
+            }
+
+        case nil:
+            throw LemmyApiError.unsupportedByDialect(operation: "listNotifications(kind:nil)")
+        case .subscribed:
+            throw LemmyApiError.unsupportedByDialect(operation: "listNotifications(kind:.subscribed)")
+        case .modAction:
+            throw LemmyApiError.unsupportedByDialect(operation: "listNotifications(kind:.modAction)")
+        case .privateMessage:
+            throw LemmyApiError.unsupportedByDialect(operation: "listNotifications(kind:.privateMessage)")
+        }
     }
 }
 

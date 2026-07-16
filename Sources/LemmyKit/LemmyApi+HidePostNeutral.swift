@@ -29,6 +29,8 @@ public extension LemmyApi {
             try await hidePostNeutralV3(id: id, hidden: hidden)
         case .v4:
             try await hidePostNeutralV4(id: id, hidden: hidden)
+        case .piefed:
+            try await hidePostNeutralPiefed(id: id, hidden: hidden)
         }
     }
 }
@@ -97,5 +99,14 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.hidePost(postId:hide:)`, whose route returns a full
+    /// `PiefedPostResponse` (not a bare success payload) -- like the v3/v4 paths, this method
+    /// reports success by not throwing, so the returned `post_view` is discarded once the call
+    /// returns without error.
+    func hidePostNeutralPiefed(id: Int64, hidden: Bool) async throws {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "hidePost") }
+        _ = try await piefedClient.hidePost(postId: id, hide: hidden)
     }
 }

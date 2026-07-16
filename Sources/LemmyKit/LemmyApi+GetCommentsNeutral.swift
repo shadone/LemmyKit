@@ -40,6 +40,8 @@ public extension LemmyApi {
             try await getCommentsNeutralV3(postId: postId, sort: sort)
         case .v4:
             try await getCommentsNeutralV4(postId: postId, sort: sort, pageCursor: pageCursor)
+        case .piefed:
+            try await getCommentsNeutralPiefed(postId: postId, sort: sort, pageCursor: pageCursor)
         }
     }
 
@@ -70,6 +72,8 @@ public extension LemmyApi {
             try await getCommentsNeutralV3(parentId: parentId, sort: sort)
         case .v4:
             try await getCommentsNeutralV4(parentId: parentId, sort: sort, pageCursor: pageCursor)
+        case .piefed:
+            try await getCommentsNeutralPiefed(parentId: parentId, sort: sort, pageCursor: pageCursor)
         }
     }
 }
@@ -169,6 +173,43 @@ private extension LemmyApi {
 
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
+        }
+    }
+
+    /// PieFed path for the post-scoped fetch: calls `PiefedClient.getComments(postId:sort:page:)`
+    /// (`sort` folded via `piefedCommentSort(_:)`) and maps the extracted items up to the neutral
+    /// shape. Unlike v3, **PieFed's comment listing DOES page** (confirmed live against
+    /// `piefed.social`: `page=N` is honored and `next_page` echoes the following page number), so
+    /// `pageCursor` is forwarded and the returned `Page` carries a real `nextPage` when there's
+    /// more.
+    func getCommentsNeutralPiefed(postId: Int64, sort: CommentSort, pageCursor: Cursor?) async throws -> Page<CommentView> {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getComments") }
+
+        let response = try await piefedClient.getComments(
+            postId: postId,
+            sort: piefedCommentSort(sort),
+            page: pageCursor.flatMap { Int($0.rawValue) }
+        )
+
+        return neutralPage(fromPiefed: response.comments, nextPage: response.next_page) {
+            neutralCommentView(fromPiefed: $0)
+        }
+    }
+
+    /// PieFed path for the parent-scoped fetch ("load more replies"): calls
+    /// `PiefedClient.getComments(parentId:sort:page:)`, otherwise identical to the post-scoped
+    /// path above.
+    func getCommentsNeutralPiefed(parentId: Int64, sort: CommentSort, pageCursor: Cursor?) async throws -> Page<CommentView> {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getComments") }
+
+        let response = try await piefedClient.getComments(
+            parentId: parentId,
+            sort: piefedCommentSort(sort),
+            page: pageCursor.flatMap { Int($0.rawValue) }
+        )
+
+        return neutralPage(fromPiefed: response.comments, nextPage: response.next_page) {
+            neutralCommentView(fromPiefed: $0)
         }
     }
 }

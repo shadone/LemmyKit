@@ -27,6 +27,8 @@ public extension LemmyApi {
             try await getCommunityNeutralV3(id: id)
         case .v4:
             try await getCommunityNeutralV4(id: id)
+        case .piefed:
+            try await getCommunityNeutralPiefed(id: id)
         }
     }
 }
@@ -94,5 +96,13 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.getCommunity(id:)`, then maps the extracted
+    /// `community_view` to the neutral shape.
+    func getCommunityNeutralPiefed(id: Int64) async throws -> CommunityView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getCommunity") }
+        let response = try await piefedClient.getCommunity(id: id)
+        return neutralCommunityView(fromPiefed: response.community_view)
     }
 }

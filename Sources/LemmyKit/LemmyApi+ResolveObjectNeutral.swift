@@ -27,6 +27,8 @@ public extension LemmyApi {
             try await resolveObjectNeutralV3(query: query)
         case .v4:
             try await resolveObjectNeutralV4(query: query)
+        case .piefed:
+            try await resolveObjectNeutralPiefed(query: query)
         }
     }
 }
@@ -96,5 +98,13 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.resolveObject(q:)`, then maps the extracted
+    /// four-optionals response to the neutral shape via `neutralResolvedObject(fromPiefed:)`.
+    func resolveObjectNeutralPiefed(query: String) async throws -> ResolvedObject? {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "resolveObject") }
+        let response = try await piefedClient.resolveObject(q: query)
+        return neutralResolvedObject(fromPiefed: response)
     }
 }

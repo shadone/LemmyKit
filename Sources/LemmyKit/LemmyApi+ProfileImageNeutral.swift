@@ -38,6 +38,8 @@ public extension LemmyApi {
             try await setAvatarNeutralV3(imageData: imageData, fileName: fileName, contentType: contentType)
         case .v4:
             try await setAvatarNeutralV4(imageData: imageData, fileName: fileName)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "setAvatar")
         }
     }
 
@@ -58,6 +60,8 @@ public extension LemmyApi {
             _ = try await saveUserSettings(avatar: "")
         case .v4:
             try await removeAvatarNeutralV4()
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "removeAvatar")
         }
     }
 
@@ -84,6 +88,8 @@ public extension LemmyApi {
             try await setBannerNeutralV3(imageData: imageData, fileName: fileName, contentType: contentType)
         case .v4:
             try await setBannerNeutralV4(imageData: imageData, fileName: fileName)
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "setBanner")
         }
     }
 
@@ -100,6 +106,8 @@ public extension LemmyApi {
             _ = try await saveUserSettings(banner: "")
         case .v4:
             try await removeBannerNeutralV4()
+        case .piefed:
+            throw LemmyApiError.unsupportedByDialect(operation: "removeBanner")
         }
     }
 }

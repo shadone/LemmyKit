@@ -31,6 +31,8 @@ public extension LemmyApi {
             try await getMyUserNeutralV3()
         case .v4:
             try await getMyUserNeutralV4()
+        case .piefed:
+            try await getMyUserNeutralPiefed()
         }
     }
 }
@@ -69,5 +71,22 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.getSiteAuthed()` -- **not** `userMe()` -- since PieFed's
+    /// dedicated `user/me` route is observed to return an EMPTY `follows` array while the authed
+    /// `/site`'s `my_user` embed carries the account's live subscriptions (see
+    /// `PiefedClient.userMe()`'s doc). Throws `.unauthorized` if the response carries no `my_user`
+    /// at all -- a signed-out viewer has no account settings to return, matching the v3 path's
+    /// same-shaped throw. `isAdmin` is derived from the response's own `admins` list via
+    /// `neutralMyUser(fromPiefed:admins:)`, since PieFed's `my_user` embed carries no admin flag
+    /// of its own.
+    func getMyUserNeutralPiefed() async throws -> MyUser {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "getMyUser") }
+        let response = try await piefedClient.getSiteAuthed()
+        guard let myUser = response.my_user else {
+            throw LemmyApiError.unauthorized(message: nil)
+        }
+        return neutralMyUser(fromPiefed: myUser, admins: response.admins)
     }
 }

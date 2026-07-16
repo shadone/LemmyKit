@@ -30,6 +30,8 @@ public extension LemmyApi {
             try await followCommunityNeutralV3(id: id, follow: follow)
         case .v4:
             try await followCommunityNeutralV4(id: id, follow: follow)
+        case .piefed:
+            try await followCommunityNeutralPiefed(id: id, follow: follow)
         }
     }
 }
@@ -103,5 +105,16 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.followCommunity(communityId:follow:)` -- PieFed's
+    /// membership follow/unfollow (not its separate `PUT /community/subscribe` activity-alert
+    /// toggle, which has no Lemmy equivalent and isn't exposed via the neutral facade) -- then
+    /// maps the extracted `community_view` up to the neutral shape via
+    /// `neutralCommunityView(fromPiefed:)`.
+    func followCommunityNeutralPiefed(id: Int64, follow: Bool) async throws -> CommunityView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "followCommunity") }
+        let response = try await piefedClient.followCommunity(communityId: id, follow: follow)
+        return neutralCommunityView(fromPiefed: response.community_view)
     }
 }

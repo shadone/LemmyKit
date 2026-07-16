@@ -28,6 +28,8 @@ public extension LemmyApi {
             try await deletePostNeutralV3(id: id, deleted: deleted)
         case .v4:
             try await deletePostNeutralV4(id: id, deleted: deleted)
+        case .piefed:
+            try await deletePostNeutralPiefed(id: id, deleted: deleted)
         }
     }
 }
@@ -101,5 +103,14 @@ private extension LemmyApi {
         case let .undocumented(statusCode, _):
             throw LemmyApiError.unknownServerError(httpStatusCode: statusCode, error: nil)
         }
+    }
+
+    /// PieFed path: calls `PiefedClient.deletePost(postId:deleted:)` -- PieFed soft-deletes
+    /// (tombstones) rather than purging, same as v3/v4 -- then maps the extracted `post_view` up
+    /// to the neutral shape via `neutralPostView(fromPiefed:)`.
+    func deletePostNeutralPiefed(id: Int64, deleted: Bool) async throws -> PostView {
+        guard let piefedClient else { throw LemmyApiError.unsupportedByDialect(operation: "deletePost") }
+        let response = try await piefedClient.deletePost(postId: id, deleted: deleted)
+        return neutralPostView(fromPiefed: response.post_view)
     }
 }

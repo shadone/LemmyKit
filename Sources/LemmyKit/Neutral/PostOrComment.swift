@@ -31,3 +31,19 @@ public enum PostOrComment: Sendable, Equatable {
         if case let .comment(view) = self { view } else { nil }
     }
 }
+
+package extension PostOrComment {
+    /// The item's publish date -- `PostView.post.publishedAt` for a `.post`,
+    /// `CommentView.comment.publishedAt` for a `.comment`. Shared by the v3 and PieFed backends'
+    /// combined-feed emulations (`LemmyApi/personContentNeutral(personId:pageCursor:)`'s v3 path,
+    /// `neutralPersonContentPage(fromPiefed:)`) to interleave their separately-fetched `posts[]`/
+    /// `comments[]` arrays by recency, since neither backend has a native combined feed the way v4's
+    /// `ListPersonContent` does. Not public API; callers outside the package read `.post`/`.comment`
+    /// and their own `publishedAt`.
+    var publishedAt: Date {
+        switch self {
+        case let .post(view): view.post.publishedAt
+        case let .comment(view): view.comment.publishedAt
+        }
+    }
+}
