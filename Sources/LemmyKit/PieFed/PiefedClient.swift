@@ -375,8 +375,19 @@ public struct PiefedClient: Sendable {
     /// `LemmyApiError.serverError(ErrorResponse)` channel so downstream consumers (which only know
     /// Lemmy's channel) are unaffected by the dialect. A body that isn't valid JSON at all (or
     /// decodes with every field nil) falls through to `.unknownServerError`.
+    ///
+    /// `429`/`5xx` are always mapped to `.unknownServerError(httpStatusCode:error:)` -- even when an
+    /// envelope decodes -- rather than `.serverError`, to match the v3/v4 clients' transient
+    /// classification: Spud's outbox/error classifiers treat `.serverError` as PERMANENT (rollback,
+    /// no retry) but `.unknownServerError` as transient (retry-eligible). PieFed declares `429` on
+    /// login when rate-limited (confirmed live against the probe instance), and a rate limit or a
+    /// server-side fault is exactly the transient case those classifiers exist for -- discarding the
+    /// HTTP status by folding it into `.serverError` would silently make every PieFed rate limit or
+    /// outage look like a permanent failure.
     static func mapNonSuccessResponse(data: Data, httpStatusCode: Int) -> LemmyApiError {
-        if let piefedError = try? JSONDecoder().decode(PiefedErrorBody.self, from: data) {
+        if httpStatusCode != 429, httpStatusCode < 500,
+           let piefedError = try? JSONDecoder().decode(PiefedErrorBody.self, from: data)
+        {
             let token = piefedError.message ?? piefedError.error ?? piefedError.status ?? piefedError.code.map(String.init)
             if let token {
                 return .serverError(Components.Schemas.ErrorResponse(error: token, message: piefedError.message))

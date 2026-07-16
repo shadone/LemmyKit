@@ -193,6 +193,38 @@ struct PiefedClientTests {
         }
     }
 
+    @Test
+    func rateLimitedResponseThrowsUnknownServerErrorEvenWithDecodableEnvelope() async throws {
+        // A 429 with a valid PieFed envelope must still surface as `.unknownServerError` (transient),
+        // NOT `.serverError` (permanent) -- see `mapNonSuccessResponse`'s doc comment.
+        let errorBody = Data(#"{"error":"rate_limited"}"#.utf8)
+        let transport = RecordingStubTransport(status: 429, responseBody: errorBody)
+        let client = makeClient(transport: transport)
+
+        do {
+            _ = try await client.getPosts()
+            Issue.record("expected getPosts to throw")
+        } catch let LemmyApiError.unknownServerError(httpStatusCode, _) {
+            #expect(httpStatusCode == 429)
+        }
+    }
+
+    @Test
+    func serverErrorResponseThrowsUnknownServerErrorEvenWithDecodableEnvelope() async throws {
+        // A 5xx with a valid PieFed envelope must still surface as `.unknownServerError` (transient),
+        // NOT `.serverError` (permanent) -- see `mapNonSuccessResponse`'s doc comment.
+        let errorBody = Data(#"{"message":"Internal Server Error"}"#.utf8)
+        let transport = RecordingStubTransport(status: 500, responseBody: errorBody)
+        let client = makeClient(transport: transport)
+
+        do {
+            _ = try await client.getPosts()
+            Issue.record("expected getPosts to throw")
+        } catch let LemmyApiError.unknownServerError(httpStatusCode, _) {
+            #expect(httpStatusCode == 500)
+        }
+    }
+
     // MARK: - Remaining read endpoints, decoding through to the Task-1 response models
 
     @Test

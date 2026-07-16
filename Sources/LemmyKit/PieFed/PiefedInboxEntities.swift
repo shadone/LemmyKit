@@ -36,14 +36,17 @@ public struct PiefedPrivateMessage: Codable, Sendable {
     /// The recipient's read flag; feeds `PrivateMessageListItem.isRead`.
     public let read: Bool
     public let published: String
-    /// Not read by any neutral adapter -- kept `Optional` so a future PieFed drop of this key
-    /// doesn't break decoding.
+    /// Read by `neutralPrivateMessageView(fromPiefed:)`, which maps it onto the neutral
+    /// `PrivateMessage.deleted` -- kept `Optional` since the adapter defaults it (to `false`) when
+    /// absent (see `PrivateMessagePiefedMapping.swift`'s doc comment for why this only matters if a
+    /// future PieFed drop of the key is ever actually observed).
     public let deleted: Bool?
     /// Read by `neutralPrivateMessageView(fromPiefed:)`, which feeds it directly onto the neutral
     /// `PrivateMessage.apId` -- required, matching the spec's `PrivateMessage.ap_id` (in `required`)
     /// and every sibling PieFed entity's non-optional `ap_id`/`actor_id`.
     public let ap_id: String
-    /// Not read by any neutral adapter -- kept `Optional`, same reasoning as `deleted`.
+    /// Read by `neutralPrivateMessageView(fromPiefed:)`, which maps it onto the neutral
+    /// `PrivateMessage.local` -- kept `Optional`, same reasoning as `deleted`.
     public let local: Bool?
 }
 

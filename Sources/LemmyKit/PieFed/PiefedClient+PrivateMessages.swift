@@ -18,7 +18,9 @@ public extension PiefedClient {
     ///     documented default for this route (unlike `getReplies`/`getMentions`, which default to
     ///     10) -- ``LemmyApi/getPrivateMessagesNeutral(unreadOnly:pageCursor:)``'s PieFed path sends
     ///     this explicitly so its `nextPage` synthesis (full-page heuristic, this response carries
-    ///     no native cursor) can reliably compare a returned count against a known value.
+    ///     no native cursor) can reliably compare a returned count against a known value. Whether the
+    ///     server actually honors this value (rather than silently applying its own page size
+    ///     regardless of what's requested) is unconfirmed live -- a human validation item.
     func getPrivateMessages(
         unreadOnly: Bool? = nil,
         page: Int? = nil,
