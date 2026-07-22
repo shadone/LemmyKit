@@ -195,6 +195,29 @@ final class GetListNeutralTests: XCTestCase {
         XCTAssertFalse(page.hasPrevPage)
     }
 
+    /// The v3 post-scoped fetch must send BOTH `type_=All` and a `max_depth`.
+    ///
+    /// Without `max_depth`, v3's `comment/list` does not return the post's comment
+    /// TREE -- it returns a flat slice of it, ordered by `sort` and bounded by the
+    /// server's default `limit` (10). Most of that slice is then replies whose
+    /// ancestors are absent, which a consumer threading a tree has no choice but to
+    /// drop: a 135-comment post renders a handful of comments, or none at all.
+    func testGetCommentsNeutralV3SendsListingTypeAndMaxDepth() async throws {
+        let transport = try PathCapturingStubTransport(responseBody: fixtureData("getCommentsResponseV3"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v3
+        )
+
+        _ = try await api.getCommentsNeutral(postId: 180, sort: .hot)
+
+        let path = await transport.capturedPath ?? ""
+        XCTAssertTrue(path.contains("type_=All"), "expected type_=All in path, got: \(path)")
+        XCTAssertTrue(path.contains("max_depth=8"), "expected max_depth=8 in path, got: \(path)")
+    }
+
     // MARK: getCommentsNeutral(parentId:)
 
     func testGetCommentsNeutralByParentV4ForwardsParentId() async throws {

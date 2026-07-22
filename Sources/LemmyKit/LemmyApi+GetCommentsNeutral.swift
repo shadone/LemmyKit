@@ -8,6 +8,27 @@ import Foundation
 import LemmyKitV4Generated
 
 public extension LemmyApi {
+    /// How deep a post-scoped comment fetch traverses the tree.
+    ///
+    /// v3's `comment/list` treats `max_depth` as the switch between two different
+    /// result shapes, not merely as a filter:
+    ///
+    /// - **With** `max_depth`, the server returns the comment TREE for the post,
+    ///   complete down to the cutoff -- every returned comment's ancestors are
+    ///   present, and `limit` bounds top-level comments rather than the total.
+    /// - **Without** it, the server returns a FLAT slice of the tree, ordered by
+    ///   `sort` and bounded by the default `limit` of 10. On a busy post that
+    ///   slice is mostly deep replies whose ancestors are absent, so a consumer
+    ///   threading a tree can only drop them -- a 135-comment post yields a
+    ///   handful of renderable comments, sometimes none.
+    ///
+    /// Comments below the cutoff are reached with ``getCommentsNeutral(parentId:sort:pageCursor:)``,
+    /// driven by each comment's `childCount`.
+    ///
+    /// v4 needs no equivalent: its `GetComments` is natively cursor-paginated and
+    /// returns a complete tree per page.
+    static var postCommentTreeMaxDepth: Int32 { 8 }
+
     /// Fetches a post's comments and returns the version-neutral, cursor-paginated ``Page`` of
     /// ``CommentView``.
     ///
@@ -21,14 +42,19 @@ public extension LemmyApi {
     /// falls back to its default (`Local` on most instances), which drops comments on remote/
     /// federated communities even when a post id is given.
     ///
+    /// It also sends v3's `max_depth` (``LemmyApi/postCommentTreeMaxDepth``), WITHOUT which v3
+    /// does not return the post's comment tree at all -- see that constant's documentation.
+    ///
     /// - Parameters:
     ///   - postId: the post whose comments to fetch.
     ///   - sort: the sort order to apply to the returned comments.
     ///   - pageCursor: opaque cursor from a previous page's `nextPage`/`prevPage`; nil fetches the
     ///     first page. **v3 has no cursor support for comment listings at all** -- v3's
-    ///     `GetCommentsResponse` returns every comment on the post in one response, so on a
+    ///     `GetCommentsResponse` returns the whole requested tree in one response, so on a
     ///     v3-backed instance this parameter is accepted for signature symmetry with v4 but
-    ///     ignored, and the returned `Page` always has `nextPage`/`prevPage` both nil.
+    ///     ignored, and the returned `Page` always has `nextPage`/`prevPage` both nil. Comments
+    ///     BELOW the depth cutoff are not paged in -- each comment's `childCount` marks the
+    ///     frontier, and a consumer fetches past it with the `parentId` overload below.
     /// - Returns: a `Page` of the neutral `CommentView`s for the given post.
     func getCommentsNeutral(
         postId: Int64,
@@ -82,12 +108,15 @@ private extension LemmyApi {
     /// v3 path: reuses the shared `getComments(query:)` transport/decoding helper (the same one
     /// ``getComments(postID:sort:maxDepth:filter:)`` forwards to), then maps the extracted v3
     /// comments up to the neutral shape. v3's `GetCommentsResponse` carries no cursor of any
-    /// kind -- it returns the whole comment tree for the post in one response -- so this always
-    /// comes back as a single, complete `Page` (`nextPage`/`prevPage` both nil).
+    /// kind -- with ``LemmyApi/postCommentTreeMaxDepth`` it returns the post's comment tree down
+    /// to that depth in one response -- so this always comes back as a single `Page`
+    /// (`nextPage`/`prevPage` both nil). "Complete" only down to the cutoff: anything deeper is
+    /// reached via the `parentId` overload, not by paging this one.
     func getCommentsNeutralV3(postId: Int64, sort: CommentSort) async throws -> Page<CommentView> {
         let response = try await getComments(query: .init(
             type_: .All,
             sort: v3CommentSortType(fromNeutral: sort),
+            max_depth: LemmyApi.postCommentTreeMaxDepth,
             community_id: nil,
             post_id: v3PostID(postId)
         ))
