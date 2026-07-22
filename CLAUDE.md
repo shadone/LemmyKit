@@ -122,6 +122,13 @@ version themselves. (Status: code-complete but NOT yet validated against a real
 - Lemmy gotcha: a post/parent/community-scoped fetch must send `type_ = .All`; with no listing
   type the server defaults to `Local` and silently drops federated content (federated post →
   comment_count=1 but 0 comments). The post/parent overloads bake `.All` in.
+- Lemmy gotcha, second half: a POST-scoped comment fetch must ALSO send `max_depth`. It is the
+  switch between two result shapes, not a filter — with it the server returns the comment TREE
+  (ancestors complete down to the cutoff, `limit` bounding top-level comments); without it a FLAT
+  slice bounded by the default `limit` of 10, mostly replies whose ancestors are absent, which a
+  tree-threading consumer can only drop. `getCommentsNeutral(postId:)` bakes in
+  `LemmyApi.postCommentTreeMaxDepth`. The PARENT-scoped ("load more replies") fetch deliberately
+  sends none — `childCount` drives its frontier.
 - Doc house style: one-sentence summary; `- Parameters:` block covering every param as a
   lowercase fragment ("true to X, false to Y", nil-semantics spelled out); `- Returns:`/`- Note:`
   only where they inform; type/case/property docs are capitalized sentences.
