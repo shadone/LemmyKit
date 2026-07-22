@@ -15,7 +15,9 @@ import Foundation
 public struct CommentPath: Sendable {
     let path: [Components.Schemas.CommentID]
 
-    /// How deeply the comment is nested. A top-level comment has depth `0`.
+    /// How deeply the comment is nested, counting the synthetic root as depth
+    /// `0`. A top-level comment (path `0.<id>`) therefore has depth `1`, and
+    /// each additional path segment adds one.
     public var depth: Int {
         assert(!path.isEmpty)
         return path.count - 1
