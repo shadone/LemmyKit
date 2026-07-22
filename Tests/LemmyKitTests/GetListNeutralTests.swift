@@ -195,13 +195,10 @@ final class GetListNeutralTests: XCTestCase {
         XCTAssertFalse(page.hasPrevPage)
     }
 
-    /// The v3 post-scoped fetch must send BOTH `type_=All` and a `max_depth`.
-    ///
-    /// Without `max_depth`, v3's `comment/list` does not return the post's comment
-    /// TREE -- it returns a flat slice of it, ordered by `sort` and bounded by the
-    /// server's default `limit` (10). Most of that slice is then replies whose
-    /// ancestors are absent, which a consumer threading a tree has no choice but to
-    /// drop: a 135-comment post renders a handful of comments, or none at all.
+    /// The v3 post-scoped fetch sends the tree depth, and deliberately sends NO
+    /// `limit`: with `max_depth` set the server ignores `limit` entirely (and
+    /// `page`), capping the response at 300 comments, so sending one would only
+    /// be misleading.
     func testGetCommentsNeutralV3SendsListingTypeAndMaxDepth() async throws {
         let transport = try PathCapturingStubTransport(responseBody: fixtureData("getCommentsResponseV3"))
         let api = LemmyApi(
@@ -215,7 +212,31 @@ final class GetListNeutralTests: XCTestCase {
 
         let path = await transport.capturedPath ?? ""
         XCTAssertTrue(path.contains("type_=All"), "expected type_=All in path, got: \(path)")
-        XCTAssertTrue(path.contains("max_depth=8"), "expected max_depth=8 in path, got: \(path)")
+        XCTAssertTrue(path.contains("max_depth=15"), "expected max_depth=15 in path, got: \(path)")
+        XCTAssertFalse(path.contains("limit="), "post-scoped fetch must not send limit, got: \(path)")
+    }
+
+    /// The v3 parent-scoped ("load more replies") fetch sends a full-size page.
+    /// Without `limit` the server's default of 10 applies, so one tap on a
+    /// 28-reply subtree returns 10 replies and immediately re-surfaces a
+    /// frontier row. 50 is Lemmy's ceiling -- `limit=300` fails outright with
+    /// `couldnt_get_comments`.
+    func testGetCommentsNeutralByParentV3SendsPageLimit() async throws {
+        let transport = try PathCapturingStubTransport(responseBody: fixtureData("getCommentsResponseV3"))
+        let api = LemmyApi(
+            instanceUrl: URL(string: "https://example.invalid")!,
+            credential: nil,
+            transport: transport,
+            apiVersion: .v3
+        )
+
+        _ = try await api.getCommentsNeutral(parentId: 42, sort: .hot)
+
+        let path = await transport.capturedPath ?? ""
+        XCTAssertTrue(path.contains("type_=All"), "expected type_=All in path, got: \(path)")
+        XCTAssertTrue(path.contains("parent_id=42"), "expected parent_id in path, got: \(path)")
+        XCTAssertTrue(path.contains("limit=50"), "expected limit=50 in path, got: \(path)")
+        XCTAssertFalse(path.contains("max_depth"), "parent-scoped fetch must not send max_depth, got: \(path)")
     }
 
     // MARK: getCommentsNeutral(parentId:)

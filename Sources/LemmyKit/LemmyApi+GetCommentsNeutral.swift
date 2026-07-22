@@ -25,9 +25,27 @@ public extension LemmyApi {
     /// Comments below the cutoff are reached with ``getCommentsNeutral(parentId:sort:pageCursor:)``,
     /// driven by each comment's `childCount`.
     ///
+    /// 15 rather than something larger: the server caps the response at 300
+    /// comments regardless of depth, so depth is nearly free (a 537-comment post
+    /// measured 1,596,078 bytes at depth 8 and 1,608,548 at depth 20, both
+    /// capped at 300) and a deeper request returns complete trees for ordinary
+    /// posts -- a 135-comment post is complete from depth 12. 15 leaves headroom
+    /// while staying modest in case an instance does not enforce that cap.
+    ///
     /// v4 needs no equivalent: its `GetComments` is natively cursor-paginated and
     /// returns a complete tree per page.
-    static var postCommentTreeMaxDepth: Int32 { 8 }
+    static var postCommentTreeMaxDepth: Int32 { 15 }
+
+    /// Page size for the parent-scoped ("load more replies") comment fetch.
+    ///
+    /// Unlike the post-scoped fetch -- where `max_depth` makes the server ignore
+    /// `limit` entirely -- the parent-scoped fetch IS bounded by `limit`, and
+    /// with none sent the server's default of 10 applies: one tap on a 28-reply
+    /// subtree returns 10 replies and immediately re-surfaces a frontier row.
+    ///
+    /// 50 is Lemmy's ceiling, not an arbitrary "large" value: `limit=300` fails
+    /// outright with `{"error":"couldnt_get_comments"}`.
+    static var commentListingPageLimit: Components.Parameters.Limit { 50 }
 
     /// Fetches a post's comments and returns the version-neutral, cursor-paginated ``Page`` of
     /// ``CommentView``.
@@ -78,8 +96,9 @@ public extension LemmyApi {
     ///
     /// Like the post-scoped fetch it sends v3's listing `type_` as `.All` (v4's as `.all`) so
     /// replies on remote/federated communities are not dropped, and sends **no `max_depth`** -- the
-    /// server's page `limit` is the only bound. Any frontier the page cut off re-surfaces as a
-    /// fresh "load more" placeholder downstream (driven by each comment's `childCount`).
+    /// page `limit` (``LemmyApi/commentListingPageLimit``) is the only bound. Any frontier the page
+    /// cut off re-surfaces as a fresh "load more" placeholder downstream (driven by each comment's
+    /// `childCount`).
     ///
     /// - Parameters:
     ///   - parentId: the parent comment whose descendant subtree to fetch.
@@ -160,12 +179,15 @@ private extension LemmyApi {
     }
 
     /// v3 path for a parent-scoped fetch: reuses the shared `getComments(query:)` transport helper
-    /// with `parent_id` set, then maps up to the neutral shape. v3 has no comment cursor, so this
-    /// always returns a single, complete `Page` (`nextPage`/`prevPage` nil).
+    /// with `parent_id` and ``LemmyApi/commentListingPageLimit`` set, then maps up to the neutral
+    /// shape. v3 has no comment cursor, so this always returns a single `Page`
+    /// (`nextPage`/`prevPage` nil) -- bounded by the page limit, not necessarily the whole subtree;
+    /// anything past it re-surfaces as a fresh "load more" frontier downstream.
     func getCommentsNeutralV3(parentId: Int64, sort: CommentSort) async throws -> Page<CommentView> {
         let response = try await getComments(query: .init(
             type_: .All,
             sort: v3CommentSortType(fromNeutral: sort),
+            limit: LemmyApi.commentListingPageLimit,
             parent_id: v3CommentID(parentId)
         ))
 
